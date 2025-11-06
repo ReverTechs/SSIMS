@@ -1,110 +1,260 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# SSIMS - School Information Management System
 
 <p align="center">
- The fastest way to build apps with Next.js and Supabase
+  <strong>Mitundu Secondary School</strong>
+</p>
+
+<p align="center">
+  A comprehensive school information management system built with Next.js and Supabase
 </p>
 
 <p align="center">
   <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
+  <a href="#tech-stack"><strong>Tech Stack</strong></a> ·
+  <a href="#getting-started"><strong>Getting Started</strong></a> ·
+  <a href="#user-roles"><strong>User Roles</strong></a> ·
+  <a href="#project-structure"><strong>Project Structure</strong></a>
 </p>
+
 <br/>
 
 ## Features
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+### Core Functionality
+- **Role-Based Access Control** - Six distinct user roles with customized dashboards
+- **Student Management** - Registration, profiles, and academic tracking
+- **Grade Management** - Enter, view, and track student grades
+- **Fee Management** - Track student fees, payments, and balances
+- **Report Generation** - Academic reports and system reports
+- **Announcements** - School-wide announcements with role-based targeting
+- **Calendar & Events** - School calendar with events, exams, and meetings
+- **Timetable** - Class schedules and timetables
+- **Subject Management** - Subject registration and tracking
+- **Teacher Management** - Teacher registration and management
 
-## Demo
+### Technical Features
+- **Modern Stack** - Next.js 16 with App Router and Turbopack
+- **Authentication** - Secure authentication with Supabase Auth
+- **Database** - PostgreSQL database with Supabase
+- **Responsive Design** - Mobile-first design with Tailwind CSS
+- **UI Components** - Beautiful components with shadcn/ui
+- **Dark Mode** - Full dark mode support
+- **Type Safety** - Full TypeScript support
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+## Tech Stack
 
-## Deploy to Vercel
+- **Framework:** [Next.js](https://nextjs.org) 16 (App Router)
+- **Database & Auth:** [Supabase](https://supabase.com)
+- **Language:** [TypeScript](https://www.typescriptlang.org)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com)
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com)
+- **Icons:** [Lucide React](https://lucide.dev)
+- **Deployment:** Vercel (recommended)
 
-Vercel deployment will guide you through creating a Supabase account and project.
+## Getting Started
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### Prerequisites
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+- Node.js 18+ installed
+- A Supabase account and project ([create one here](https://database.new))
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+### Installation
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
-
-## Clone and run locally
-
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
-
-2. Create a Next.js app using the Supabase Starter template npx command
-
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
-
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+1. **Clone the repository**
 
    ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
+   git clone <your-repo-url>
+   cd ssims
    ```
 
-3. Use `cd` to change into the app's directory
+2. **Install dependencies**
 
    ```bash
-   cd with-supabase-app
+   npm install
    ```
 
-4. Rename `.env.example` to `.env.local` and update the following:
+3. **Set up environment variables**
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+   Create a `.env.local` file in the root directory:
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+   ```
 
-5. You can now run the Next.js local development server:
+   > [!NOTE]
+   > You can find these values in your [Supabase project settings](https://supabase.com/dashboard/project/_/settings/api)
+
+4. **Set up the database**
+
+   Run the migration to create the necessary tables:
+
+   ```bash
+   # In Supabase Dashboard → SQL Editor
+   # Copy and run the contents of: supabase/migrations/001_create_user_profiles.sql
+   ```
+
+   See [QUICK_START_ROLES.md](./QUICK_START_ROLES.md) for detailed instructions.
+
+5. **Run the development server**
 
    ```bash
    npm run dev
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+   The application will be available at [http://localhost:3000](http://localhost:3000)
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+### First Steps
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+1. **Sign up** at `/auth/sign-up` with your email and select a role
+2. **Log in** at `/auth/login`
+3. Explore the dashboard based on your role!
 
-## Feedback and issues
+For detailed role management instructions, see [QUICK_START_ROLES.md](./QUICK_START_ROLES.md)
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+## User Roles
 
-## More Supabase examples
+The system supports six distinct user roles, each with customized access and features:
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
-# SSIMS
+| Role | Description | Key Features |
+|------|-------------|--------------|
+| **Student** | Regular students | View grades, fees, reports, announcements, calendar, timetable, subjects, teachers |
+| **Teacher** | Teaching staff | Enter grades, view students, view reports, announcements, calendar, timetable |
+| **Headteacher** | School principal | All teacher features + manage teachers, system reports |
+| **Deputy Headteacher** | Assistant principal | All teacher features + manage teachers |
+| **Guardian** | Parents/guardians | View student grades, reports, announcements, calendar, timetable, subjects, teachers |
+| **Admin** | System administrators | Full access: register students/teachers, generate passwords, system reports |
+
+## Project Structure
+
+```
+ssims/
+├── app/                          # Next.js App Router pages
+│   ├── auth/                     # Authentication pages
+│   │   ├── login/
+│   │   ├── sign-up/
+│   │   ├── forgot-password/
+│   │   └── update-password/
+│   ├── dashboard/                # Main dashboard pages
+│   │   ├── announcements/
+│   │   ├── calendar/
+│   │   ├── enter-grades/
+│   │   ├── fees/
+│   │   ├── grades/
+│   │   ├── manage-teachers/
+│   │   ├── passwords/
+│   │   ├── profile/
+│   │   ├── register-students/
+│   │   ├── register-teachers/
+│   │   ├── reports/
+│   │   ├── students/
+│   │   ├── subjects/
+│   │   ├── system-reports/
+│   │   ├── teachers/
+│   │   └── timetable/
+│   └── layout.tsx                 # Root layout
+├── components/                    # React components
+│   ├── dashboard/                 # Dashboard-specific components
+│   │   ├── header.tsx
+│   │   ├── sidebar.tsx
+│   │   ├── dashboard-layout.tsx
+│   │   └── breadcrumb.tsx
+│   ├── ui/                        # shadcn/ui components
+│   └── auth/                      # Authentication components
+├── lib/                           # Utility libraries
+│   ├── supabase/                  # Supabase client configuration
+│   └── utils.ts                   # Utility functions
+├── types/                         # TypeScript type definitions
+│   └── index.ts
+├── supabase/                      # Supabase configuration
+│   └── migrations/               # Database migrations
+└── public/                        # Static assets
+    └── images/
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Key Features by Module
+
+### Dashboard
+- Role-based navigation
+- Quick stats and overview
+- Upcoming events and schedule
+- Responsive mobile design
+
+### Grades
+- View grades by subject and term
+- Grade entry for teachers
+- Academic progress tracking
+
+### Fees
+- Fee balance tracking
+- Payment history
+- Due date reminders
+
+### Reports
+- Academic reports
+- System reports (admin only)
+- Downloadable reports
+
+### Announcements
+- School-wide announcements
+- Role-based targeting
+- Expiration dates
+
+### Calendar
+- School events
+- Exams and meetings
+- Academic calendar
+
+### Timetable
+- Class schedules
+- Period management
+- Room assignments
+
+## Documentation
+
+- [QUICK_START_ROLES.md](./QUICK_START_ROLES.md) - Quick guide for role management
+- [ROLE_MANAGEMENT_GUIDE.md](./ROLE_MANAGEMENT_GUIDE.md) - Complete role management documentation
+
+## Deployment
+
+### Deploy to Vercel
+
+1. Push your code to GitHub
+2. Import your repository in [Vercel](https://vercel.com)
+3. Add your Supabase environment variables
+4. Deploy!
+
+The Vercel deployment will automatically detect Next.js and configure the build settings.
+
+### Environment Variables
+
+Make sure to set these in your deployment platform:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+This project is private and proprietary to Mitundu Secondary School.
+
+## Support
+
+For issues and questions, please contact the system administrator.
+
+---
+
+**Built with ❤️ for Mitundu Secondary School**

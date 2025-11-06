@@ -41,7 +41,9 @@ UPDATE user_profiles
 SET role = 'admin', updated_at = NOW()
 WHERE email = 'your-email@example.com';
 ```
+in the side bar remove the components of SSIMS with its icon & 'School Management' text.
 
+In the appbar add the profile avatar before the Malawi Secondary School SIMS and role text, and make them when clicked go to landing page i.e http://localhost:3000/
 ### Step 4: Test the Role
 
 1. **Log out** (if logged in)

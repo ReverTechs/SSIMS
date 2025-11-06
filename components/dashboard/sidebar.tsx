@@ -21,6 +21,7 @@ import {
   School,
 } from "lucide-react";
 import { UserRole } from "@/types";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 interface NavItem {
   title: string;
@@ -136,40 +137,108 @@ const navItems: NavItem[] = [
 
 interface SidebarProps {
   userRole: UserRole;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  mobile?: boolean;
 }
 
-export function Sidebar({ userRole }: SidebarProps) {
+const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkClick?: () => void }) => {
   const pathname = usePathname();
   const filteredNavItems = navItems.filter((item) =>
     item.roles.includes(userRole)
   );
 
   return (
-    <div className="flex h-full w-64 flex-col border-r bg-card">
-      <div className="flex h-16 items-center border-b px-6">
-        <h2 className="text-lg font-semibold">SSIMS</h2>
-      </div>
-      <nav className="flex-1 space-y-1 p-4">
+    <>
+      {/* Decorative gradient overlay - subtle solid color */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30 dark:from-blue-950/20 dark:via-purple-950/15 dark:to-pink-950/20 pointer-events-none" />
+
+      {/* Navigation */}
+      <nav className="relative z-10 flex-1 space-y-2 p-4 overflow-y-auto scrollbar-thin pt-6">
         {filteredNavItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
+          // Fix: For dashboard, only match exactly. For other routes, match exact or sub-paths
+          const isActive = item.href === "/dashboard" 
+            ? pathname === "/dashboard" || pathname === "/dashboard/"
+            : pathname === item.href || pathname?.startsWith(item.href + "/");
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={onLinkClick}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300",
+                "hover:scale-[1.02] active:scale-[0.98]",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20 border border-sky-400/50"
+                  : "text-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border"
               )}
             >
-              <Icon className="h-5 w-5" />
-              {item.title}
+              {/* Active indicator */}
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-white/40 shadow-lg" />
+              )}
+              
+              {/* Icon container */}
+              <div
+                className={cn(
+                  "p-2 rounded-lg transition-all duration-300",
+                  isActive
+                    ? "bg-white/25 shadow-md"
+                    : "bg-muted group-hover:bg-muted/80"
+                )}
+              >
+                <Icon
+                  className={cn(
+                    "h-4 w-4 transition-colors duration-300",
+                    isActive ? "text-white" : "text-foreground"
+                  )}
+                />
+              </div>
+              
+              {/* Label */}
+              <span className="flex-1 relative font-medium">
+                {item.title}
+              </span>
             </Link>
           );
         })}
       </nav>
+
+      {/* Footer decoration */}
+      <div className="relative z-10 border-t border-border p-4 bg-card">
+        <div className="flex items-center justify-center gap-2 text-xs text-foreground/70">
+          <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+          <span className="font-light">School Information System</span>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export function Sidebar({ userRole, open, onOpenChange, mobile }: SidebarProps) {
+  const handleLinkClick = () => {
+    if (mobile && onOpenChange) {
+      onOpenChange(false);
+    }
+  };
+
+  if (mobile) {
+    return (
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <SheetContent side="left" className="w-72 p-0">
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+          <div className="relative flex h-full w-full flex-col border-r border-border bg-card">
+            <SidebarContent userRole={userRole} onLinkClick={handleLinkClick} />
+          </div>
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  return (
+    <div className="relative hidden lg:flex h-full w-72 flex-col border-r border-border bg-card">
+      <SidebarContent userRole={userRole} />
     </div>
   );
 }
