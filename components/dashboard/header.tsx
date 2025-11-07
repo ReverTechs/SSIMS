@@ -101,7 +101,7 @@ export function Header({ user, onMenuClick }: HeaderProps) {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
-                Mitundu Secondaly School
+                Wynberg Boys' High School
               </h1>
               <p className="text-xs text-muted-foreground/70 font-light">
                 {getRoleDisplayName(user.role)}
