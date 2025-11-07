@@ -1,8 +1,13 @@
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Phone, GraduationCap } from "lucide-react";
+import { 
+  Mail, 
+  Phone, 
+} from "lucide-react";
 
 export default function TeachersPage() {
   const teachers = [
@@ -78,66 +83,79 @@ export default function TeachersPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Subject Teachers</h1>
         <p className="text-muted-foreground">
-          View all teachers and their subjects
+          View all teachers and their subject assignments
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {teachers.map((teacher) => (
-          <Card key={teacher.id}>
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={undefined} alt={teacher.name} />
-                  <AvatarFallback className="text-lg">
-                    {getInitials(teacher.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <CardTitle className="text-lg">{teacher.name}</CardTitle>
-                  <CardDescription>{teacher.id}</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">
-                    Department
-                  </p>
-                  <Badge variant="outline">{teacher.department}</Badge>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">
-                    Subjects
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {teacher.subjects.map((subject) => (
-                      <Badge key={subject} variant="secondary">
-                        {subject}
-                      </Badge>
-                    ))}
+      {/* Teachers List */}
+      <div>
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold tracking-tight mb-1">All Teachers</h2>
+          <p className="text-sm text-muted-foreground">
+            View all teachers and their subject assignments
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {teachers.map((teacher) => (
+            <Card key={teacher.id} className="group relative border bg-card hover:bg-accent/50 transition-all duration-200">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={undefined} alt={teacher.name} />
+                    <AvatarFallback className="text-lg">
+                      {getInitials(teacher.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <CardTitle className="text-lg">{teacher.name}</CardTitle>
+                    <CardDescription>{teacher.id}</CardDescription>
                   </div>
                 </div>
-                <div className="space-y-2 pt-2 border-t">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs">{teacher.email}</span>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">
+                      Department
+                    </p>
+                    <Badge variant="outline">{teacher.department}</Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs">{teacher.phone}</span>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">
+                      Subjects
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {teacher.subjects.map((subject) => (
+                        <Badge key={subject} variant="secondary">
+                          {subject}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2 pt-2 border-t">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-xs">{teacher.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-xs">{teacher.phone}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
-      <Card>
+      {/* Teachers Directory Table */}
+      <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200">
         <CardHeader>
           <CardTitle>Teachers Directory</CardTitle>
+          <CardDescription>
+            Complete list of all teachers in the system
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>

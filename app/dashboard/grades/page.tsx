@@ -2,8 +2,148 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getCurrentUser } from "@/lib/supabase/user";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { 
+  Upload, 
+  Users, 
+  BookOpen, 
+  Calendar, 
+  FileText,
+  ArrowRight,
+  ClipboardList,
+  TrendingUp
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export default function GradesPage() {
+export default async function GradesPage() {
+  const user = await getCurrentUser();
+  
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  // For teachers, show grade management
+  if (user.role === "teacher") {
+    const gradeFeatures = [
+      {
+        title: "Upload Grades",
+        description: "Upload student grades from CSV or Excel files",
+        href: "/dashboard/grades/upload-grades",
+        icon: Upload,
+        gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
+        iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
+        borderGradient: "border-blue-500/20",
+      },
+      {
+        title: "Students in Class & Grades",
+        description: "View all students in your classes and their grades",
+        href: "/dashboard/grades/class-grades",
+        icon: Users,
+        gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
+        iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
+        borderGradient: "border-emerald-500/20",
+      },
+      {
+        title: "Enter Grades",
+        description: "Manually enter grades for your students",
+        href: "/dashboard/enter-grades",
+        icon: BookOpen,
+        gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
+        iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+        borderGradient: "border-amber-500/20",
+      },
+      {
+        title: "Academic Year & Term",
+        description: "Manage academic year and term settings",
+        href: "/dashboard/grades/academic-settings",
+        icon: Calendar,
+        gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
+        iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
+        borderGradient: "border-pink-500/20",
+      },
+      {
+        title: "View Class Grades",
+        description: "View and analyze grades by class and subject",
+        href: "/dashboard/grades/view-class-grades",
+        icon: ClipboardList,
+        gradient: "from-indigo-500/20 via-indigo-600/20 to-blue-600/20",
+        iconBg: "bg-gradient-to-br from-indigo-500 to-blue-600",
+        borderGradient: "border-indigo-500/20",
+      },
+      {
+        title: "Grade Reports",
+        description: "Generate comprehensive grade reports and analytics",
+        href: "/dashboard/reports",
+        icon: FileText,
+        gradient: "from-violet-500/20 via-violet-600/20 to-purple-600/20",
+        iconBg: "bg-gradient-to-br from-violet-500 to-purple-600",
+        borderGradient: "border-violet-500/20",
+      },
+      {
+        title: "Grade Trends",
+        description: "Analyze grade trends and student performance",
+        href: "/dashboard/grades/grade-trends",
+        icon: TrendingUp,
+        gradient: "from-cyan-500/20 via-cyan-600/20 to-blue-600/20",
+        iconBg: "bg-gradient-to-br from-cyan-500 to-blue-600",
+        borderGradient: "border-cyan-500/20",
+      },
+    ];
+
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Grade Management</h1>
+          <p className="text-muted-foreground">
+            Access all grade-related features and tools
+          </p>
+        </div>
+
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {gradeFeatures.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <Link
+                key={feature.title}
+                href={feature.href}
+                className="group"
+              >
+                <Card className={cn(
+                  "relative border bg-card hover:bg-accent/50 transition-all duration-200 cursor-pointer h-full",
+                  feature.borderGradient
+                )}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-semibold">
+                      {feature.title}
+                    </CardTitle>
+                    <div className={cn(
+                      "p-1.5 rounded-md",
+                      feature.iconBg
+                    )}>
+                      <Icon className="h-4 w-4 text-white" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <CardDescription className="text-xs">
+                      {feature.description}
+                    </CardDescription>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                      <span>Open</span>
+                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // For students and guardians, show the student view
   const grades = [
     {
       subject: "Mathematics",

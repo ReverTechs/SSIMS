@@ -101,7 +101,7 @@ const navItems: NavItem[] = [
     title: "Teachers",
     href: "/dashboard/teachers",
     icon: School,
-    roles: ["student", "guardian", "headteacher", "deputy_headteacher"],
+    roles: ["guardian", "headteacher", "deputy_headteacher"],
   },
   {
     title: "Manage Teachers",
