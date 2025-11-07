@@ -150,11 +150,8 @@ const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkC
 
   return (
     <>
-      {/* Decorative gradient overlay - subtle solid color */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30 dark:from-blue-950/20 dark:via-purple-950/15 dark:to-pink-950/20 pointer-events-none" />
-
       {/* Navigation */}
-      <nav className="relative z-10 flex-1 space-y-2 p-4 overflow-y-auto scrollbar-thin pt-6">
+      <nav className="relative z-10 flex-1 space-y-1 p-3 overflow-y-auto scrollbar-thin pt-4">
         {filteredNavItems.map((item) => {
           const Icon = item.icon;
           // Fix: For dashboard, only match exactly. For other routes, match exact or sub-paths
@@ -167,37 +164,27 @@ const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkC
               href={item.href}
               onClick={onLinkClick}
               className={cn(
-                "group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300",
-                "hover:scale-[1.02] active:scale-[0.98]",
+                "group relative flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-normal transition-all duration-200",
                 isActive
-                  ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20 border border-sky-400/50"
-                  : "text-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-foreground hover:bg-muted/50"
               )}
             >
-              {/* Active indicator */}
+              {/* Active indicator - subtle left border */}
               {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-white/40 shadow-lg" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full bg-primary" />
               )}
               
-              {/* Icon container */}
-              <div
+              {/* Icon */}
+              <Icon
                 className={cn(
-                  "p-2 rounded-lg transition-all duration-300",
-                  isActive
-                    ? "bg-white/25 shadow-md"
-                    : "bg-muted group-hover:bg-muted/80"
+                  "h-4 w-4 transition-colors duration-200",
+                  isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                 )}
-              >
-                <Icon
-                  className={cn(
-                    "h-4 w-4 transition-colors duration-300",
-                    isActive ? "text-white" : "text-foreground"
-                  )}
-                />
-              </div>
+              />
               
               {/* Label */}
-              <span className="flex-1 relative font-medium">
+              <span className="flex-1 relative">
                 {item.title}
               </span>
             </Link>
@@ -206,10 +193,9 @@ const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkC
       </nav>
 
       {/* Footer decoration */}
-      <div className="relative z-10 border-t border-border p-4 bg-card">
-        <div className="flex items-center justify-center gap-2 text-xs text-foreground/70">
-          <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-          <span className="font-light">School Information System</span>
+      <div className="relative z-10 border-t border-border p-3 bg-card">
+        <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+          <span className="font-normal">School Information System</span>
         </div>
       </div>
     </>
@@ -237,7 +223,7 @@ export function Sidebar({ userRole, open, onOpenChange, mobile }: SidebarProps) 
   }
 
   return (
-    <div className="relative hidden lg:flex h-full w-72 flex-col border-r border-border bg-card">
+    <div className="relative hidden lg:flex h-full w-64 flex-col border-r border-border bg-card">
       <SidebarContent userRole={userRole} />
     </div>
   );

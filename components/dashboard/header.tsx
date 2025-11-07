@@ -72,13 +72,13 @@ export function Header({ user, onMenuClick }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-card">
-      {/* Gradient overlay - subtle solid color */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-50/20 via-purple-50/15 to-pink-50/20 dark:from-blue-950/15 dark:via-purple-950/10 dark:to-pink-950/15 pointer-events-none" />
+    <header className="glass-header sticky top-0 z-50 w-full">
+      {/* Subtle gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-50/10 via-transparent to-purple-50/10 dark:from-blue-950/10 dark:via-transparent dark:to-purple-950/10 pointer-events-none" />
       
-      <div className="relative container flex h-16 sm:h-20 items-center justify-between px-4 sm:px-6">
+      <div className="relative flex h-16 sm:h-20 items-center z-10">
         {/* Left side - Menu button (mobile) + Title with Image */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 pl-4 sm:pl-6">
           {/* Mobile menu button */}
           <Button
             variant="ghost"
@@ -110,8 +110,8 @@ export function Header({ user, onMenuClick }: HeaderProps) {
           </Link>
         </div>
 
-        {/* Right side - Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        {/* Right side - Actions - aligned to viewport edge */}
+        <div className="flex items-center gap-1 sm:gap-2 ml-auto pr-1 sm:pr-2">
           {/* Search button (optional) - hidden on mobile */}
           <Button
             variant="ghost"
@@ -132,7 +132,7 @@ export function Header({ user, onMenuClick }: HeaderProps) {
           </Button>
 
           {/* Theme switcher */}
-          <div className="px-1 sm:px-2">
+          <div className="px-0.5 sm:px-1">
             <ThemeSwitcher />
           </div>
 

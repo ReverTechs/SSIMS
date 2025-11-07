@@ -84,6 +84,40 @@
     -webkit-backdrop-filter: blur(10px);
   }
   
+  /* Liquid transparent header - Apple ecosystem style */
+  .glass-header {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .glass-header {
+    background: rgba(28, 28, 30, 0.8);
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  @supports (backdrop-filter: blur(40px)) {
+    .glass-header {
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .dark .glass-header {
+      background: rgba(28, 28, 30, 0.7);
+    }
+  }
+  
+  /* Enhanced liquid effect on scroll */
+  @media (prefers-reduced-motion: no-preference) {
+    .glass-header {
+      transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                  backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+  
   /* Subtle glow effect */
   .glow {
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);

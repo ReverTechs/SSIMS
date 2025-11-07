@@ -40,7 +40,7 @@ export function DashboardLayout({
         />
         
         <main className="flex-1 overflow-y-auto bg-background">
-          <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+          <div className="container max-w-7xl mx-auto px-6 py-4">
             <Breadcrumb />
             {children}
           </div>

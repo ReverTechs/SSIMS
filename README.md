@@ -1,7 +1,7 @@
 # SSIMS - School Information Management System
 
 <p align="center">
-  <strong>Mitundu Secondary School</strong>
+  <strong>Blessings Rever Chilemba</strong>
 </p>
 
 <p align="center">
@@ -249,7 +249,7 @@ Make sure to set these in your deployment platform:
 
 ## License
 
-This project is private and proprietary to Mitundu Secondary School.
+This project is private and proprietary to Blessings Rever Chilemba.
 
 ## Support
 
@@ -257,4 +257,4 @@ For issues and questions, please contact the system administrator.
 
 ---
 
-**Built with ❤️ for Mitundu Secondary School**
+**Built with ❤️ by Blessings Rever Chilemba**

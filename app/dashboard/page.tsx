@@ -85,23 +85,23 @@ export default function DashboardPage() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-pink-600/5 rounded-2xl sm:rounded-3xl" />
-        <div className="relative space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8">
-          <div className="space-y-2 sm:space-y-3">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
+      <div className="relative overflow-hidden rounded-lg">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/3 via-purple-600/3 to-pink-600/3 rounded-lg" />
+        <div className="relative space-y-4 p-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-semibold tracking-tight">
                 Dashboard
               </h1>
-              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500 animate-pulse flex-shrink-0" />
+              <Sparkles className="h-4 w-4 text-blue-500 animate-pulse flex-shrink-0" />
             </div>
-            <p className="text-sm sm:text-base lg:text-lg text-muted-foreground/80 font-light">
+            <p className="text-sm text-muted-foreground">
               Welcome to your school information management system
             </p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
@@ -111,29 +111,29 @@ export default function DashboardPage() {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <Card className={cn(
-                    "relative border-2 bg-card hover:bg-card transition-all duration-500 hover:scale-[1.02] hover:shadow-xl",
+                    "relative border bg-card hover:bg-accent/50 transition-all duration-200",
                     stat.borderGradient
                   )}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3">
-                      <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground/80">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-xs font-medium text-muted-foreground">
                         {stat.title}
                       </CardTitle>
                       <div className={cn(
-                        "p-2 sm:p-2.5 rounded-lg sm:rounded-xl shadow-lg",
+                        "p-1.5 rounded-md",
                         stat.iconBg
                       )}>
-                        <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                        <Icon className="h-3.5 w-3.5 text-white" />
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-1.5 sm:space-y-2">
-                      <div className="text-2xl sm:text-3xl font-bold tracking-tight">
+                    <CardContent className="space-y-1">
+                      <div className="text-xl font-semibold tracking-tight">
                         {stat.value}
                       </div>
                       <p className={cn(
-                        "text-xs font-medium",
+                        "text-xs",
                         stat.changeType === "positive" 
                           ? "text-emerald-600 dark:text-emerald-400" 
-                          : "text-muted-foreground/70"
+                          : "text-muted-foreground"
                       )}>
                         {stat.change}
                       </p>
@@ -145,87 +145,85 @@ export default function DashboardPage() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
+          <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
             {/* Upcoming Events */}
-            <Card className="group relative border-2 border-blue-500/30 bg-card hover:bg-card transition-all duration-500 hover:scale-[1.01] hover:shadow-xl overflow-hidden animate-fade-in-up opacity-0"
+            <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0"
                   style={{ animationDelay: '400ms' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30 dark:from-blue-950/20 dark:via-purple-950/15 dark:to-pink-950/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <CardTitle className="text-xl sm:text-2xl font-bold mb-1">Upcoming Events</CardTitle>
-                    <CardDescription className="text-sm sm:text-base">
+                    <CardTitle className="text-base font-semibold mb-0.5">Upcoming Events</CardTitle>
+                    <CardDescription className="text-xs">
                       Your calendar for this week
                     </CardDescription>
                   </div>
-                  <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg flex-shrink-0">
-                    <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                  <div className="p-1.5 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
+                    <Calendar className="h-4 w-4 text-white" />
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative space-y-3 sm:space-y-4">
+              <CardContent className="relative space-y-2">
                 {events.map((event, index) => (
                   <div
                     key={index}
-                    className="group/item flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-muted hover:bg-muted/90 border border-border hover:border-blue-500/50 transition-all duration-300 cursor-pointer"
+                    className="group/item flex items-start gap-3 p-2.5 rounded-md bg-muted/50 hover:bg-muted border border-transparent hover:border-border transition-all duration-200 cursor-pointer"
                   >
-                    <div className="mt-0.5 sm:mt-1 p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-600/20 group-hover/item:from-blue-500/30 group-hover/item:to-purple-600/30 transition-colors flex-shrink-0">
-                      <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                    <div className="mt-0.5 p-1 rounded-md bg-blue-500/10 group-hover/item:bg-blue-500/20 transition-colors flex-shrink-0">
+                      <Calendar className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div className="flex-1 space-y-1 min-w-0">
-                      <p className="font-semibold text-sm sm:text-base truncate">{event.title}</p>
-                      <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground flex-wrap">
+                    <div className="flex-1 space-y-0.5 min-w-0">
+                      <p className="font-medium text-sm truncate">{event.title}</p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                         <span>{event.date}</span>
                         <span>•</span>
                         <span>{event.time}</span>
                       </div>
                     </div>
-                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition-colors opacity-0 group-hover/item:opacity-100 transform translate-x-[-10px] group-hover/item:translate-x-0 flex-shrink-0" />
+                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition-colors opacity-0 group-hover/item:opacity-100 transform translate-x-[-8px] group-hover/item:translate-x-0 flex-shrink-0" />
                   </div>
                 ))}
               </CardContent>
             </Card>
 
             {/* Today's Schedule */}
-            <Card className="group relative border-2 border-emerald-500/30 bg-card hover:bg-card transition-all duration-500 hover:scale-[1.01] hover:shadow-xl overflow-hidden animate-fade-in-up opacity-0"
+            <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0"
                   style={{ animationDelay: '500ms' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/30 via-teal-50/20 to-cyan-50/30 dark:from-emerald-950/20 dark:via-teal-950/15 dark:to-cyan-950/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <CardTitle className="text-xl sm:text-2xl font-bold mb-1">Today's Schedule</CardTitle>
-                    <CardDescription className="text-sm sm:text-base">
+                    <CardTitle className="text-base font-semibold mb-0.5">Today's Schedule</CardTitle>
+                    <CardDescription className="text-xs">
                       Your timetable for today
                     </CardDescription>
                   </div>
-                  <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg flex-shrink-0">
-                    <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                  <div className="p-1.5 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex-shrink-0">
+                    <Clock className="h-4 w-4 text-white" />
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative space-y-3 sm:space-y-4">
+              <CardContent className="relative space-y-2">
                 {schedule.map((item, index) => (
                   <div
                     key={index}
-                    className="group/item flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-muted hover:bg-muted/90 border border-border hover:border-emerald-500/50 transition-all duration-300 cursor-pointer"
+                    className="group/item flex items-start gap-3 p-2.5 rounded-md bg-muted/50 hover:bg-muted border border-transparent hover:border-border transition-all duration-200 cursor-pointer"
                   >
-                    <div className="mt-0.5 sm:mt-1 p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-emerald-500/20 to-teal-600/20 group-hover/item:from-emerald-500/30 group-hover/item:to-teal-600/30 transition-colors flex-shrink-0">
-                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
+                    <div className="mt-0.5 p-1 rounded-md bg-emerald-500/10 group-hover/item:bg-emerald-500/20 transition-colors flex-shrink-0">
+                      <Clock className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <div className="flex-1 space-y-1 min-w-0">
+                    <div className="flex-1 space-y-0.5 min-w-0">
                       <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <p className="font-semibold text-sm sm:text-base truncate">{item.subject}</p>
-                        <span className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-medium whitespace-nowrap">
+                        <p className="font-medium text-sm truncate">{item.subject}</p>
+                        <span className="text-xs px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-medium whitespace-nowrap">
                           {item.period}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground flex-wrap">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                         <span>{item.time}</span>
                         <span>•</span>
                         <span>{item.room}</span>
                       </div>
                     </div>
-                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground group-hover/item:text-emerald-600 dark:group-hover/item:text-emerald-400 transition-colors opacity-0 group-hover/item:opacity-100 transform translate-x-[-10px] group-hover/item:translate-x-0 flex-shrink-0" />
+                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover/item:text-emerald-600 dark:group-hover/item:text-emerald-400 transition-colors opacity-0 group-hover/item:opacity-100 transform translate-x-[-8px] group-hover/item:translate-x-0 flex-shrink-0" />
                   </div>
                 ))}
               </CardContent>
