@@ -1,9 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles, Users, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getCurrentUser } from "@/lib/supabase/user";
 
-export default function DashboardPage() {
-  const stats = [
+export default async function DashboardPage() {
+  const user = await getCurrentUser();
+
+  const defaultStats = [
     {
       title: "Average Grade",
       value: "85%",
@@ -45,6 +48,51 @@ export default function DashboardPage() {
       borderGradient: "border-pink-500/20",
     },
   ];
+
+  const teacherStats = [
+    {
+      title: "Subjects Teaching",
+      value: "4",
+      change: "Across all classes",
+      changeType: "neutral",
+      icon: GraduationCap,
+      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
+      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
+      borderGradient: "border-blue-500/20",
+    },
+    {
+      title: "Registered Students",
+      value: "120",
+      change: "Current academic year",
+      changeType: "neutral",
+      icon: Users,
+      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
+      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
+      borderGradient: "border-emerald-500/20",
+    },
+    {
+      title: "Reports",
+      value: "8",
+      change: "Ready for submission",
+      changeType: "neutral",
+      icon: FileText,
+      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
+      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+      borderGradient: "border-amber-500/20",
+    },
+    {
+      title: "Teaching Progress",
+      value: "On Track",
+      change: "85% syllabus coverage",
+      changeType: "positive",
+      icon: TrendingUp,
+      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
+      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
+      borderGradient: "border-pink-500/20",
+    },
+  ];
+
+  const stats = user?.role === "teacher" ? teacherStats : defaultStats;
 
   const events = [
     {
