@@ -4,6 +4,9 @@ import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { PieCharts } from "@/components/dashboard/pie-charts";
 import { AttendanceBarChart } from "@/components/dashboard/attendance-bar-chart";
+import { getGreeting } from "@/utils/getGreeting";
+
+const greeting = getGreeting();
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -145,9 +148,14 @@ export default async function DashboardPage() {
               </h1> */}
               
               {/* Desktop view */}
-<h1 className="hidden md:block text-2xl font-semibold tracking-tight">
+{/* <h1 className="hidden md:block text-2xl font-semibold tracking-tight">
   Good morning, {user?.fullName}!
-</h1>
+</h1> */}
+
+ <h1 className="hidden md:block text-2xl font-semibold tracking-tight">
+      {greeting}, {user?.fullName ?? "Guest"}!
+    </h1>
+
 
 {/* Mobile view */}
 <h1 className="block md:hidden text-2xl font-semibold tracking-tight">

@@ -101,7 +101,7 @@ const navItems: NavItem[] = [
     title: "Teachers",
     href: "/dashboard/teachers",
     icon: School,
-    roles: ["guardian", "headteacher", "deputy_headteacher"],
+    roles: ["teacher", "guardian", "headteacher", "deputy_headteacher"],
   },
   {
     title: "Manage Teachers",
@@ -194,9 +194,19 @@ const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkC
 
       {/* Footer decoration */}
       <div className="relative z-10 border-t border-border p-3 bg-card">
-        <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-          <span className="font-normal">School Information System</span>
-        </div>
+        {/* <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+          <span className="font-normal">🛠️REVER ENGINEERING</span>
+        </div> */}
+
+        <a
+  href="https://rever-official.netlify.app"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center justify-center gap-2 text-xs text-muted-foreground hover:underline"
+>
+  <span className="font-normal">🛠️REVER ENGINEERING</span>
+</a>
+
       </div>
     </>
   );

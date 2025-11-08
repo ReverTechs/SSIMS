@@ -9,7 +9,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Malawi Secondary School Information Management System",
+  title: "Malawi SSIMS",
   description: "Modern school information management system for Malawi secondary schools",
 };
 
