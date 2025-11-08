@@ -2,6 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles, Users, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/supabase/user";
+import { PieCharts } from "@/components/dashboard/pie-charts";
+import { AttendanceBarChart } from "@/components/dashboard/attendance-bar-chart";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -138,14 +140,25 @@ export default async function DashboardPage() {
         <div className="relative space-y-4 p-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Dashboard
-              </h1>
+              {/* <h1 className="text-2xl font-semibold tracking-tight">
+                Good Morning, {user?.fullName}!
+              </h1> */}
+              
+              {/* Desktop view */}
+<h1 className="hidden md:block text-2xl font-semibold tracking-tight">
+  Good morning, {user?.fullName}!
+</h1>
+
+{/* Mobile view */}
+<h1 className="block md:hidden text-2xl font-semibold tracking-tight">
+  Home
+</h1>
+
               <Sparkles className="h-4 w-4 text-blue-500 animate-pulse flex-shrink-0" />
             </div>
-            <p className="text-sm text-muted-foreground">
+            {/* <p className="text-sm text-muted-foreground">
               Welcome to your school information management system
-            </p>
+            </p> */}
           </div>
 
           {/* Stats Grid */}
@@ -276,6 +289,18 @@ export default async function DashboardPage() {
                 ))}
               </CardContent>
             </Card>
+          </div>
+
+          {/* Charts Section */}
+          <div className="space-y-3">
+            {/* Students and Teachers Pie Charts - Row Layout */}
+            <div className="w-full">
+              <PieCharts />
+            </div>
+            {/* Attendance Bar Chart - Full Width Below */}
+            <div className="w-full">
+              <AttendanceBarChart />
+            </div>
           </div>
         </div>
       </div>

@@ -103,9 +103,20 @@ export function Header({ user, onMenuClick }: HeaderProps) {
               <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
                 Wynberg Boys' High School
               </h1>
-              <p className="text-xs text-muted-foreground/70 font-light">
-                {getRoleDisplayName(user.role)}
-              </p>
+               <div className="flex items-center gap-4">
+  <p className="text-sm text-muted-foreground/70 ">
+    {user.fullName}
+  </p>
+  <span
+    className={cn(
+      "text-xs px-2 py-0.5 rounded-full bg-gradient-to-r text-white font-medium",
+      getRoleColor(user.role)
+    )}
+  >
+    {getRoleDisplayName(user.role)}
+  </span>
+</div>
+
             </div>
           </Link>
         </div>

@@ -43,12 +43,12 @@ const navItems: NavItem[] = [
     icon: BookOpen,
     roles: ["student", "teacher", "guardian"],
   },
-  {
-    title: "Enter Grades",
-    href: "/dashboard/enter-grades",
-    icon: BookOpen,
-    roles: ["teacher", "headteacher", "deputy_headteacher"],
-  },
+  // {
+  //   title: "Enter Grades",
+  //   href: "/dashboard/enter-grades",
+  //   icon: BookOpen,
+  //   roles: ["teacher", "headteacher", "deputy_headteacher"],
+  // },
   {
     title: "Fees",
     href: "/dashboard/fees",
