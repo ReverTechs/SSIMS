@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 // Map route segments to display names
 const routeNameMap: Record<string, string> = {
@@ -30,18 +31,68 @@ const routeNameMap: Record<string, string> = {
   passwords: "Passwords",
 };
 
+// Mock data for student/teacher names - in production, this would come from an API
+const studentNames: Record<string, string> = {
+  "STU2024001": "John Doe",
+  "STU2024002": "Jane Smith",
+  "STU2024003": "Peter Banda",
+  "STU2024004": "Mary Mwale",
+  "STU2024005": "David Phiri",
+  "STU2024006": "Grace Jere",
+};
+
+const teacherNames: Record<string, string> = {
+  "T001": "Mr. Banda",
+  "T002": "Mrs. Mwale",
+  "T003": "Mr. Phiri",
+  "T004": "Mrs. Kachale",
+  "T005": "Mr. Mbewe",
+  "T006": "Mr. Jere",
+  "T007": "Mrs. Tembo",
+};
+
 export function Breadcrumb() {
   const pathname = usePathname();
+  const [dynamicName, setDynamicName] = useState<string | null>(null);
   
   // Split pathname into segments and filter out empty strings
   const pathSegments = pathname.split("/").filter(Boolean);
+  
+  // Check if we're on a dynamic route (students/[id] or teachers/[id])
+  useEffect(() => {
+    const segments = pathname.split("/").filter(Boolean);
+    const isStudentRoute = segments[0] === "dashboard" && segments[1] === "students" && segments[2];
+    const isTeacherRoute = segments[0] === "dashboard" && segments[1] === "teachers" && segments[2];
+    
+    if (isStudentRoute && segments[2]) {
+      const studentId = segments[2];
+      setDynamicName(studentNames[studentId] || studentId);
+    } else if (isTeacherRoute && segments[2]) {
+      const teacherId = segments[2];
+      setDynamicName(teacherNames[teacherId] || teacherId);
+    } else {
+      setDynamicName(null);
+    }
+  }, [pathname]);
   
   // Build breadcrumb items (skip the dashboard segment as we show Home separately)
   const filteredSegments = pathSegments.filter((segment) => segment !== "dashboard");
   const breadcrumbItems = filteredSegments.map((segment, index) => {
     const segmentIndex = pathSegments.indexOf(segment);
     const href = "/" + pathSegments.slice(0, segmentIndex + 1).join("/");
-    const label = routeNameMap[segment] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+    
+    // Check if this is a dynamic segment (ID) and we have a name for it
+    let label = routeNameMap[segment] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+    
+    // If this is the last segment and we have a dynamic name, use it
+    if (index === filteredSegments.length - 1 && dynamicName) {
+      // Check if the previous segment is "students" or "teachers"
+      const prevSegment = filteredSegments[index - 1];
+      if (prevSegment === "students" || prevSegment === "teachers") {
+        label = dynamicName;
+      }
+    }
+    
     const isLast = index === filteredSegments.length - 1;
     
     return {

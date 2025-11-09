@@ -45,7 +45,7 @@ import {
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { TeacherProfileView } from "@/components/profile/teacher-profile-view";
+import { useRouter } from "next/navigation";
 
 export type Teacher = {
   id: string;
@@ -180,12 +180,11 @@ const teachers: Teacher[] = [
 ];
 
 export default function TeachersPage() {
+  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [selectedTeacher, setSelectedTeacher] = React.useState<Teacher | null>(null);
-  const [profileOpen, setProfileOpen] = React.useState(false);
 
   const columns: ColumnDef<Teacher>[] = [
     {
@@ -271,8 +270,7 @@ export default function TeachersPage() {
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedTeacher(teacher);
-                  setProfileOpen(true);
+                  router.push(`/dashboard/teachers/${teacher.id}`);
                 }}
               >
                 <Eye className="mr-2 h-4 w-4" />
@@ -435,12 +433,6 @@ export default function TeachersPage() {
           </div>
         </CardContent>
       </Card>
-
-      <TeacherProfileView
-        teacher={selectedTeacher}
-        open={profileOpen}
-        onOpenChange={setProfileOpen}
-      />
     </div>
   );
 }

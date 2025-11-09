@@ -45,7 +45,7 @@ import {
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { StudentProfileView } from "@/components/profile/student-profile-view";
+import { useRouter } from "next/navigation";
 
 export type Student = {
   id: string;
@@ -374,12 +374,11 @@ const students: Student[] = [
 ];
 
 export default function StudentsPage() {
+  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [selectedStudent, setSelectedStudent] = React.useState<Student | null>(null);
-  const [profileOpen, setProfileOpen] = React.useState(false);
 
   const columns: ColumnDef<Student>[] = [
     {
@@ -471,8 +470,7 @@ export default function StudentsPage() {
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedStudent(student);
-                  setProfileOpen(true);
+                  router.push(`/dashboard/students/${student.id}`);
                 }}
               >
                 <Eye className="mr-2 h-4 w-4" />
@@ -635,12 +633,6 @@ export default function StudentsPage() {
           </div>
         </CardContent>
       </Card>
-
-      <StudentProfileView
-        student={selectedStudent}
-        open={profileOpen}
-        onOpenChange={setProfileOpen}
-      />
     </div>
   );
 }

@@ -63,26 +63,31 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] lg:max-w-7xl xl:max-w-[90vw] 2xl:max-w-[85vw] w-full h-[95vh] max-h-[95vh] overflow-hidden p-0 gap-0 flex flex-col">
         {/* Cover Banner - Facebook Style */}
-        <div className="relative w-full h-48 lg:h-56 flex-shrink-0 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 overflow-hidden">
+        <div className="relative w-full h-48 lg:h-56 flex-shrink-0 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 overflow-visible">
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/80 via-teal-600/80 to-cyan-600/80"></div>
           <div className="absolute bottom-0 left-0 right-0 h-24 lg:h-32 bg-gradient-to-t from-background to-transparent"></div>
+          
+          {/* Profile Picture - Suspended halfway down the background */}
+          <div className="absolute left-4 sm:left-6 lg:left-8 bottom-0 translate-y-1/2 z-10">
+            <Avatar className="h-32 w-32 sm:h-40 sm:w-40 lg:h-48 lg:w-48 border-4 border-background shadow-xl ring-4 ring-emerald-500/10">
+              <AvatarImage src={undefined} alt={student.name} />
+              <AvatarFallback className="text-2xl sm:text-3xl lg:text-4xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-semibold">
+                {getInitials(student.name)}
+              </AvatarFallback>
+            </Avatar>
+          </div>
         </div>
 
         {/* Profile Picture and Header Info */}
-        <div className="relative px-4 sm:px-6 lg:px-8 pb-4 -mt-20 lg:-mt-24 flex-shrink-0">
+        <div className="relative px-4 sm:px-6 lg:px-8 pb-4 pt-16 sm:pt-20 lg:pt-24 flex-shrink-0">
           <div className="flex flex-col sm:flex-row gap-4 lg:gap-6">
-            {/* Large Profile Picture */}
-            <div className="flex-shrink-0">
-              <Avatar className="h-32 w-32 sm:h-40 sm:w-40 lg:h-48 lg:w-48 border-4 border-background shadow-xl ring-4 ring-emerald-500/10">
-                <AvatarImage src={undefined} alt={student.name} />
-                <AvatarFallback className="text-2xl sm:text-3xl lg:text-4xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-semibold">
-                  {getInitials(student.name)}
-                </AvatarFallback>
-              </Avatar>
+            {/* Spacer for avatar on mobile */}
+            <div className="flex-shrink-0 sm:hidden">
+              <div className="h-16 w-16"></div>
             </div>
 
             {/* Name and Basic Info */}
-            <div className="flex-1 pt-16 sm:pt-20 lg:pt-24 space-y-3 lg:space-y-4">
+            <div className="flex-1 space-y-3 lg:space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">{student.name}</h2>
