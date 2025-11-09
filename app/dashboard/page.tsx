@@ -1,5 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles, Users, GraduationCap } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles, Users, GraduationCap, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { PieCharts } from "@/components/dashboard/pie-charts";
@@ -135,39 +137,48 @@ export default async function DashboardPage() {
     },
   ];
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <div className="w-full">
       {/* Hero Section */}
       <div className="relative overflow-hidden rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/3 via-purple-600/3 to-pink-600/3 rounded-lg" />
         <div className="relative space-y-4 p-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              {/* <h1 className="text-2xl font-semibold tracking-tight">
-                Good Morning, {user?.fullName}!
-              </h1> */}
-              
-              {/* Desktop view */}
-{/* <h1 className="hidden md:block text-2xl font-semibold tracking-tight">
-  Good morning, {user?.fullName}!
-</h1> */}
-
- <h1 className="hidden md:block text-2xl font-semibold tracking-tight">
-      {greeting}, {user?.fullName ?? "Guest"}!
-    </h1>
-
-
-{/* Mobile view */}
-<h1 className="block md:hidden text-2xl font-semibold tracking-tight">
-  Home
-</h1>
-
-              <Sparkles className="h-4 w-4 text-blue-500 animate-pulse flex-shrink-0" />
-            </div>
-            {/* <p className="text-sm text-muted-foreground">
-              Welcome to your school information management system
-            </p> */}
-          </div>
+          {/* Profile Header Card */}
+          <Card className="border bg-card">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-6">
+                <Avatar className="h-24 w-24 border-2 border-primary/20">
+                  <AvatarImage src={user?.avatar} alt={user?.fullName ?? "User"} />
+                  <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    {user?.fullName ? getInitials(user.fullName) : "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="text-base font-bold mb-2 text-muted-foreground">{greeting}</p>
+                  <div className="flex items-center gap-3 mb-2">
+                    <h2 className="text-2xl font-semibold tracking-tight">{user?.fullName ?? "Guest"}</h2>
+                  </div>
+                  {user?.role === "teacher" && (
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium text-muted-foreground">Sciences</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Stats Grid */}
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">

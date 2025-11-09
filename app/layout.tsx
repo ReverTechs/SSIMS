@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+// @ts-ignore: CSS import has no type declarations (side-effect import)
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL

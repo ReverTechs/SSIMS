@@ -149,43 +149,42 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
 
       {/* Windows 11 Settings Style Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Sidebar Navigation - Windows 11 Settings Style */}
-          <div className="w-full lg:w-64 flex-shrink-0">
-            <TabsList className="flex flex-row lg:flex-col h-auto w-full bg-transparent p-0 gap-0.5 overflow-x-auto">
-              <TabsTrigger
-                value="personal"
-                className="flex-shrink-0 lg:w-full justify-start gap-2 lg:gap-3 h-10 px-3 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-sm transition-all"
-              >
-                <User className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm whitespace-nowrap">Personal</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="teaching"
-                className="flex-shrink-0 lg:w-full justify-start gap-2 lg:gap-3 h-10 px-3 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-sm transition-all"
-              >
-                <GraduationCap className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm whitespace-nowrap">Teaching</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="contact"
-                className="flex-shrink-0 lg:w-full justify-start gap-2 lg:gap-3 h-10 px-3 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-sm transition-all"
-              >
-                <Phone className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm whitespace-nowrap">Contact</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="security"
-                className="flex-shrink-0 lg:w-full justify-start gap-2 lg:gap-3 h-10 px-3 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-sm transition-all"
-              >
-                <Shield className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm whitespace-nowrap">Security</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
+        {/* Tabs Navigation - Horizontal Row on All Screen Sizes */}
+        <div className="w-full mb-6">
+          <TabsList className="flex flex-row h-auto w-full bg-muted/30 p-1.5 gap-1.5 rounded-lg border overflow-x-auto">
+            <TabsTrigger
+              value="personal"
+              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
+            >
+              <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+              <span className="font-medium">Personal</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="teaching"
+              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
+            >
+              <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+              <span className="font-medium">Teaching</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="contact"
+              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
+            >
+              <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+              <span className="font-medium">Contact</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="security"
+              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
+            >
+              <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+              <span className="font-medium">Security</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-          {/* Right Content Area */}
-          <div className="flex-1 min-w-0">
+        {/* Content Area */}
+        <div className="w-full">
             {/* Personal Information Tab */}
             <TabsContent value="personal" className="mt-0 space-y-6">
               <Card className="border bg-card">
@@ -476,7 +475,6 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
                 </CardContent>
               </Card>
             </TabsContent>
-          </div>
         </div>
       </Tabs>
     </div>
