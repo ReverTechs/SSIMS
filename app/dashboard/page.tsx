@@ -353,7 +353,41 @@ export default async function DashboardPage() {
           {/* Profile Header Card */}
           <Card className="border bg-card">
             <CardContent className="pt-6">
-              <div className="flex items-center gap-6">
+              {/* Mobile View - Column Layout */}
+              <div className="flex flex-col items-center gap-4 sm:hidden">
+                <div className="relative">
+                  <Avatar className="h-28 w-28 border-4 border-primary/30 shadow-lg">
+                    <AvatarImage src={user?.avatar} alt={user?.fullName ?? "User"} />
+                    <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md">
+                      {user?.fullName ? getInitials(user.fullName) : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-card shadow-sm"></div>
+                </div>
+                <div className="flex flex-col items-center gap-2 text-center w-full">
+                  <p className="text-sm font-semibold text-muted-foreground tracking-wide">{greeting}</p>
+                  <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                    {user?.fullName ?? "Guest"}
+                  </h2>
+                  {(user?.role === "teacher" || 
+                    user?.role === "headteacher" || 
+                    user?.role === "deputy_headteacher") && (
+                    <div className="flex items-center justify-center gap-2 mt-1">
+                      <Building2 className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {user?.role === "headteacher" 
+                          ? "Administration" 
+                          : user?.role === "deputy_headteacher"
+                          ? "Administration"
+                          : "Sciences"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Desktop View - Row Layout */}
+              <div className="hidden sm:flex items-center gap-6">
                 <Avatar className="h-24 w-24 border-2 border-primary/20">
                   <AvatarImage src={user?.avatar} alt={user?.fullName ?? "User"} />
                   <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
