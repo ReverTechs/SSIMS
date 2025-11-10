@@ -35,7 +35,14 @@ const navItems: NavItem[] = [
     title: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["student", "teacher", "headteacher", "deputy_headteacher", "guardian", "admin"],
+    roles: [
+      "student",
+      "teacher",
+      "headteacher",
+      "deputy_headteacher",
+      "guardian",
+      "admin",
+    ],
   },
   {
     title: "Grades",
@@ -65,25 +72,50 @@ const navItems: NavItem[] = [
     title: "Profile",
     href: "/dashboard/profile",
     icon: User,
-    roles: ["student", "teacher", "headteacher", "deputy_headteacher", "guardian", "admin"],
+    roles: [
+      "student",
+      "teacher",
+      "headteacher",
+      "deputy_headteacher",
+      "guardian",
+      "admin",
+    ],
   },
   {
     title: "Announcements",
     href: "/dashboard/announcements",
     icon: Bell,
-    roles: ["student", "teacher", "headteacher", "deputy_headteacher", "guardian"],
+    roles: [
+      "student",
+      "teacher",
+      "headteacher",
+      "deputy_headteacher",
+      "guardian",
+    ],
   },
   {
     title: "Calendar",
     href: "/dashboard/calendar",
     icon: Calendar,
-    roles: ["student", "teacher", "headteacher", "deputy_headteacher", "guardian"],
+    roles: [
+      "student",
+      "teacher",
+      "headteacher",
+      "deputy_headteacher",
+      "guardian",
+    ],
   },
   {
     title: "Timetable",
     href: "/dashboard/timetable",
     icon: Clock,
-    roles: ["student", "teacher", "headteacher", "deputy_headteacher", "guardian"],
+    roles: [
+      "student",
+      "teacher",
+      "headteacher",
+      "deputy_headteacher",
+      "guardian",
+    ],
   },
   {
     title: "Students",
@@ -101,7 +133,7 @@ const navItems: NavItem[] = [
     title: "Teachers",
     href: "/dashboard/teachers",
     icon: School,
-    roles: ["teacher", "guardian", "headteacher", "deputy_headteacher"],
+    roles: ["teacher", "headteacher", "deputy_headteacher"],
   },
   {
     title: "Manage Teachers",
@@ -119,7 +151,7 @@ const navItems: NavItem[] = [
     title: "Register Teachers",
     href: "/dashboard/register-teachers",
     icon: Shield,
-    roles: ["admin"],
+    roles: ["admin", "headteacher"],
   },
   {
     title: "Generate Passwords",
@@ -142,7 +174,13 @@ interface SidebarProps {
   mobile?: boolean;
 }
 
-const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkClick?: () => void }) => {
+const SidebarContent = ({
+  userRole,
+  onLinkClick,
+}: {
+  userRole: UserRole;
+  onLinkClick?: () => void;
+}) => {
   const pathname = usePathname();
   const filteredNavItems = navItems.filter((item) =>
     item.roles.includes(userRole)
@@ -155,9 +193,10 @@ const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkC
         {filteredNavItems.map((item) => {
           const Icon = item.icon;
           // Fix: For dashboard, only match exactly. For other routes, match exact or sub-paths
-          const isActive = item.href === "/dashboard" 
-            ? pathname === "/dashboard" || pathname === "/dashboard/"
-            : pathname === item.href || pathname?.startsWith(item.href + "/");
+          const isActive =
+            item.href === "/dashboard"
+              ? pathname === "/dashboard" || pathname === "/dashboard/"
+              : pathname === item.href || pathname?.startsWith(item.href + "/");
           return (
             <Link
               key={item.href}
@@ -174,19 +213,19 @@ const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkC
               {isActive && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full bg-primary" />
               )}
-              
+
               {/* Icon */}
               <Icon
                 className={cn(
                   "h-4 w-4 transition-colors duration-200",
-                  isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground group-hover:text-foreground"
                 )}
               />
-              
+
               {/* Label */}
-              <span className="flex-1 relative">
-                {item.title}
-              </span>
+              <span className="flex-1 relative">{item.title}</span>
             </Link>
           );
         })}
@@ -199,20 +238,24 @@ const SidebarContent = ({ userRole, onLinkClick }: { userRole: UserRole; onLinkC
         </div> */}
 
         <a
-  href="https://rever-official.netlify.app"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="flex items-center justify-center gap-2 text-xs text-muted-foreground hover:underline"
->
-  <span className="font-normal">🛠️REVER ENGINEERING</span>
-</a>
-
+          href="https://rever-official.netlify.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 text-xs text-muted-foreground hover:underline"
+        >
+          <span className="font-normal">🛠️REVER ENGINEERING</span>
+        </a>
       </div>
     </>
   );
 };
 
-export function Sidebar({ userRole, open, onOpenChange, mobile }: SidebarProps) {
+export function Sidebar({
+  userRole,
+  open,
+  onOpenChange,
+  mobile,
+}: SidebarProps) {
   const handleLinkClick = () => {
     if (mobile && onOpenChange) {
       onOpenChange(false);
@@ -238,4 +281,3 @@ export function Sidebar({ userRole, open, onOpenChange, mobile }: SidebarProps) 
     </div>
   );
 }
-

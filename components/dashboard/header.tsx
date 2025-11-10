@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User, Settings, Bell, Search, Menu } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
@@ -75,7 +76,7 @@ export function Header({ user, onMenuClick }: HeaderProps) {
     <header className="glass-header sticky top-0 z-50 w-full">
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50/10 via-transparent to-purple-50/10 dark:from-blue-950/10 dark:via-transparent dark:to-purple-950/10 pointer-events-none" />
-      
+
       <div className="relative flex h-16 sm:h-20 items-center z-10">
         {/* Left side - Menu button (mobile) + Title with Image */}
         <div className="flex items-center gap-3 sm:gap-4 pl-4 sm:pl-6">
@@ -88,8 +89,11 @@ export function Header({ user, onMenuClick }: HeaderProps) {
           >
             <Menu className="h-5 w-5 text-foreground" />
           </Button>
-          
-          <Link href="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-opacity cursor-pointer">
+
+          <Link
+            href="/"
+            className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <div className="hidden sm:flex h-10 w-10 sm:h-12 sm:w-12 border-2 border-border/50 rounded-full overflow-hidden items-center justify-center bg-background flex-shrink-0">
               <Image
                 src="/images/Coat_of_arms_of_Malawi.svg.png"
@@ -103,20 +107,19 @@ export function Header({ user, onMenuClick }: HeaderProps) {
               <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
                 Wynberg Boys' High School
               </h1>
-               <div className="flex items-center gap-4">
-  <p className="text-sm text-muted-foreground/70 ">
-    {user.fullName}
-  </p>
-  <span
-    className={cn(
-      "text-xs px-2 py-0.5 rounded-full bg-gradient-to-r text-white font-medium",
-      getRoleColor(user.role)
-    )}
-  >
-    {getRoleDisplayName(user.role)}
-  </span>
-</div>
-
+              <div className="flex items-center gap-4">
+                <p className="text-sm text-muted-foreground/70 ">
+                  {user.fullName}
+                </p>
+                <span
+                  className={cn(
+                    "text-xs px-2 py-0.5 rounded-full bg-gradient-to-r text-white font-medium",
+                    getRoleColor(user.role)
+                  )}
+                >
+                  {getRoleDisplayName(user.role)}
+                </span>
+              </div>
             </div>
           </Link>
         </div>
@@ -156,10 +159,12 @@ export function Header({ user, onMenuClick }: HeaderProps) {
               >
                 <Avatar className="relative h-9 w-9 sm:h-12 sm:w-12 border-2 border-border group-hover:border-blue-500 transition-colors duration-300">
                   <AvatarImage src={user.avatar} alt={user.fullName} />
-                  <AvatarFallback className={cn(
-                    "bg-gradient-to-br text-white font-semibold text-xs sm:text-sm",
-                    getRoleColor(user.role)
-                  )}>
+                  <AvatarFallback
+                    className={cn(
+                      "bg-gradient-to-br text-white font-semibold text-xs sm:text-sm",
+                      getRoleColor(user.role)
+                    )}
+                  >
                     {getInitials(user.fullName)}
                   </AvatarFallback>
                 </Avatar>
@@ -174,10 +179,12 @@ export function Header({ user, onMenuClick }: HeaderProps) {
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12 border-2 border-border/50">
                     <AvatarImage src={user.avatar} alt={user.fullName} />
-                    <AvatarFallback className={cn(
-                      "bg-gradient-to-br text-white font-semibold",
-                      getRoleColor(user.role)
-                    )}>
+                    <AvatarFallback
+                      className={cn(
+                        "bg-gradient-to-br text-white font-semibold",
+                        getRoleColor(user.role)
+                      )}
+                    >
                       {getInitials(user.fullName)}
                     </AvatarFallback>
                   </Avatar>
@@ -189,10 +196,12 @@ export function Header({ user, onMenuClick }: HeaderProps) {
                       {user.email}
                     </p>
                     <div className="flex items-center gap-2 mt-2">
-                      <span className={cn(
-                        "text-xs px-2 py-0.5 rounded-full bg-gradient-to-r text-white font-medium",
-                        getRoleColor(user.role)
-                      )}>
+                      <span
+                        className={cn(
+                          "text-xs px-2 py-0.5 rounded-full bg-gradient-to-r text-white font-medium",
+                          getRoleColor(user.role)
+                        )}
+                      >
                         {getRoleDisplayName(user.role)}
                       </span>
                     </div>
@@ -204,7 +213,10 @@ export function Header({ user, onMenuClick }: HeaderProps) {
                 asChild
                 className="rounded-lg hover:bg-muted transition-colors cursor-pointer"
               >
-                <Link href="/dashboard/profile" className="flex items-center gap-3 p-2">
+                <Link
+                  href="/dashboard/profile"
+                  className="flex items-center gap-3 p-2"
+                >
                   <div className="p-1.5 rounded-lg bg-blue-500/10">
                     <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
@@ -234,5 +246,3 @@ export function Header({ user, onMenuClick }: HeaderProps) {
     </header>
   );
 }
-
-

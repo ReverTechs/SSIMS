@@ -44,30 +44,50 @@ export default function ManageTeachersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Manage Teachers</h1>
-        <p className="text-muted-foreground">
-          View and manage all teachers in the school
-        </p>
+      <div className="grid gap-4 md:grid-cols-3">
+        {[
+          {
+            label: "Total teachers",
+            value: "56",
+            description: "Active profiles in the system",
+          },
+          {
+            label: "Subject coverage",
+            value: "92%",
+            description: "Teachers with at least 2 subjects",
+          },
+          {
+            label: "Class coverage",
+            value: "88%",
+            description: "Classes assigned for next term",
+          },
+        ].map((item) => (
+          <Card key={item.label} className="border border-border/60 bg-card/60 backdrop-blur">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-xs uppercase tracking-wide text-muted-foreground">
+                {item.label}
+              </CardDescription>
+              <CardTitle className="text-3xl font-semibold">{item.value}</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <p className="text-sm text-muted-foreground">{item.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <CardTitle>All Teachers</CardTitle>
               <CardDescription>
-                Manage teacher accounts and permissions
+                Review teacher accounts, subject coverage, and quick actions.
               </CardDescription>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search teachers..."
-                  className="pl-8 w-64"
-                />
-              </div>
+            <div className="relative md:w-72">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search teachers..." className="pl-8" />
             </div>
           </div>
         </CardHeader>

@@ -26,6 +26,8 @@ const routeNameMap: Record<string, string> = {
   calendar: "Calendar",
   timetable: "Timetable",
   "manage-teachers": "Manage Teachers",
+  "assign-subjects": "Assign Subjects",
+  "assign-classes": "Assign Classes",
   "register-students": "Register Students",
   "register-teachers": "Register Teachers",
   passwords: "Passwords",

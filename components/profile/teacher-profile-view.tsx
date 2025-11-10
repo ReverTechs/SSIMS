@@ -141,41 +141,22 @@ export function TeacherProfileView({ teacher, open, onOpenChange }: TeacherProfi
         {/* Main Content Area - Scrollable */}
         <div className="flex-1 min-h-0 overflow-hidden px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
           <Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-            {/* Stunning Horizontal Tabs Navigation */}
+            {/* Tabs Navigation */}
             <div className="w-full mb-6 flex-shrink-0">
-              <div className="relative">
-                {/* Background with gradient */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-xl blur-xl"></div>
-                <TabsList className="relative flex flex-row h-auto w-full bg-gradient-to-r from-muted/50 via-muted/40 to-muted/50 backdrop-blur-sm p-1.5 gap-2 rounded-xl border border-border/50 shadow-lg">
-                  <TabsTrigger
-                    value="personal"
-                    className="group relative flex-1 justify-center gap-2 sm:gap-3 h-12 sm:h-14 px-4 sm:px-6 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:via-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/50 data-[state=active]:scale-[1.02] transition-all duration-300 text-sm sm:text-base font-semibold hover:bg-accent/50"
-                  >
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <User className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="relative z-10">Personal</span>
-                    <div className="absolute inset-0 rounded-lg ring-2 ring-blue-500/0 group-hover:ring-blue-500/30 transition-all duration-300"></div>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="teaching"
-                    className="group relative flex-1 justify-center gap-2 sm:gap-3 h-12 sm:h-14 px-4 sm:px-6 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:via-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:scale-[1.02] transition-all duration-300 text-sm sm:text-base font-semibold hover:bg-accent/50"
-                  >
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="relative z-10">Teaching</span>
-                    <div className="absolute inset-0 rounded-lg ring-2 ring-purple-500/0 group-hover:ring-purple-500/30 transition-all duration-300"></div>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="contact"
-                    className="group relative flex-1 justify-center gap-2 sm:gap-3 h-12 sm:h-14 px-4 sm:px-6 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:via-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-emerald-500/50 data-[state=active]:scale-[1.02] transition-all duration-300 text-sm sm:text-base font-semibold hover:bg-accent/50"
-                  >
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-emerald-500/20 to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <Phone className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="relative z-10">Contact</span>
-                    <div className="absolute inset-0 rounded-lg ring-2 ring-emerald-500/0 group-hover:ring-emerald-500/30 transition-all duration-300"></div>
-                  </TabsTrigger>
-                </TabsList>
-              </div>
+              <TabsList className="w-full">
+                <TabsTrigger value="personal" className="flex-1">
+                  <User className="h-4 w-4" />
+                  <span>Personal</span>
+                </TabsTrigger>
+                <TabsTrigger value="teaching" className="flex-1">
+                  <GraduationCap className="h-4 w-4" />
+                  <span>Teaching</span>
+                </TabsTrigger>
+                <TabsTrigger value="contact" className="flex-1">
+                  <Phone className="h-4 w-4" />
+                  <span>Contact</span>
+                </TabsTrigger>
+              </TabsList>
             </div>
 
             {/* Content Area - Full Width */}

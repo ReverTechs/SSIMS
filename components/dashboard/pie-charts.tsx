@@ -18,27 +18,70 @@ const teachersData = [
 
 const studentsChartConfig = {
   Boys: {
-    label: "Boys",
+    label: "Total Boys",
     color: "hsl(221.2 83.2% 53.3%)",
   },
   Girls: {
-    label: "Girls",
+    label: "Total Girls",
     color: "hsl(330.4 81.2% 60.4%)",
   },
 } satisfies ChartConfig;
 
 const teachersChartConfig = {
   Males: {
-    label: "Males",
+    label: "Total Males",
     color: "hsl(221.2 83.2% 53.3%)",
   },
   Females: {
-    label: "Females",
+    label: "Total Females",
     color: "hsl(330.4 81.2% 60.4%)",
   },
 } satisfies ChartConfig;
 
 export function PieCharts() {
+  // Custom legend content to show totals
+  const StudentsLegendContent = ({ payload }: any) => {
+    if (!payload?.length) return null;
+    return (
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3">
+        {payload.map((item: any) => {
+          const value = item.value;
+          const label = item.name === "Boys" ? `Total Boys: 78` : `Total Girls: 42`;
+          return (
+            <div key={item.value} className="flex items-center gap-1.5">
+              <div
+                className="h-2 w-2 shrink-0 rounded-[2px]"
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-xs sm:text-sm">{label}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const TeachersLegendContent = ({ payload }: any) => {
+    if (!payload?.length) return null;
+    return (
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3">
+        {payload.map((item: any) => {
+          const value = item.value;
+          const label = item.name === "Males" ? `Total Males: 15` : `Total Females: 10`;
+          return (
+            <div key={item.value} className="flex items-center gap-1.5">
+              <div
+                className="h-2 w-2 shrink-0 rounded-[2px]"
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-xs sm:text-sm">{label}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col sm:flex-row gap-3 w-full">
       {/* Students Pie Chart */}
@@ -46,18 +89,18 @@ export function PieCharts() {
         <CardHeader className="relative">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-base font-semibold mb-0.5">Students (360)</CardTitle>
+              <CardTitle className="text-sm sm:text-base font-semibold mb-0.5">Students (360)</CardTitle>
               <CardDescription className="text-xs">
                 Distribution by gender
               </CardDescription>
             </div>
             <div className="p-1.5 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
-              <Users className="h-4 w-4 text-white" />
+              <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
             </div>
           </div>
         </CardHeader>
         <CardContent className="relative">
-          <ChartContainer config={studentsChartConfig} className="h-[250px]">
+          <ChartContainer config={studentsChartConfig} className="h-[200px] sm:h-[250px]">
             <PieChart>
               <ChartTooltip
                 cursor={false}
@@ -74,8 +117,8 @@ export function PieCharts() {
                 ))}
               </Pie>
               <ChartLegend
-                content={<ChartLegendContent nameKey="name" />}
-                className="-bottom-6"
+                content={<StudentsLegendContent />}
+                className="-bottom-2 sm:-bottom-6"
               />
             </PieChart>
           </ChartContainer>
@@ -87,18 +130,18 @@ export function PieCharts() {
         <CardHeader className="relative">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-base font-semibold mb-0.5">Teachers (25)</CardTitle>
+              <CardTitle className="text-sm sm:text-base font-semibold mb-0.5">Teachers (25)</CardTitle>
               <CardDescription className="text-xs">
                 Distribution by gender
               </CardDescription>
             </div>
             <div className="p-1.5 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex-shrink-0">
-              <GraduationCap className="h-4 w-4 text-white" />
+              <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
             </div>
           </div>
         </CardHeader>
         <CardContent className="relative">
-          <ChartContainer config={teachersChartConfig} className="h-[250px]">
+          <ChartContainer config={teachersChartConfig} className="h-[200px] sm:h-[250px]">
             <PieChart>
               <ChartTooltip
                 cursor={false}
@@ -115,8 +158,8 @@ export function PieCharts() {
                 ))}
               </Pie>
               <ChartLegend
-                content={<ChartLegendContent nameKey="name" />}
-                className="-bottom-6"
+                content={<TeachersLegendContent />}
+                className="-bottom-2 sm:-bottom-6"
               />
             </PieChart>
           </ChartContainer>
