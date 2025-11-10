@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles, Users, GraduationCap, Building2 } from "lucide-react";
+import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles, Users, GraduationCap, Building2, School, UserCheck, BarChart3, AlertCircle, Shield, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { PieCharts } from "@/components/dashboard/pie-charts";
@@ -13,31 +13,32 @@ const greeting = getGreeting();
 export default async function DashboardPage() {
   const user = await getCurrentUser();
 
-  const defaultStats = [
+  // Headteacher stats - Administrative metrics
+  const headteacherStats = [
     {
-      title: "Average Grade",
-      value: "85%",
-      change: "+2.5%",
-      changeType: "positive",
-      icon: BookOpen,
+      title: "Total Students",
+      value: "1,245",
+      change: "Enrolled this year",
+      changeType: "neutral",
+      icon: Users,
       gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
       iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
       borderGradient: "border-blue-500/20",
     },
     {
-      title: "Fees Balance",
-      value: "MK 15,000",
-      change: "Due by end of month",
+      title: "Total Teachers",
+      value: "48",
+      change: "Active staff members",
       changeType: "neutral",
-      icon: DollarSign,
+      icon: GraduationCap,
       gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
       iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
       borderGradient: "border-emerald-500/20",
     },
     {
-      title: "Reports",
-      value: "3",
-      change: "Available for download",
+      title: "Pending Reports",
+      value: "12",
+      change: "Require review",
       changeType: "neutral",
       icon: FileText,
       gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
@@ -45,9 +46,9 @@ export default async function DashboardPage() {
       borderGradient: "border-amber-500/20",
     },
     {
-      title: "Progress",
-      value: "Improving",
-      change: "Across all subjects",
+      title: "School Performance",
+      value: "87%",
+      change: "Overall pass rate",
       changeType: "positive",
       icon: TrendingUp,
       gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
@@ -56,6 +57,51 @@ export default async function DashboardPage() {
     },
   ];
 
+  // Deputy Headteacher stats - Similar to headteacher but with different focus
+  const deputyHeadteacherStats = [
+    {
+      title: "Student Enrollment",
+      value: "1,245",
+      change: "Current academic year",
+      changeType: "neutral",
+      icon: Users,
+      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
+      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
+      borderGradient: "border-blue-500/20",
+    },
+    {
+      title: "Teaching Staff",
+      value: "48",
+      change: "Active teachers",
+      changeType: "neutral",
+      icon: GraduationCap,
+      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
+      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
+      borderGradient: "border-emerald-500/20",
+    },
+    {
+      title: "Reports to Review",
+      value: "8",
+      change: "Awaiting approval",
+      changeType: "neutral",
+      icon: FileText,
+      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
+      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+      borderGradient: "border-amber-500/20",
+    },
+    {
+      title: "Academic Progress",
+      value: "85%",
+      change: "Average performance",
+      changeType: "positive",
+      icon: BarChart3,
+      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
+      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
+      borderGradient: "border-pink-500/20",
+    },
+  ];
+
+  // Teacher stats
   const teacherStats = [
     {
       title: "Subjects Teaching",
@@ -99,7 +145,159 @@ export default async function DashboardPage() {
     },
   ];
 
-  const stats = user?.role === "teacher" ? teacherStats : defaultStats;
+  // Student stats
+  const studentStats = [
+    {
+      title: "Average Grade",
+      value: "85%",
+      change: "+2.5%",
+      changeType: "positive",
+      icon: BookOpen,
+      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
+      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
+      borderGradient: "border-blue-500/20",
+    },
+    {
+      title: "Fees Balance",
+      value: "MK 15,000",
+      change: "Due by end of month",
+      changeType: "neutral",
+      icon: DollarSign,
+      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
+      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
+      borderGradient: "border-emerald-500/20",
+    },
+    {
+      title: "Reports",
+      value: "3",
+      change: "Available for download",
+      changeType: "neutral",
+      icon: FileText,
+      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
+      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+      borderGradient: "border-amber-500/20",
+    },
+    {
+      title: "Progress",
+      value: "Improving",
+      change: "Across all subjects",
+      changeType: "positive",
+      icon: TrendingUp,
+      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
+      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
+      borderGradient: "border-pink-500/20",
+    },
+  ];
+
+  // Guardian stats
+  const guardianStats = [
+    {
+      title: "Children Enrolled",
+      value: "2",
+      change: "Active students",
+      changeType: "neutral",
+      icon: Users,
+      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
+      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
+      borderGradient: "border-blue-500/20",
+    },
+    {
+      title: "Total Fees Due",
+      value: "MK 30,000",
+      change: "Outstanding balance",
+      changeType: "neutral",
+      icon: DollarSign,
+      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
+      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
+      borderGradient: "border-emerald-500/20",
+    },
+    {
+      title: "Reports Available",
+      value: "6",
+      change: "Ready for download",
+      changeType: "neutral",
+      icon: FileText,
+      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
+      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+      borderGradient: "border-amber-500/20",
+    },
+    {
+      title: "Average Performance",
+      value: "82%",
+      change: "Children's grades",
+      changeType: "positive",
+      icon: TrendingUp,
+      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
+      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
+      borderGradient: "border-pink-500/20",
+    },
+  ];
+
+  // Admin stats
+  const adminStats = [
+    {
+      title: "System Users",
+      value: "1,350",
+      change: "Total registered",
+      changeType: "neutral",
+      icon: Users,
+      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
+      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
+      borderGradient: "border-blue-500/20",
+    },
+    {
+      title: "Active Sessions",
+      value: "245",
+      change: "Currently online",
+      changeType: "neutral",
+      icon: UserCheck,
+      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
+      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
+      borderGradient: "border-emerald-500/20",
+    },
+    {
+      title: "System Alerts",
+      value: "3",
+      change: "Require attention",
+      changeType: "neutral",
+      icon: AlertCircle,
+      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
+      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+      borderGradient: "border-amber-500/20",
+    },
+    {
+      title: "System Health",
+      value: "98%",
+      change: "All systems operational",
+      changeType: "positive",
+      icon: Shield,
+      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
+      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
+      borderGradient: "border-pink-500/20",
+    },
+  ];
+
+  // Select stats based on user role
+  const getStatsForRole = (role: string | undefined) => {
+    switch (role) {
+      case "headteacher":
+        return headteacherStats;
+      case "deputy_headteacher":
+        return deputyHeadteacherStats;
+      case "teacher":
+        return teacherStats;
+      case "student":
+        return studentStats;
+      case "guardian":
+        return guardianStats;
+      case "admin":
+        return adminStats;
+      default:
+        return studentStats; // Default to student stats
+    }
+  };
+
+  const stats = getStatsForRole(user?.role);
 
   const events = [
     {
@@ -167,11 +365,19 @@ export default async function DashboardPage() {
                   <div className="flex items-center gap-3 mb-2">
                     <h2 className="text-2xl font-semibold tracking-tight">{user?.fullName ?? "Guest"}</h2>
                   </div>
-                  {user?.role === "teacher" && (
+                  {(user?.role === "teacher" || 
+                    user?.role === "headteacher" || 
+                    user?.role === "deputy_headteacher") && (
                     <div className="flex items-center gap-4 flex-wrap">
                       <div className="flex items-center gap-2 text-sm">
                         <Building2 className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium text-muted-foreground">Sciences</span>
+                        <span className="font-medium text-muted-foreground">
+                          {user?.role === "headteacher" 
+                            ? "Administration" 
+                            : user?.role === "deputy_headteacher"
+                            ? "Administration"
+                            : "Sciences"}
+                        </span>
                       </div>
                     </div>
                   )}

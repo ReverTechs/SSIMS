@@ -73,7 +73,7 @@ export function Header({ user, onMenuClick }: HeaderProps) {
   };
 
   return (
-    <header className="glass-header sticky top-0 z-50 w-full">
+    <header className="sticky top-0 z-50 w-full bg-white/10 dark:bg-black/10 backdrop-blur-md border-b border-white/10 shadow-sm">
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50/10 via-transparent to-purple-50/10 dark:from-blue-950/10 dark:via-transparent dark:to-purple-950/10 pointer-events-none" />
 

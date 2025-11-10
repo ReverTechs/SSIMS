@@ -3,17 +3,43 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Users, BookOpen, Shield, Calendar, FileText } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  GraduationCap,
+  Users,
+  BookOpen,
+  Shield,
+  Calendar,
+  FileText,
+} from "lucide-react";
 
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
+      {/* <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
         <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm">
           <div className="flex gap-5 items-center font-semibold">
             <Link href={"/"} className="text-xl font-bold">
-              Malawi Secondaly School IMS
+              Malawi Secondary School IMS
+            </Link>
+          </div>
+          <div className="flex items-center gap-4">
+            {hasEnvVars && <AuthButton />}
+            <ThemeSwitcher />
+          </div>
+        </div>
+      </nav> */}
+      <nav className="w-full flex justify-center h-16 border-b border-white/10 bg-white/10 backdrop-blur-md shadow-sm">
+        <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm">
+          <div className="flex gap-5 items-center font-semibold">
+            <Link href={"/"} className="text-xl font-bold">
+              Malawi Secondary School IMS
             </Link>
           </div>
           <div className="flex items-center gap-4">

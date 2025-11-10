@@ -16,12 +16,58 @@ import {
   TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { GuardianGradesView } from "@/components/guardian/guardian-grades-view";
+import { createClient } from "@/lib/supabase/server";
 
-export default async function GradesPage() {
+// Mock function to fetch guardian's children
+// In production, replace this with actual database query
+async function getGuardianChildren(guardianId: string) {
+  // TODO: Replace with actual database query
+  // Example query structure:
+  // const supabase = await createClient();
+  // const { data } = await supabase
+  //   .from('students')
+  //   .select('id, name, class, student_id, guardian_id')
+  //   .eq('guardian_id', guardianId);
+  // return data || [];
+
+  // Mock data for demonstration
+  return [
+    {
+      id: "STU2024001",
+      name: "John Doe",
+      class: "Form 4A",
+      studentId: "STU2024001",
+      averageGrade: 87.7,
+      grade: "A",
+    },
+    {
+      id: "STU2024002",
+      name: "Jane Doe",
+      class: "Form 3B",
+      studentId: "STU2024002",
+      averageGrade: 82.3,
+      grade: "A-",
+    },
+  ];
+}
+
+export default async function GradesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ child?: string }>;
+}) {
   const user = await getCurrentUser();
+  const params = await searchParams;
   
   if (!user) {
     redirect("/auth/login");
+  }
+
+  // For guardians, show child selection and grades
+  if (user.role === "guardian") {
+    const children = await getGuardianChildren(user.id);
+    return <GuardianGradesView children={children} />;
   }
 
   // For teachers, show grade management

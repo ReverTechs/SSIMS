@@ -1,10 +1,11 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useBreadcrumb } from "./breadcrumb-context";
 
 // Map route segments to display names
 const routeNameMap: Record<string, string> = {
@@ -55,7 +56,11 @@ const teacherNames: Record<string, string> = {
 
 export function Breadcrumb() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [dynamicName, setDynamicName] = useState<string | null>(null);
+  
+  // Get dynamic breadcrumb name from context (for query param-based routes)
+  const { dynamicBreadcrumbName: contextName } = useBreadcrumb();
   
   // Split pathname into segments and filter out empty strings
   const pathSegments = pathname.split("/").filter(Boolean);
@@ -76,6 +81,10 @@ export function Breadcrumb() {
       setDynamicName(null);
     }
   }, [pathname]);
+  
+  // Check for query parameter-based dynamic names (e.g., /dashboard/grades?child=STU2024001)
+  const childParam = searchParams.get("child");
+  const isGradesPage = pathname === "/dashboard/grades";
   
   // Build breadcrumb items (skip the dashboard segment as we show Home separately)
   const filteredSegments = pathSegments.filter((segment) => segment !== "dashboard");
@@ -103,6 +112,22 @@ export function Breadcrumb() {
       isLast,
     };
   });
+  
+  // If we're on the grades page with a child query param, add the child name to breadcrumb
+  if (isGradesPage && childParam && contextName) {
+    // Make the "Grades" item clickable (link back to grades page without child param)
+    const gradesItemIndex = breadcrumbItems.findIndex(item => item.label === "Grades");
+    if (gradesItemIndex !== -1) {
+      breadcrumbItems[gradesItemIndex].href = "/dashboard/grades";
+      breadcrumbItems[gradesItemIndex].isLast = false;
+    }
+    // Add child name as the last breadcrumb item
+    breadcrumbItems.push({
+      href: pathname + "?child=" + childParam,
+      label: contextName,
+      isLast: true,
+    });
+  }
 
   // Don't show breadcrumb if we're on the home page
   if (pathname === "/dashboard" || pathname === "/dashboard/") {
