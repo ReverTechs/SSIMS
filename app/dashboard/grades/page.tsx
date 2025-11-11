@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GuardianGradesView } from "@/components/guardian/guardian-grades-view";
+import { hasPermission } from "@/lib/auth/authz";
 import { createClient } from "@/lib/supabase/server";
 
 // Mock function to fetch guardian's children
@@ -64,14 +65,14 @@ export default async function GradesPage({
     redirect("/auth/login");
   }
 
-  // For guardians, show child selection and grades
-  if (user.role === "guardian") {
+  // For guardians (or roles with capability), show child selection and grades
+  if (hasPermission(user, "grades:view_children")) {
     const children = await getGuardianChildren(user.id);
     return <GuardianGradesView children={children} />;
   }
 
-  // For teachers, show grade management
-  if (user.role === "teacher") {
+  // For teachers (or roles with capability), show grade management
+  if (hasPermission(user, "grades:manage")) {
     const gradeFeatures = [
       {
         title: "Upload Grades",
@@ -189,7 +190,7 @@ export default async function GradesPage({
     );
   }
 
-  // For students and guardians, show the student view
+  // For students (or any role without manage/view_children), show the student view
   const grades = [
     {
       subject: "Mathematics",

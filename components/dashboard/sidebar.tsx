@@ -49,7 +49,14 @@ const navItems: NavItem[] = [
     title: "Grades",
     href: "/dashboard/grades",
     icon: BookOpen,
-    roles: ["student", "teacher", "guardian"],
+    roles: [
+      "student",
+      "teacher",
+      "guardian",
+      "headteacher",
+      "deputy_headteacher",
+      "admin",
+    ],
   },
   // {
   //   title: "Enter Grades",

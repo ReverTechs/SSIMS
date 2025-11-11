@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { redirect } from "next/navigation";
-import { UserRole } from "@/types";
+import { hasPermission } from "@/lib/auth/authz";
 import Link from "next/link";
 import { StaffRolesContent } from "./staff-roles-content";
 
@@ -13,14 +13,7 @@ export default async function StaffRolesPage() {
     redirect("/auth/login");
   }
 
-  // Define roles that can edit positions
-  const canEditPositions: UserRole[] = [
-    "headteacher",
-    "deputy_headteacher",
-    "admin",
-  ];
-
-  const hasEditPermission = canEditPositions.includes(user.role);
+  const hasEditPermission = hasPermission(user, "council:edit");
 
   return (
     <div className="space-y-6 animate-fade-in-up opacity-0" style={{ animationDelay: "100ms" }}>

@@ -1,303 +1,24 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, DollarSign, FileText, TrendingUp, Calendar, Clock, ArrowRight, Sparkles, Users, GraduationCap, Building2, School, UserCheck, BarChart3, AlertCircle, Shield, Eye } from "lucide-react";
+import { Calendar, Clock, ArrowRight, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { PieCharts } from "@/components/dashboard/pie-charts";
 import { AttendanceBarChart } from "@/components/dashboard/attendance-bar-chart";
 import { getGreeting } from "@/utils/getGreeting";
+import { getPermissionsForRole } from "@/lib/auth/permissions";
+import { statsRegistry } from "@/lib/dashboard/widgets";
 
 const greeting = getGreeting();
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
-
-  // Headteacher stats - Administrative metrics
-  const headteacherStats = [
-    {
-      title: "Total Students",
-      value: "1,245",
-      change: "Enrolled this year",
-      changeType: "neutral",
-      icon: Users,
-      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
-      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
-      borderGradient: "border-blue-500/20",
-    },
-    {
-      title: "Total Teachers",
-      value: "48",
-      change: "Active staff members",
-      changeType: "neutral",
-      icon: GraduationCap,
-      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
-      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-      borderGradient: "border-emerald-500/20",
-    },
-    {
-      title: "Pending Reports",
-      value: "12",
-      change: "Require review",
-      changeType: "neutral",
-      icon: FileText,
-      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
-      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-      borderGradient: "border-amber-500/20",
-    },
-    {
-      title: "School Performance",
-      value: "87%",
-      change: "Overall pass rate",
-      changeType: "positive",
-      icon: TrendingUp,
-      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
-      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
-      borderGradient: "border-pink-500/20",
-    },
-  ];
-
-  // Deputy Headteacher stats - Similar to headteacher but with different focus
-  const deputyHeadteacherStats = [
-    {
-      title: "Student Enrollment",
-      value: "1,245",
-      change: "Current academic year",
-      changeType: "neutral",
-      icon: Users,
-      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
-      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
-      borderGradient: "border-blue-500/20",
-    },
-    {
-      title: "Teaching Staff",
-      value: "48",
-      change: "Active teachers",
-      changeType: "neutral",
-      icon: GraduationCap,
-      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
-      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-      borderGradient: "border-emerald-500/20",
-    },
-    {
-      title: "Reports to Review",
-      value: "8",
-      change: "Awaiting approval",
-      changeType: "neutral",
-      icon: FileText,
-      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
-      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-      borderGradient: "border-amber-500/20",
-    },
-    {
-      title: "Academic Progress",
-      value: "85%",
-      change: "Average performance",
-      changeType: "positive",
-      icon: BarChart3,
-      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
-      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
-      borderGradient: "border-pink-500/20",
-    },
-  ];
-
-  // Teacher stats
-  const teacherStats = [
-    {
-      title: "Subjects Teaching",
-      value: "4",
-      change: "Across all classes",
-      changeType: "neutral",
-      icon: GraduationCap,
-      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
-      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
-      borderGradient: "border-blue-500/20",
-    },
-    {
-      title: "Registered Students",
-      value: "120",
-      change: "Current academic year",
-      changeType: "neutral",
-      icon: Users,
-      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
-      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-      borderGradient: "border-emerald-500/20",
-    },
-    {
-      title: "Reports",
-      value: "8",
-      change: "Ready for submission",
-      changeType: "neutral",
-      icon: FileText,
-      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
-      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-      borderGradient: "border-amber-500/20",
-    },
-    {
-      title: "Teaching Progress",
-      value: "On Track",
-      change: "85% syllabus coverage",
-      changeType: "positive",
-      icon: TrendingUp,
-      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
-      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
-      borderGradient: "border-pink-500/20",
-    },
-  ];
-
-  // Student stats
-  const studentStats = [
-    {
-      title: "Average Grade",
-      value: "85%",
-      change: "+2.5%",
-      changeType: "positive",
-      icon: BookOpen,
-      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
-      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
-      borderGradient: "border-blue-500/20",
-    },
-    {
-      title: "Fees Balance",
-      value: "MK 15,000",
-      change: "Due by end of month",
-      changeType: "neutral",
-      icon: DollarSign,
-      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
-      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-      borderGradient: "border-emerald-500/20",
-    },
-    {
-      title: "Reports",
-      value: "3",
-      change: "Available for download",
-      changeType: "neutral",
-      icon: FileText,
-      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
-      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-      borderGradient: "border-amber-500/20",
-    },
-    {
-      title: "Progress",
-      value: "Improving",
-      change: "Across all subjects",
-      changeType: "positive",
-      icon: TrendingUp,
-      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
-      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
-      borderGradient: "border-pink-500/20",
-    },
-  ];
-
-  // Guardian stats
-  const guardianStats = [
-    {
-      title: "Children Enrolled",
-      value: "2",
-      change: "Active students",
-      changeType: "neutral",
-      icon: Users,
-      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
-      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
-      borderGradient: "border-blue-500/20",
-    },
-    {
-      title: "Total Fees Due",
-      value: "MK 30,000",
-      change: "Outstanding balance",
-      changeType: "neutral",
-      icon: DollarSign,
-      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
-      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-      borderGradient: "border-emerald-500/20",
-    },
-    {
-      title: "Reports Available",
-      value: "6",
-      change: "Ready for download",
-      changeType: "neutral",
-      icon: FileText,
-      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
-      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-      borderGradient: "border-amber-500/20",
-    },
-    {
-      title: "Average Performance",
-      value: "82%",
-      change: "Children's grades",
-      changeType: "positive",
-      icon: TrendingUp,
-      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
-      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
-      borderGradient: "border-pink-500/20",
-    },
-  ];
-
-  // Admin stats
-  const adminStats = [
-    {
-      title: "System Users",
-      value: "1,350",
-      change: "Total registered",
-      changeType: "neutral",
-      icon: Users,
-      gradient: "from-blue-500/20 via-blue-600/20 to-purple-600/20",
-      iconBg: "bg-gradient-to-br from-blue-500 to-purple-600",
-      borderGradient: "border-blue-500/20",
-    },
-    {
-      title: "Active Sessions",
-      value: "245",
-      change: "Currently online",
-      changeType: "neutral",
-      icon: UserCheck,
-      gradient: "from-emerald-500/20 via-emerald-600/20 to-teal-600/20",
-      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-      borderGradient: "border-emerald-500/20",
-    },
-    {
-      title: "System Alerts",
-      value: "3",
-      change: "Require attention",
-      changeType: "neutral",
-      icon: AlertCircle,
-      gradient: "from-amber-500/20 via-amber-600/20 to-orange-600/20",
-      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-      borderGradient: "border-amber-500/20",
-    },
-    {
-      title: "System Health",
-      value: "98%",
-      change: "All systems operational",
-      changeType: "positive",
-      icon: Shield,
-      gradient: "from-pink-500/20 via-pink-600/20 to-rose-600/20",
-      iconBg: "bg-gradient-to-br from-pink-500 to-rose-600",
-      borderGradient: "border-pink-500/20",
-    },
-  ];
-
-  // Select stats based on user role
-  const getStatsForRole = (role: string | undefined) => {
-    switch (role) {
-      case "headteacher":
-        return headteacherStats;
-      case "deputy_headteacher":
-        return deputyHeadteacherStats;
-      case "teacher":
-        return teacherStats;
-      case "student":
-        return studentStats;
-      case "guardian":
-        return guardianStats;
-      case "admin":
-        return adminStats;
-      default:
-        return studentStats; // Default to student stats
-    }
-  };
-
-  const stats = getStatsForRole(user?.role);
+  const permissions = user ? Array.from(getPermissionsForRole(user.role)) : [];
+  const stats = permissions
+    .filter((p) => p.startsWith("stats:"))
+    .flatMap((p) => statsRegistry[p as keyof typeof statsRegistry] ?? []);
+  const effectiveStats = stats.length > 0 ? stats : (statsRegistry["stats:student:view"] ?? []);
 
   const events = [
     {
@@ -422,7 +143,7 @@ export default async function DashboardPage() {
 
           {/* Stats Grid */}
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat, index) => {
+            {effectiveStats.map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <div

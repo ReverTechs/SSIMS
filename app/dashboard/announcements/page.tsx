@@ -4,7 +4,7 @@ import { Bell, Clock } from "lucide-react";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { redirect } from "next/navigation";
 import { CreateAnnouncementDialog } from "@/components/announcements/create-announcement-dialog";
-import { UserRole } from "@/types";
+import { hasPermission } from "@/lib/auth/authz";
 
 export default async function AnnouncementsPage() {
   const user = await getCurrentUser();
@@ -13,15 +13,7 @@ export default async function AnnouncementsPage() {
     redirect("/auth/login");
   }
 
-  // Define roles that can create announcements
-  const canCreateAnnouncements: UserRole[] = [
-    "teacher",
-    "headteacher",
-    "deputy_headteacher",
-    "admin",
-  ];
-
-  const hasCreatePermission = canCreateAnnouncements.includes(user.role);
+  const hasCreatePermission = hasPermission(user, "announcements:create");
   const announcements = [
     {
       id: "1",
