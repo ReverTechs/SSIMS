@@ -2,6 +2,7 @@ import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,12 +37,27 @@ export default function Home() {
         </div>
       </nav> */}
       <nav className="w-full flex justify-center h-16 border-b border-white/10 bg-white/10 backdrop-blur-md shadow-sm">
-        <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm">
-          <div className="flex gap-5 items-center font-semibold">
-            <Link href={"/"} className="text-xl font-bold">
+        <div className="w-full max-w-7xl flex justify-between items-center px-4 sm:px-6 text-sm">
+          {/* Logo + Title */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="h-10 w-10 sm:h-10 sm:w-10 border border-border/50 rounded-full overflow-hidden flex items-center justify-center bg-background">
+              <Image
+                src="/images/Coat_of_arms_of_Malawi.svg.png"
+                alt="Coat of Arms of Malawi"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+            </div>
+            <Link
+              href="/"
+              className="text-base sm:text-lg font-bold leading-tight"
+            >
               Malawi Secondary School IMS
             </Link>
           </div>
+
+          {/* Right-side actions */}
           <div className="flex items-center gap-4">
             {hasEnvVars && <AuthButton />}
             <ThemeSwitcher />
@@ -182,7 +198,7 @@ export default function Home() {
 
       <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
         <p className="text-muted-foreground">
-          © 2024 Malawi Secondary School Information Management System. All
+          © 2025 Malawi Secondary School Information Management System. All
           rights reserved.
         </p>
       </footer>

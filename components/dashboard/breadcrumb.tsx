@@ -32,45 +32,50 @@ const routeNameMap: Record<string, string> = {
   "register-students": "Register Students",
   "register-teachers": "Register Teachers",
   passwords: "Passwords",
+  "school-council": "School Council",
+  "staff-roles": "Staff Roles",
+  "student-council": "Student Council",
 };
 
 // Mock data for student/teacher names - in production, this would come from an API
 const studentNames: Record<string, string> = {
-  "STU2024001": "John Doe",
-  "STU2024002": "Jane Smith",
-  "STU2024003": "Peter Banda",
-  "STU2024004": "Mary Mwale",
-  "STU2024005": "David Phiri",
-  "STU2024006": "Grace Jere",
+  STU2024001: "John Doe",
+  STU2024002: "Jane Smith",
+  STU2024003: "Peter Banda",
+  STU2024004: "Mary Mwale",
+  STU2024005: "David Phiri",
+  STU2024006: "Grace Jere",
 };
 
 const teacherNames: Record<string, string> = {
-  "T001": "Mr. Banda",
-  "T002": "Mrs. Mwale",
-  "T003": "Mr. Phiri",
-  "T004": "Mrs. Kachale",
-  "T005": "Mr. Mbewe",
-  "T006": "Mr. Jere",
-  "T007": "Mrs. Tembo",
+  T001: "Mr. Banda",
+  T002: "Mrs. Mwale",
+  T003: "Mr. Phiri",
+  T004: "Mrs. Kachale",
+  T005: "Mr. Mbewe",
+  T006: "Mr. Jere",
+  T007: "Mrs. Tembo",
 };
 
 export function Breadcrumb() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [dynamicName, setDynamicName] = useState<string | null>(null);
-  
+
   // Get dynamic breadcrumb name from context (for query param-based routes)
   const { dynamicBreadcrumbName: contextName } = useBreadcrumb();
-  
+
   // Split pathname into segments and filter out empty strings
   const pathSegments = pathname.split("/").filter(Boolean);
-  
+
   // Check if we're on a dynamic route (students/[id] or teachers/[id])
   useEffect(() => {
     const segments = pathname.split("/").filter(Boolean);
-    const isStudentRoute = segments[0] === "dashboard" && segments[1] === "students" && segments[2];
-    const isTeacherRoute = segments[0] === "dashboard" && segments[1] === "teachers" && segments[2];
-    
+    const isStudentRoute =
+      segments[0] === "dashboard" && segments[1] === "students" && segments[2];
+    const isTeacherRoute =
+      segments[0] === "dashboard" && segments[1] === "teachers" && segments[2];
+
     if (isStudentRoute && segments[2]) {
       const studentId = segments[2];
       setDynamicName(studentNames[studentId] || studentId);
@@ -81,20 +86,24 @@ export function Breadcrumb() {
       setDynamicName(null);
     }
   }, [pathname]);
-  
+
   // Check for query parameter-based dynamic names (e.g., /dashboard/grades?child=STU2024001)
   const childParam = searchParams.get("child");
   const isGradesPage = pathname === "/dashboard/grades";
-  
+
   // Build breadcrumb items (skip the dashboard segment as we show Home separately)
-  const filteredSegments = pathSegments.filter((segment) => segment !== "dashboard");
+  const filteredSegments = pathSegments.filter(
+    (segment) => segment !== "dashboard"
+  );
   const breadcrumbItems = filteredSegments.map((segment, index) => {
     const segmentIndex = pathSegments.indexOf(segment);
     const href = "/" + pathSegments.slice(0, segmentIndex + 1).join("/");
-    
+
     // Check if this is a dynamic segment (ID) and we have a name for it
-    let label = routeNameMap[segment] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
-    
+    let label =
+      routeNameMap[segment] ||
+      segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+
     // If this is the last segment and we have a dynamic name, use it
     if (index === filteredSegments.length - 1 && dynamicName) {
       // Check if the previous segment is "students" or "teachers"
@@ -103,20 +112,22 @@ export function Breadcrumb() {
         label = dynamicName;
       }
     }
-    
+
     const isLast = index === filteredSegments.length - 1;
-    
+
     return {
       href,
       label,
       isLast,
     };
   });
-  
+
   // If we're on the grades page with a child query param, add the child name to breadcrumb
   if (isGradesPage && childParam && contextName) {
     // Make the "Grades" item clickable (link back to grades page without child param)
-    const gradesItemIndex = breadcrumbItems.findIndex(item => item.label === "Grades");
+    const gradesItemIndex = breadcrumbItems.findIndex(
+      (item) => item.label === "Grades"
+    );
     if (gradesItemIndex !== -1) {
       breadcrumbItems[gradesItemIndex].href = "/dashboard/grades";
       breadcrumbItems[gradesItemIndex].isLast = false;
@@ -178,4 +189,3 @@ export function Breadcrumb() {
     </nav>
   );
 }
-

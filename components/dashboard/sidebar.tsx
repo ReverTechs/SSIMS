@@ -19,6 +19,7 @@ import {
   AlertCircle,
   Key,
   School,
+  Building2,
 } from "lucide-react";
 import { UserRole } from "@/types";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
@@ -134,6 +135,19 @@ const navItems: NavItem[] = [
     href: "/dashboard/teachers",
     icon: School,
     roles: ["teacher", "headteacher", "deputy_headteacher"],
+  },
+  {
+    title: "School Council",
+    href: "/dashboard/school-council",
+    icon: Building2,
+    roles: [
+      "student",
+      "teacher",
+      "headteacher",
+      "deputy_headteacher",
+      "guardian",
+      "admin",
+    ],
   },
   {
     title: "Manage Teachers",
