@@ -35,7 +35,7 @@ interface GuardianGradesViewProps {
 }
 
 // Mock function to get grades - replace with actual database query
-const getMockGrades = (childId: string): Grade[] => {
+const getMockGrades = async (childId: string): Promise<Grade[]> => {
   // Different grades for different children for demo purposes
   const gradeSets: Record<string, Grade[]> = {
     default: [

@@ -20,6 +20,7 @@ import {
   Key,
   School,
   Building2,
+  Info,
 } from "lucide-react";
 import { UserRole } from "@/types";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
@@ -71,7 +72,7 @@ const navItems: NavItem[] = [
     roles: ["student"],
   },
   {
-    title: "Reports",
+    title: "School Reports",
     href: "/dashboard/reports",
     icon: FileText,
     roles: ["student", "teacher", "guardian"],
@@ -147,6 +148,19 @@ const navItems: NavItem[] = [
     title: "School Council",
     href: "/dashboard/school-council",
     icon: Building2,
+    roles: [
+      "student",
+      "teacher",
+      "headteacher",
+      "deputy_headteacher",
+      "guardian",
+      "admin",
+    ],
+  },
+  {
+    title: "About",
+    href: "/dashboard/about",
+    icon: Info,
     roles: [
       "student",
       "teacher",
