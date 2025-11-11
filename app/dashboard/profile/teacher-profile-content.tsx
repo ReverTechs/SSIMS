@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   User,
   Mail,
@@ -56,6 +57,10 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [securityDialogOpen, setSecurityDialogOpen] = useState(false);
+  const [hasVerifiedCredentials, setHasVerifiedCredentials] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [email, setEmail] = useState(user.email);
 
   const getInitials = (name: string) => {
     return name
@@ -93,12 +98,35 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
       setSuccess("Password updated successfully!");
       setNewPassword("");
       setConfirmPassword("");
+      setCurrentPassword("");
       
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    try {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: currentPassword,
+      });
+      if (signInError) {
+        throw new Error("Current credentials are incorrect");
+      }
+      setHasVerifiedCredentials(true);
+      setSecurityDialogOpen(false);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -148,7 +176,16 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
       </Card>
 
       {/* Windows 11 Settings Style Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={(val) => {
+          setActiveTab(val);
+          if (val === "security" && !hasVerifiedCredentials) {
+            setSecurityDialogOpen(true);
+          }
+        }}
+        className="w-full"
+      >
         {/* Tabs Navigation - Horizontal Row on All Screen Sizes */}
         <div className="w-full mb-6">
           <TabsList className="flex flex-row h-auto w-full bg-muted/30 p-1.5 gap-1.5 rounded-lg border overflow-x-auto">
@@ -388,7 +425,7 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
               </Card>
             </TabsContent>
 
-            {/* Security Tab */}
+            {/* Security Tab - gated by credentials dialog */}
             <TabsContent value="security" className="mt-0 space-y-6">
               <Card className="border bg-card">
                 <CardHeader>
@@ -398,9 +435,7 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
                     </div>
                     <div>
                       <CardTitle className="text-xl">Security & Password</CardTitle>
-                      <CardDescription>
-                        Update your password to keep your account secure
-                      </CardDescription>
+                      <CardDescription>Update your password to keep your account secure</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -419,64 +454,130 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
                       </AlertDescription>
                     </Alert>
                   )}
-                  <form onSubmit={handlePasswordUpdate} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="new-password" className="flex items-center gap-2">
-                        <Lock className="h-3.5 w-3.5" />
-                        New Password
-                      </Label>
-                      <Input
-                        id="new-password"
-                        type="password"
-                        placeholder="Enter new password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                        className="max-w-md"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Password must be at least 6 characters long
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirm-password" className="flex items-center gap-2">
-                        <Lock className="h-3.5 w-3.5" />
-                        Confirm New Password
-                      </Label>
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        placeholder="Confirm new password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        className="max-w-md"
-                      />
-                    </div>
-                    <Separator />
-                    <div className="flex items-center gap-3">
-                      <Button type="submit" disabled={isLoading}>
-                        {isLoading ? "Updating..." : "Update Password"}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          setNewPassword("");
-                          setConfirmPassword("");
-                          setError(null);
-                          setSuccess(null);
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </form>
+                  {hasVerifiedCredentials ? (
+                    <form onSubmit={handlePasswordUpdate} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="new-password" className="flex items-center gap-2">
+                          <Lock className="h-3.5 w-3.5" />
+                          New Password
+                        </Label>
+                        <Input
+                          id="new-password"
+                          type="password"
+                          placeholder="Enter new password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          required
+                          className="max-w-md"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Password must be at least 6 characters long
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="confirm-password" className="flex items-center gap-2">
+                          <Lock className="h-3.5 w-3.5" />
+                          Confirm New Password
+                        </Label>
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          placeholder="Confirm new password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                          className="max-w-md"
+                        />
+                      </div>
+                      <Separator />
+                      <div className="flex items-center gap-3">
+                        <Button type="submit" disabled={isLoading}>
+                          {isLoading ? "Updating..." : "Update Password"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setNewPassword("");
+                            setConfirmPassword("");
+                            setError(null);
+                            setSuccess(null);
+                            setHasVerifiedCredentials(false);
+                            setSecurityDialogOpen(true);
+                          }}
+                        >
+                          Start Over
+                        </Button>
+                      </div>
+                    </form>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Please verify your credentials to update your password.</p>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
         </div>
       </Tabs>
+      <Dialog open={securityDialogOpen} onOpenChange={setSecurityDialogOpen}>
+        <DialogContent className="rounded-2xl sm:rounded-2xl md:rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Verify your credentials</DialogTitle>
+            <DialogDescription>
+              Enter your current credentials to access password settings.
+            </DialogDescription>
+          </DialogHeader>
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          <form onSubmit={handleVerifyCredentials} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="verify-email">Email</Label>
+              <Input
+                id="verify-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="max-w-md"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="verify-current-password">Current Password</Label>
+              <Input
+                id="verify-current-password"
+                type="password"
+                placeholder="Enter current password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+                className="max-w-md"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <a href="/auth/forgot-password" className="text-sm text-primary underline underline-offset-4">
+                Forgot password?
+              </a>
+            </div>
+            <div className="flex items-center gap-3 pt-1">
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Verifying..." : "Continue"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setSecurityDialogOpen(false);
+                  setCurrentPassword("");
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
