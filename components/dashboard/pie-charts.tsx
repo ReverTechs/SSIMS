@@ -99,8 +99,8 @@ export function PieCharts() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="relative">
-          <ChartContainer config={studentsChartConfig} className="h-[200px] sm:h-[250px]">
+        <CardContent className="relative flex items-center justify-center">
+          <ChartContainer config={studentsChartConfig} className="h-[200px] sm:h-[250px] w-full flex items-center justify-center">
             <PieChart>
               <ChartTooltip
                 cursor={false}
@@ -110,6 +110,8 @@ export function PieCharts() {
                 data={studentsData}
                 dataKey="value"
                 nameKey="name"
+                cx="50%"
+                cy="50%"
                 strokeWidth={5}
               >
                 {studentsData.map((entry, index) => (
@@ -140,8 +142,8 @@ export function PieCharts() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="relative">
-          <ChartContainer config={teachersChartConfig} className="h-[200px] sm:h-[250px]">
+        <CardContent className="relative flex items-center justify-center">
+          <ChartContainer config={teachersChartConfig} className="h-[200px] sm:h-[250px] w-full flex items-center justify-center">
             <PieChart>
               <ChartTooltip
                 cursor={false}
@@ -151,6 +153,8 @@ export function PieCharts() {
                 data={teachersData}
                 dataKey="value"
                 nameKey="name"
+                cx="50%"
+                cy="50%"
                 strokeWidth={5}
               >
                 {teachersData.map((entry, index) => (

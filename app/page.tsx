@@ -1,3 +1,8 @@
+// -------------------------- THE PROJECT --------------------------
+// Proposed by REVER B.C. on 28 Oct, 2025.
+// REVER ENGINEERING Inc. (Networking and Software solutions Engineering)
+// Part A, The Interface
+
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/lib/utils";
@@ -60,7 +65,7 @@ export default function Home() {
           {/* Right-side actions */}
           <div className="flex items-center gap-4">
             {hasEnvVars && <AuthButton />}
-            <ThemeSwitcher />
+            {/*<ThemeSwitcher />*/}
           </div>
         </div>
       </nav>

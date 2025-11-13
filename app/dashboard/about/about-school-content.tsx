@@ -37,6 +37,7 @@ import {
   AlertTriangle,
   Building2,
   Calendar,
+  Calculator,
   Layers,
   Library,
   PenSquare,
@@ -325,6 +326,24 @@ export function AboutSchoolContent({ userRole }: AboutSchoolContentProps) {
 
   const handleFeeDelete = (id: string) => {
     setFees((prev) => prev.filter((fee) => fee.id !== id));
+  };
+
+  // Calculate total fees automatically
+  const totalFees = useMemo(() => {
+    return fees.reduce((total, fee) => {
+      // Parse amount string (e.g., "MWK 350,000" -> 350000)
+      const amountStr = fee.amount
+        .replace(/MWK/gi, "")
+        .replace(/,/g, "")
+        .trim();
+      const amount = parseFloat(amountStr) || 0;
+      return total + amount;
+    }, 0);
+  }, [fees]);
+
+  // Format currency for display
+  const formatCurrency = (amount: number) => {
+    return `MWK ${amount.toLocaleString("en-US")}`;
   };
 
   return (
@@ -807,6 +826,37 @@ export function AboutSchoolContent({ userRole }: AboutSchoolContentProps) {
               No fees have been configured yet.
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="rounded-3xl border-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50 shadow-lg shadow-emerald-900/10 dark:from-emerald-950/30 dark:via-slate-900 dark:to-teal-950/30">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+              <Calculator className="h-6 w-6" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-semibold">
+                Total Fees Summary
+              </CardTitle>
+              <CardDescription>
+                Automatically calculated from the fees structure above
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-emerald-200/60 bg-gradient-to-br from-white/80 to-emerald-50/50 p-8 shadow-inner dark:border-emerald-800/40 dark:from-slate-900/80 dark:to-emerald-950/30">
+            <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-2">
+              Total Amount
+            </p>
+            <p className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400">
+              {formatCurrency(totalFees)}
+            </p>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Based on {fees.length} {fees.length === 1 ? "fee item" : "fee items"}
+            </p>
+          </div>
         </CardContent>
       </Card>
 

@@ -57,8 +57,14 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
+          <form onSubmit={handleLogin} aria-busy={isLoading}>
+            <fieldset
+              disabled={isLoading}
+              className={cn(
+                "flex flex-col gap-6",
+                isLoading && "opacity-60 transition-opacity"
+              )}
+            >
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -68,6 +74,7 @@ export function LoginForm({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
               <div className="grid gap-2">
@@ -86,13 +93,14 @@ export function LoginForm({
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
-            </div>
+            </fieldset>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link
