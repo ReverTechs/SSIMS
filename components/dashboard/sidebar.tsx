@@ -25,7 +25,7 @@ import {
 import { UserRole } from "@/types";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
-type IconCategory = 
+type IconCategory =
   | "dashboard"
   | "academic"
   | "financial"
@@ -91,7 +91,14 @@ const navItems: NavItem[] = [
     title: "School Reports",
     href: "/dashboard/reports",
     icon: FileText,
-    roles: ["student", "teacher", "guardian"],
+    roles: [
+      "student",
+      "teacher",
+      "guardian",
+      "headteacher",
+      "deputy_headteacher",
+      "admin",
+    ],
     category: "reports",
   },
   {
@@ -204,15 +211,8 @@ const navItems: NavItem[] = [
     category: "management",
   },
   {
-    title: "Register Students",
-    href: "/dashboard/register-students",
-    icon: Shield,
-    roles: ["admin"],
-    category: "security",
-  },
-  {
-    title: "Register Teachers",
-    href: "/dashboard/register-teachers",
+    title: "Registration",
+    href: "/dashboard/registration",
     icon: Shield,
     roles: ["admin", "headteacher"],
     category: "security",
@@ -236,35 +236,35 @@ const navItems: NavItem[] = [
 // Icon color mapping by category (Windows 11 style)
 const getIconColor = (category: IconCategory, isActive: boolean) => {
   const colors: Record<IconCategory, string> = {
-    dashboard: isActive 
-      ? "text-blue-600 dark:text-blue-400" 
+    dashboard: isActive
+      ? "text-blue-600 dark:text-blue-400"
       : "text-blue-500 dark:text-blue-400",
-    academic: isActive 
-      ? "text-purple-600 dark:text-purple-400" 
+    academic: isActive
+      ? "text-purple-600 dark:text-purple-400"
       : "text-purple-500 dark:text-purple-400",
-    financial: isActive 
-      ? "text-emerald-600 dark:text-emerald-400" 
+    financial: isActive
+      ? "text-emerald-600 dark:text-emerald-400"
       : "text-emerald-500 dark:text-emerald-400",
-    reports: isActive 
-      ? "text-orange-600 dark:text-orange-400" 
+    reports: isActive
+      ? "text-orange-600 dark:text-orange-400"
       : "text-orange-500 dark:text-orange-400",
-    user: isActive 
-      ? "text-cyan-600 dark:text-cyan-400" 
+    user: isActive
+      ? "text-cyan-600 dark:text-cyan-400"
       : "text-cyan-500 dark:text-cyan-400",
-    communication: isActive 
-      ? "text-rose-600 dark:text-rose-400" 
+    communication: isActive
+      ? "text-rose-600 dark:text-rose-400"
       : "text-rose-500 dark:text-rose-400",
-    management: isActive 
-      ? "text-amber-600 dark:text-amber-400" 
+    management: isActive
+      ? "text-amber-600 dark:text-amber-400"
       : "text-amber-500 dark:text-amber-400",
-    security: isActive 
-      ? "text-red-600 dark:text-red-400" 
+    security: isActive
+      ? "text-red-600 dark:text-red-400"
       : "text-red-500 dark:text-red-400",
-    information: isActive 
-      ? "text-slate-600 dark:text-slate-400" 
+    information: isActive
+      ? "text-slate-600 dark:text-slate-400"
       : "text-slate-500 dark:text-slate-400",
-    settings: isActive 
-      ? "text-gray-600 dark:text-gray-400" 
+    settings: isActive
+      ? "text-gray-600 dark:text-gray-400"
       : "text-gray-500 dark:text-gray-400",
   };
   return colors[category];
@@ -300,9 +300,9 @@ const SidebarContent = ({
             item.href === "/dashboard"
               ? pathname === "/dashboard" || pathname === "/dashboard/"
               : pathname === item.href || pathname?.startsWith(item.href + "/");
-          
+
           const iconColor = getIconColor(item.category, isActive);
-          
+
           return (
             <Link
               key={item.href}

@@ -49,6 +49,18 @@ export default function RegisterStudentsPage() {
               <Input id="studentId" placeholder="STU2024001" />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="studentType">Student Type</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select student type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="internal">Internal</SelectItem>
+                  <SelectItem value="external">External</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="class">Class</Label>
               <Select>
                 <SelectTrigger>
@@ -108,6 +120,7 @@ export default function RegisterStudentsPage() {
                 <li>Full Name</li>
                 <li>Email</li>
                 <li>Student ID</li>
+                <li>Student Type (Internal/External)</li>
                 <li>Class</li>
                 <li>Date of Birth</li>
               </ul>

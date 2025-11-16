@@ -29,6 +29,7 @@ const routeNameMap: Record<string, string> = {
   "manage-teachers": "Manage Teachers",
   "assign-subjects": "Assign Subjects",
   "assign-classes": "Assign Classes",
+  registration: "Registration",
   "register-students": "Register Students",
   "register-teachers": "Register Teachers",
   passwords: "Passwords",
@@ -95,6 +96,7 @@ export function Breadcrumb() {
   const filteredSegments = pathSegments.filter(
     (segment) => segment !== "dashboard"
   );
+  
   const breadcrumbItems = filteredSegments.map((segment, index) => {
     const segmentIndex = pathSegments.indexOf(segment);
     const href = "/" + pathSegments.slice(0, segmentIndex + 1).join("/");
@@ -165,7 +167,7 @@ export function Breadcrumb() {
 
         {/* Breadcrumb items */}
         {breadcrumbItems.map((item, index) => (
-          <li key={item.href} className="flex items-center gap-1.5">
+          <li key={`${item.href}-${index}`} className="flex items-center gap-1.5">
             <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
             {item.isLast ? (
               <span
