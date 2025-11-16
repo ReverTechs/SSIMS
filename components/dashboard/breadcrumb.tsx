@@ -36,6 +36,7 @@ const routeNameMap: Record<string, string> = {
   "school-council": "School Council",
   "staff-roles": "Staff Roles",
   "student-council": "Student Council",
+  settings: "Settings",
 };
 
 // Mock data for student/teacher names - in production, this would come from an API
