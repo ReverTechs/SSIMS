@@ -204,8 +204,8 @@ const navItems: NavItem[] = [
     category: "information",
   },
   {
-    title: "Manage Teachers",
-    href: "/dashboard/manage-teachers",
+    title: "Management",
+    href: "/dashboard/management",
     icon: Settings,
     roles: ["headteacher", "deputy_headteacher"],
     category: "management",
