@@ -78,3 +78,4 @@ export function isReportGenerationEnabled(): boolean {
   return settings.enabled;
 }
 
+
