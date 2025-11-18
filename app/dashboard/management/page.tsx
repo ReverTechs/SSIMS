@@ -84,7 +84,7 @@ const highlightMetrics = [
 
 export default function ManagementHubPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-3 sm:space-y-4 lg:space-y-6">
       <div className="space-y-2">
         <Badge variant="secondary" className="w-fit bg-amber-50 text-amber-800">
           Management Suite
@@ -100,7 +100,7 @@ export default function ManagementHubPage() {
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {highlightMetrics.map((metric) => (
           <Card
             key={metric.label}
@@ -121,7 +121,7 @@ export default function ManagementHubPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-2.5 sm:gap-3 md:grid-cols-2 xl:grid-cols-3">
         {managementAreas.map((area) => {
           const Icon = area.icon;
           return (

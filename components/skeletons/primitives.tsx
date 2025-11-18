@@ -7,7 +7,7 @@ export function SkeletonGlassCard({
   children,
   className,
   padding = "p-4",
-  glow = true,
+  glow = false,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -17,9 +17,7 @@ export function SkeletonGlassCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-white/5 bg-gradient-to-br from-background/90 via-background/70 to-primary/5 dark:from-background/40 dark:via-background/20 dark:to-primary/10 backdrop-blur-2xl",
-        "shadow-lg shadow-primary/5",
-        glow && "ring-1 ring-primary/10",
+        "rounded-lg border border-border/50 bg-card",
         padding,
         className
       )}
@@ -53,11 +51,11 @@ export function SkeletonPillRow({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-wrap gap-3", className)}>
+    <div className={cn("flex flex-wrap gap-2", className)}>
       {Array.from({ length: count }).map((_, index) => (
         <Skeleton
           key={index}
-          className="h-9 w-28 rounded-full border border-white/5 bg-white/10 dark:bg-white/5"
+          className="h-8 w-24 rounded-full"
         />
       ))}
     </div>
@@ -65,26 +63,24 @@ export function SkeletonPillRow({
 }
 
 export function SkeletonStatCard({
-  accent = "from-sky-500/20 via-transparent to-transparent",
+  accent,
 }: {
   accent?: string;
 }) {
   return (
-    <SkeletonGlassCard className={cn("relative overflow-hidden p-4", `bg-gradient-to-br ${accent}`)}>
+    <SkeletonGlassCard className="p-4">
       <div className="flex items-center justify-between">
-        <Skeleton className="h-3 w-24" variant="pulse" />
-        <div className="rounded-xl border border-white/10 p-1.5">
-          <Skeleton className="h-6 w-6 rounded-lg" variant="pulse" />
-        </div>
+        <Skeleton className="h-3 w-24" />
+        <Skeleton className="h-6 w-6 rounded-md" />
       </div>
-      <Skeleton className="mt-4 h-10 w-28" />
-      <Skeleton className="mt-2 h-3 w-16" variant="pulse" />
+      <Skeleton className="mt-4 h-8 w-28" />
+      <Skeleton className="mt-2 h-3 w-16" />
     </SkeletonGlassCard>
   );
 }
 
 export function SkeletonListTile({
-  accent = "from-primary/10 to-primary/5",
+  accent,
   metaLines = 2,
   showAction = true,
 }: {
@@ -93,25 +89,18 @@ export function SkeletonListTile({
   showAction?: boolean;
 }) {
   return (
-    <SkeletonGlassCard
-      className={cn(
-        "group relative overflow-hidden p-3 transition",
-        "bg-gradient-to-r",
-        accent
-      )}
-      glow={false}
-    >
+    <div className="rounded-lg border border-border/50 bg-card p-3">
       <div className="flex items-start gap-3">
-        <Skeleton className="h-10 w-10 rounded-2xl" />
+        <Skeleton className="h-10 w-10 rounded-lg" />
         <div className="flex-1 space-y-2">
           <Skeleton className="h-4 w-48" />
           {Array.from({ length: metaLines }).map((_, index) => (
-            <Skeleton key={index} className="h-3 w-32" variant="pulse" />
+            <Skeleton key={index} className="h-3 w-32" />
           ))}
         </div>
         {showAction && <Skeleton className="h-6 w-6 rounded-full" />}
       </div>
-    </SkeletonGlassCard>
+    </div>
   );
 }
 
@@ -124,22 +113,19 @@ export function SkeletonChartCard({
     <SkeletonGlassCard className="space-y-4">
       <div className="flex items-center justify-between">
         <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-10 w-10 rounded-2xl" />
+        <Skeleton className="h-8 w-8 rounded-md" />
       </div>
-      <Skeleton className={cn("w-full rounded-2xl", heightClass)} />
+      <Skeleton className={cn("w-full rounded-lg", heightClass)} />
     </SkeletonGlassCard>
   );
 }
 
 export function SkeletonProfileHeader() {
   return (
-    <SkeletonGlassCard padding="p-6" className="space-y-4">
-      <div className="flex flex-wrap items-center gap-6">
-        <div className="relative">
-          <Skeleton className="h-24 w-24 rounded-3xl" />
-          <div className="absolute inset-0 rounded-3xl border border-white/10" />
-        </div>
-        <div className="flex-1 space-y-3">
+    <SkeletonGlassCard padding="p-4 sm:p-6" className="space-y-4">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+        <Skeleton className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg" />
+        <div className="flex-1 space-y-3 min-w-0">
           <SkeletonLineSet lines={["w-32", "w-48", "w-36"]} />
           <SkeletonPillRow count={3} className="pt-2" />
         </div>

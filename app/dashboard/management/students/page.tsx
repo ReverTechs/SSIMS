@@ -57,8 +57,8 @@ const students = [
 
 export default function ManagementStudentsPage() {
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-3">
+    <div className="space-y-3 sm:space-y-4">
+      <div className="grid gap-2.5 sm:gap-3 md:grid-cols-3">
         {[
           {
             label: "Active enrolled students",
@@ -265,4 +265,7 @@ export default function ManagementStudentsPage() {
     </div>
   );
 }
+
+
+
 

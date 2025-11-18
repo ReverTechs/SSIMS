@@ -78,7 +78,7 @@ export default async function DashboardPage() {
       {/* Hero Section */}
       <div className="relative overflow-hidden rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/3 via-purple-600/3 to-pink-600/3 rounded-lg" />
-        <div className="relative space-y-4 p-4">
+        <div className="relative space-y-2 sm:space-y-3 p-4 sm:p-6">
           {/* Profile Header Card */}
           <Card className="border bg-card">
             <CardContent className="pt-6">
@@ -162,7 +162,7 @@ export default async function DashboardPage() {
           </Card>
 
           {/* Stats Grid */}
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {effectiveStats.map((stat, index) => {
               const Icon = stat.icon;
               return (
@@ -207,7 +207,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+          <div className="grid gap-2.5 sm:gap-3 grid-cols-1 lg:grid-cols-2">
             {/* Upcoming Events */}
             <Card
               className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0"
@@ -305,7 +305,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Charts Section */}
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {/* Students and Teachers Pie Charts - Row Layout */}
             <div className="w-full">
               <PieCharts />
