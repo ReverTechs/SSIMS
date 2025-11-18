@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -222,70 +221,119 @@ const sortedRoles = Object.keys(groupedStaff).sort(
 ) as StaffRole[];
 
 export function StaffRolesContent() {
-  return (
-    <div className="space-y-6">
-      {sortedRoles.map((role, roleIndex) => {
-        const members = groupedStaff[role];
-        const Icon = roleIcons[role];
-        const colorGradient = roleColors[role];
+  // Flatten all members with their role info for individual cards
+  const allMembersWithRoleInfo = staffMembers.map((member) => {
+    const Icon = roleIcons[member.role];
+    const colorGradient = roleColors[member.role];
+    const hierarchy = roleHierarchy[member.role];
+    
+    const roleDescription = 
+      hierarchy === 1 ? "Chief administrator and academic leader" :
+      hierarchy === 2 ? "Assists headteacher in administrative duties" :
+      hierarchy === 3 ? "Experienced teacher with additional responsibilities" :
+      hierarchy === 4 ? "Leads subject department and curriculum" :
+      hierarchy === 5 ? "Teaches specific subjects" :
+      hierarchy === 6 ? "Manages library resources and services" :
+      hierarchy === 7 ? "Provides student guidance and counseling" :
+      hierarchy === 8 ? "Handles administrative documentation" :
+      hierarchy === 9 ? "Manages school finances and accounts" :
+      hierarchy === 10 ? "Supports science laboratory activities" :
+      "Manages IT infrastructure and systems";
+    
+    return {
+      ...member,
+      Icon,
+      colorGradient,
+      hierarchy,
+      roleDescription,
+    };
+  });
 
-        return (
-          <Card
-            key={role}
-            className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden"
-            style={{
-              animationDelay: `${(roleIndex + 1) * 100}ms`,
-            }}
-          >
-            <div className={`absolute inset-0 bg-gradient-to-br ${colorGradient}/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200`} />
-            
-            <CardHeader className="relative">
-              <div className="flex items-center gap-3">
+  // Sort by hierarchy first, then by name
+  const sortedMembers = allMembersWithRoleInfo.sort((a, b) => {
+    if (a.hierarchy !== b.hierarchy) {
+      return a.hierarchy - b.hierarchy;
+    }
+    return a.name.localeCompare(b.name);
+  });
+
+  return (
+    <div className="space-y-8">
+      {/* Role Summary Section */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {sortedRoles.map((role) => {
+          const members = groupedStaff[role];
+          const Icon = roleIcons[role];
+          const colorGradient = roleColors[role];
+          
+          return (
+            <div
+              key={role}
+              className="relative group rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 hover:bg-card/80 transition-all duration-300 hover:shadow-lg hover:shadow-black/5 hover:-translate-y-0.5"
+            >
+              <div className={`absolute inset-0 bg-gradient-to-br ${colorGradient}/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+              <div className="relative flex items-center gap-3">
                 <div className={cn(
-                  "p-2.5 rounded-lg text-white shadow-lg",
+                  "p-2.5 rounded-xl text-white shadow-md",
                   `bg-gradient-to-br ${colorGradient}`
                 )}>
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4" />
                 </div>
-                <div className="flex-1">
-                  <CardTitle className="text-xl flex items-center gap-2">
-                    {role}
-                    <Badge variant="outline" className="ml-2">
-                      {members.length} {members.length === 1 ? "member" : "members"}
-                    </Badge>
-                  </CardTitle>
-                  <CardDescription className="mt-1">
-                    {roleHierarchy[role] === 1 && "Chief administrator and academic leader"}
-                    {roleHierarchy[role] === 2 && "Assists headteacher in administrative duties"}
-                    {roleHierarchy[role] === 3 && "Experienced teacher with additional responsibilities"}
-                    {roleHierarchy[role] === 4 && "Leads subject department and curriculum"}
-                    {roleHierarchy[role] === 5 && "Teaches specific subjects"}
-                    {roleHierarchy[role] === 6 && "Manages library resources and services"}
-                    {roleHierarchy[role] === 7 && "Provides student guidance and counseling"}
-                    {roleHierarchy[role] === 8 && "Handles administrative documentation"}
-                    {roleHierarchy[role] === 9 && "Manages school finances and accounts"}
-                    {roleHierarchy[role] === 10 && "Supports science laboratory activities"}
-                    {roleHierarchy[role] === 11 && "Manages IT infrastructure and systems"}
-                  </CardDescription>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-sm truncate">{role}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {members.length} {members.length === 1 ? "member" : "members"}
+                  </p>
                 </div>
               </div>
-            </CardHeader>
+            </div>
+          );
+        })}
+      </div>
 
-            <CardContent className="relative">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {members.map((member, memberIndex) => (
-                  <div
-                    key={member.id}
-                    className="p-4 rounded-lg border bg-card/50 hover:bg-accent/30 transition-all duration-200 group/item"
-                    style={{
-                      animationDelay: `${(roleIndex * 100) + (memberIndex * 50)}ms`,
-                    }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-12 w-12 border-2 border-border">
+      {/* Individual Position Cards */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-6">Staff Positions</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {sortedMembers.map((member, index) => {
+            const { Icon, colorGradient, roleDescription } = member;
+            
+            return (
+              <div
+                key={member.id}
+                className="group relative rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden hover:bg-card/80 transition-all duration-300 hover:shadow-xl hover:shadow-black/10 hover:-translate-y-1"
+                style={{
+                  animationDelay: `${index * 30}ms`,
+                }}
+              >
+                {/* Gradient Background Overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${colorGradient}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                
+                {/* Content */}
+                <div className="relative p-5 space-y-4">
+                  {/* Role Badge */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className={cn(
+                      "p-3 rounded-xl text-white shadow-lg flex-shrink-0",
+                      `bg-gradient-to-br ${colorGradient}`
+                    )}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <Badge 
+                      variant="outline" 
+                      className="text-xs font-medium bg-background/50 backdrop-blur-sm border-border/50"
+                    >
+                      {member.role}
+                    </Badge>
+                  </div>
+
+                  {/* Member Info */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12 border-2 border-border/50 shadow-sm">
                         <AvatarImage src={member.avatar} />
                         <AvatarFallback className={cn(
-                          "text-white font-semibold",
+                          "text-white font-semibold text-sm",
                           `bg-gradient-to-br ${colorGradient}`
                         )}>
                           {member.name
@@ -296,51 +344,61 @@ export function StaffRolesContent() {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-sm truncate group-hover/item:text-primary transition-colors">
+                        <h3 className="font-semibold text-base truncate group-hover:text-primary transition-colors">
                           {member.name}
                         </h3>
                         {member.department && (
-                          <p className="text-xs text-muted-foreground mt-0.5">
+                          <p className="text-xs text-muted-foreground mt-0.5 truncate">
                             {member.department}
                           </p>
                         )}
-                        {member.subjects && member.subjects.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {member.subjects.map((subject) => (
-                              <Badge
-                                key={subject}
-                                variant="secondary"
-                                className="text-xs"
-                              >
-                                {subject}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                        <div className="flex flex-col gap-1 mt-2 text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1.5">
-                            <Mail className="h-3 w-3" />
-                            <span className="truncate">{member.email}</span>
-                          </div>
-                          {member.phone && (
-                            <div className="flex items-center gap-1.5">
-                              <Phone className="h-3 w-3" />
-                              <span>{member.phone}</span>
-                            </div>
-                          )}
-                        </div>
                       </div>
                     </div>
+
+                    {/* Role Description */}
+                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      {roleDescription}
+                    </p>
+
+                    {/* Subjects */}
+                    {member.subjects && member.subjects.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {member.subjects.map((subject) => (
+                          <Badge
+                            key={subject}
+                            variant="secondary"
+                            className="text-xs font-normal bg-muted/50"
+                          >
+                            {subject}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Contact Info */}
+                    <div className="space-y-1.5 pt-2 border-t border-border/30">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Mail className="h-3.5 w-3.5 flex-shrink-0" />
+                        <span className="truncate">{member.email}</span>
+                      </div>
+                      {member.phone && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Phone className="h-3.5 w-3.5 flex-shrink-0" />
+                          <span>{member.phone}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                ))}
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
+
 
 
 
