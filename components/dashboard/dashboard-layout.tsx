@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { Breadcrumb } from "./breadcrumb";
 import { BreadcrumbProvider } from "./breadcrumb-context";
 import { UserRole } from "@/types";
+import {
+  DashboardOverviewSkeleton,
+  DashboardShellSkeleton,
+} from "../skeletons/dashboard";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -24,6 +28,20 @@ export function DashboardLayout({
   user,
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showBootScreen, setShowBootScreen] = useState(true);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setShowBootScreen(false));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  if (showBootScreen) {
+    return (
+      <DashboardShellSkeleton>
+        <DashboardOverviewSkeleton />
+      </DashboardShellSkeleton>
+    );
+  }
 
   return (
     <BreadcrumbProvider>

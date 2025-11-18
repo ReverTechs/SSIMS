@@ -1,24 +1,38 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { 
-  Upload, 
-  Users, 
-  BookOpen, 
-  Calendar, 
+import {
+  Upload,
+  Users,
+  BookOpen,
+  Calendar,
   FileText,
   ArrowRight,
   ClipboardList,
-  TrendingUp
+  TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GuardianGradesView } from "@/components/guardian/guardian-grades-view";
 import { hasPermission } from "@/lib/auth/authz";
 import { createClient } from "@/lib/supabase/server";
+import StudentPerformanceHistoryChart from "@/components/dashboard/student-performance-history-chart";
 
 // Mock function to fetch guardian's children
 // In production, replace this with actual database query
@@ -60,7 +74,7 @@ export default async function GradesPage({
 }) {
   const user = await getCurrentUser();
   const params = await searchParams;
-  
+
   if (!user) {
     redirect("/auth/login");
   }
@@ -142,7 +156,9 @@ export default async function GradesPage({
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Grade Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Grade Management
+          </h1>
           <p className="text-muted-foreground">
             Access all grade-related features and tools
           </p>
@@ -152,23 +168,18 @@ export default async function GradesPage({
           {gradeFeatures.map((feature) => {
             const Icon = feature.icon;
             return (
-              <Link
-                key={feature.title}
-                href={feature.href}
-                className="group"
-              >
-                <Card className={cn(
-                  "relative border bg-card hover:bg-accent/50 transition-all duration-200 cursor-pointer h-full",
-                  feature.borderGradient
-                )}>
+              <Link key={feature.title} href={feature.href} className="group">
+                <Card
+                  className={cn(
+                    "relative border bg-card hover:bg-accent/50 transition-all duration-200 cursor-pointer h-full",
+                    feature.borderGradient
+                  )}
+                >
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-semibold">
                       {feature.title}
                     </CardTitle>
-                    <div className={cn(
-                      "p-1.5 rounded-md",
-                      feature.iconBg
-                    )}>
+                    <div className={cn("p-1.5 rounded-md", feature.iconBg)}>
                       <Icon className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
@@ -267,32 +278,62 @@ export default async function GradesPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
+              <Table className="min-w-full divide-y divide-muted/10">
+                <TableHeader className="bg-muted/5">
                   <TableRow>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Term 1</TableHead>
-                    <TableHead>Term 2</TableHead>
-                    <TableHead>Term 3</TableHead>
-                    <TableHead>Overall</TableHead>
-                    <TableHead>Grade</TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Subject
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Term 1
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Term 2
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Term 3
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Overall
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Grade
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {grades.map((grade) => (
-                    <TableRow key={grade.subject}>
-                      <TableCell className="font-medium">
+                    <TableRow key={grade.subject} className="group">
+                      <TableCell className="font-medium text-foreground">
                         {grade.subject}
                       </TableCell>
-                      <TableCell>{grade.term1}%</TableCell>
-                      <TableCell>{grade.term2}%</TableCell>
-                      <TableCell>{grade.term3}%</TableCell>
-                      <TableCell className="font-semibold">
-                        {grade.overall.toFixed(1)}%
+                      <TableCell className="text-sm">{grade.term1}%</TableCell>
+                      <TableCell className="text-sm">{grade.term2}%</TableCell>
+                      <TableCell className="text-sm">{grade.term3}%</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="text-sm font-semibold w-14">
+                            {grade.overall.toFixed(1)}%
+                          </div>
+                          <div className="flex-1 h-2 bg-muted/30 rounded-full overflow-hidden">
+                            <div
+                              className="h-2 rounded-full"
+                              style={{
+                                width: `${grade.overall}%`,
+                                background:
+                                  grade.overall >= 85
+                                    ? "#34d399"
+                                    : grade.overall >= 75
+                                    ? "#60a5fa"
+                                    : "#f59e0b",
+                              }}
+                            />
+                          </div>
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge
-                          className={getGradeColor(grade.grade)}
+                          className={getGradeColor(grade.grade) + " text-white"}
                           variant="default"
                         >
                           {grade.grade}
@@ -312,9 +353,7 @@ export default async function GradesPage({
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">84.6%</div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Grade: A-
-                </p>
+                <p className="text-sm text-muted-foreground mt-2">Grade: A-</p>
               </CardContent>
             </Card>
             <Card>
@@ -323,9 +362,7 @@ export default async function GradesPage({
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">Physics</div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  91.7% (A)
-                </p>
+                <p className="text-sm text-muted-foreground mt-2">91.7% (A)</p>
               </CardContent>
             </Card>
             <Card>
@@ -334,9 +371,7 @@ export default async function GradesPage({
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">Biology</div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  77.7% (B)
-                </p>
+                <p className="text-sm text-muted-foreground mt-2">77.7% (B)</p>
               </CardContent>
             </Card>
           </div>
@@ -348,24 +383,30 @@ export default async function GradesPage({
               <CardTitle>Term 1 Grades</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
+              <Table className="min-w-full divide-y divide-muted/10">
+                <TableHeader className="bg-muted/5">
                   <TableRow>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Score</TableHead>
-                    <TableHead>Grade</TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Subject
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Score
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Grade
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {grades.map((grade) => (
-                    <TableRow key={grade.subject}>
-                      <TableCell className="font-medium">
+                    <TableRow key={grade.subject} className="group">
+                      <TableCell className="font-medium text-foreground">
                         {grade.subject}
                       </TableCell>
-                      <TableCell>{grade.term1}%</TableCell>
+                      <TableCell className="text-sm">{grade.term1}%</TableCell>
                       <TableCell>
                         <Badge
-                          className={getGradeColor(grade.grade)}
+                          className={getGradeColor(grade.grade) + " text-white"}
                           variant="default"
                         >
                           {grade.grade}
@@ -385,24 +426,30 @@ export default async function GradesPage({
               <CardTitle>Term 2 Grades</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
+              <Table className="min-w-full divide-y divide-muted/10">
+                <TableHeader className="bg-muted/5">
                   <TableRow>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Score</TableHead>
-                    <TableHead>Grade</TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Subject
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Score
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Grade
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {grades.map((grade) => (
-                    <TableRow key={grade.subject}>
-                      <TableCell className="font-medium">
+                    <TableRow key={grade.subject} className="group">
+                      <TableCell className="font-medium text-foreground">
                         {grade.subject}
                       </TableCell>
-                      <TableCell>{grade.term2}%</TableCell>
+                      <TableCell className="text-sm">{grade.term2}%</TableCell>
                       <TableCell>
                         <Badge
-                          className={getGradeColor(grade.grade)}
+                          className={getGradeColor(grade.grade) + " text-white"}
                           variant="default"
                         >
                           {grade.grade}
@@ -422,24 +469,30 @@ export default async function GradesPage({
               <CardTitle>Term 3 Grades</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
+              <Table className="min-w-full divide-y divide-muted/10">
+                <TableHeader className="bg-muted/5">
                   <TableRow>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Score</TableHead>
-                    <TableHead>Grade</TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Subject
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Score
+                    </TableHead>
+                    <TableHead className="text-muted-foreground uppercase text-xs tracking-wider">
+                      Grade
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {grades.map((grade) => (
-                    <TableRow key={grade.subject}>
-                      <TableCell className="font-medium">
+                    <TableRow key={grade.subject} className="group">
+                      <TableCell className="font-medium text-foreground">
                         {grade.subject}
                       </TableCell>
-                      <TableCell>{grade.term3}%</TableCell>
+                      <TableCell className="text-sm">{grade.term3}%</TableCell>
                       <TableCell>
                         <Badge
-                          className={getGradeColor(grade.grade)}
+                          className={getGradeColor(grade.grade) + " text-white"}
                           variant="default"
                         >
                           {grade.grade}
@@ -453,11 +506,10 @@ export default async function GradesPage({
           </Card>
         </TabsContent>
       </Tabs>
+
+      <div className="mt-6">
+        <StudentPerformanceHistoryChart />
+      </div>
     </div>
   );
 }
-
-
-
-
-
