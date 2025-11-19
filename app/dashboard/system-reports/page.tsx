@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,9 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Bug, Gauge, Server } from "lucide-react";
+import { AdminSystemPerformanceTrend } from "@/components/dashboard/admin-performance-chart";
 
 export default function SystemReportsPage() {
   const systemErrors = [
@@ -232,7 +246,9 @@ export default function SystemReportsPage() {
                       <span>{error.type}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="max-w-md">{error.description}</TableCell>
+                  <TableCell className="max-w-md">
+                    {error.description}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       className={getSeverityColor(error.severity)}
@@ -263,7 +279,7 @@ export default function SystemReportsPage() {
           </Table>
         </CardContent>
       </Card>
+      <AdminSystemPerformanceTrend />
     </div>
   );
 }
-

@@ -463,7 +463,7 @@ export function AboutSchoolContent({ userRole }: AboutSchoolContentProps) {
                   </span>
                   <div>
                     <p className="text-xs uppercase text-muted-foreground">
-                      School type
+                      Type
                     </p>
                     <p className="text-sm font-semibold capitalize">
                       {schoolData.schoolType}
@@ -854,7 +854,8 @@ export function AboutSchoolContent({ userRole }: AboutSchoolContentProps) {
               {formatCurrency(totalFees)}
             </p>
             <p className="mt-3 text-xs text-muted-foreground">
-              Based on {fees.length} {fees.length === 1 ? "fee item" : "fee items"}
+              Based on {fees.length}{" "}
+              {fees.length === 1 ? "fee item" : "fee items"}
             </p>
           </div>
         </CardContent>

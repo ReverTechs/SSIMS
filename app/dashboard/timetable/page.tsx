@@ -1,46 +1,203 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
+import BigCalendar from "@/components/dashboard/big-calendar";
 
 export default function TimetablePage() {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   const timetable = {
     Monday: [
-      { period: 1, subject: "Mathematics", teacher: "Mr. Banda", time: "08:00-09:00", room: "Room 101" },
-      { period: 2, subject: "English", teacher: "Mrs. Mwale", time: "09:00-10:00", room: "Room 102" },
-      { period: 3, subject: "Physics", teacher: "Mr. Phiri", time: "10:30-11:30", room: "Lab 1" },
-      { period: 4, subject: "Chemistry", teacher: "Mrs. Kachale", time: "11:30-12:30", room: "Lab 2" },
-      { period: 5, subject: "Biology", teacher: "Mr. Mbewe", time: "14:00-15:00", room: "Room 103" },
+      {
+        period: 1,
+        subject: "Mathematics",
+        teacher: "Mr. Banda",
+        time: "08:00-09:00",
+        room: "Room 101",
+      },
+      {
+        period: 2,
+        subject: "English",
+        teacher: "Mrs. Mwale",
+        time: "09:00-10:00",
+        room: "Room 102",
+      },
+      {
+        period: 3,
+        subject: "Physics",
+        teacher: "Mr. Phiri",
+        time: "10:30-11:30",
+        room: "Lab 1",
+      },
+      {
+        period: 4,
+        subject: "Chemistry",
+        teacher: "Mrs. Kachale",
+        time: "11:30-12:30",
+        room: "Lab 2",
+      },
+      {
+        period: 5,
+        subject: "Biology",
+        teacher: "Mr. Mbewe",
+        time: "14:00-15:00",
+        room: "Room 103",
+      },
     ],
     Tuesday: [
-      { period: 1, subject: "English", teacher: "Mrs. Mwale", time: "08:00-09:00", room: "Room 102" },
-      { period: 2, subject: "Mathematics", teacher: "Mr. Banda", time: "09:00-10:00", room: "Room 101" },
-      { period: 3, subject: "History", teacher: "Mr. Jere", time: "10:30-11:30", room: "Room 104" },
-      { period: 4, subject: "Geography", teacher: "Mrs. Tembo", time: "11:30-12:30", room: "Room 105" },
-      { period: 5, subject: "Physical Education", teacher: "Mr. Ngoma", time: "14:00-15:00", room: "Field" },
+      {
+        period: 1,
+        subject: "English",
+        teacher: "Mrs. Mwale",
+        time: "08:00-09:00",
+        room: "Room 102",
+      },
+      {
+        period: 2,
+        subject: "Mathematics",
+        teacher: "Mr. Banda",
+        time: "09:00-10:00",
+        room: "Room 101",
+      },
+      {
+        period: 3,
+        subject: "History",
+        teacher: "Mr. Jere",
+        time: "10:30-11:30",
+        room: "Room 104",
+      },
+      {
+        period: 4,
+        subject: "Geography",
+        teacher: "Mrs. Tembo",
+        time: "11:30-12:30",
+        room: "Room 105",
+      },
+      {
+        period: 5,
+        subject: "Physical Education",
+        teacher: "Mr. Ngoma",
+        time: "14:00-15:00",
+        room: "Field",
+      },
     ],
     Wednesday: [
-      { period: 1, subject: "Physics", teacher: "Mr. Phiri", time: "08:00-09:00", room: "Lab 1" },
-      { period: 2, subject: "Chemistry", teacher: "Mrs. Kachale", time: "09:00-10:00", room: "Lab 2" },
-      { period: 3, subject: "Mathematics", teacher: "Mr. Banda", time: "10:30-11:30", room: "Room 101" },
-      { period: 4, subject: "English", teacher: "Mrs. Mwale", time: "11:30-12:30", room: "Room 102" },
-      { period: 5, subject: "Computer Studies", teacher: "Mr. Msiska", time: "14:00-15:00", room: "Lab 3" },
+      {
+        period: 1,
+        subject: "Physics",
+        teacher: "Mr. Phiri",
+        time: "08:00-09:00",
+        room: "Lab 1",
+      },
+      {
+        period: 2,
+        subject: "Chemistry",
+        teacher: "Mrs. Kachale",
+        time: "09:00-10:00",
+        room: "Lab 2",
+      },
+      {
+        period: 3,
+        subject: "Mathematics",
+        teacher: "Mr. Banda",
+        time: "10:30-11:30",
+        room: "Room 101",
+      },
+      {
+        period: 4,
+        subject: "English",
+        teacher: "Mrs. Mwale",
+        time: "11:30-12:30",
+        room: "Room 102",
+      },
+      {
+        period: 5,
+        subject: "Computer Studies",
+        teacher: "Mr. Msiska",
+        time: "14:00-15:00",
+        room: "Lab 3",
+      },
     ],
     Thursday: [
-      { period: 1, subject: "Biology", teacher: "Mr. Mbewe", time: "08:00-09:00", room: "Room 103" },
-      { period: 2, subject: "Mathematics", teacher: "Mr. Banda", time: "09:00-10:00", room: "Room 101" },
-      { period: 3, subject: "English", teacher: "Mrs. Mwale", time: "10:30-11:30", room: "Room 102" },
-      { period: 4, subject: "Physics", teacher: "Mr. Phiri", time: "11:30-12:30", room: "Lab 1" },
-      { period: 5, subject: "Chemistry", teacher: "Mrs. Kachale", time: "14:00-15:00", room: "Lab 2" },
+      {
+        period: 1,
+        subject: "Biology",
+        teacher: "Mr. Mbewe",
+        time: "08:00-09:00",
+        room: "Room 103",
+      },
+      {
+        period: 2,
+        subject: "Mathematics",
+        teacher: "Mr. Banda",
+        time: "09:00-10:00",
+        room: "Room 101",
+      },
+      {
+        period: 3,
+        subject: "English",
+        teacher: "Mrs. Mwale",
+        time: "10:30-11:30",
+        room: "Room 102",
+      },
+      {
+        period: 4,
+        subject: "Physics",
+        teacher: "Mr. Phiri",
+        time: "11:30-12:30",
+        room: "Lab 1",
+      },
+      {
+        period: 5,
+        subject: "Chemistry",
+        teacher: "Mrs. Kachale",
+        time: "14:00-15:00",
+        room: "Lab 2",
+      },
     ],
     Friday: [
-      { period: 1, subject: "English", teacher: "Mrs. Mwale", time: "08:00-09:00", room: "Room 102" },
-      { period: 2, subject: "Mathematics", teacher: "Mr. Banda", time: "09:00-10:00", room: "Room 101" },
-      { period: 3, subject: "Biology", teacher: "Mr. Mbewe", time: "10:30-11:30", room: "Room 103" },
-      { period: 4, subject: "History", teacher: "Mr. Jere", time: "11:30-12:30", room: "Room 104" },
-      { period: 5, subject: "Assembly", teacher: "All Staff", time: "14:00-15:00", room: "Hall" },
+      {
+        period: 1,
+        subject: "English",
+        teacher: "Mrs. Mwale",
+        time: "08:00-09:00",
+        room: "Room 102",
+      },
+      {
+        period: 2,
+        subject: "Mathematics",
+        teacher: "Mr. Banda",
+        time: "09:00-10:00",
+        room: "Room 101",
+      },
+      {
+        period: 3,
+        subject: "Biology",
+        teacher: "Mr. Mbewe",
+        time: "10:30-11:30",
+        room: "Room 103",
+      },
+      {
+        period: 4,
+        subject: "History",
+        teacher: "Mr. Jere",
+        time: "11:30-12:30",
+        room: "Room 104",
+      },
+      {
+        period: 5,
+        subject: "Assembly",
+        teacher: "All Staff",
+        time: "14:00-15:00",
+        room: "Hall",
+      },
     ],
   };
 
@@ -56,9 +213,7 @@ export default function TimetablePage() {
       <Card>
         <CardHeader>
           <CardTitle>Form 4A Timetable</CardTitle>
-          <CardDescription>
-            Weekly schedule for all subjects
-          </CardDescription>
+          <CardDescription>Weekly schedule for all subjects</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="Monday" className="w-full">
@@ -102,11 +257,7 @@ export default function TimetablePage() {
           </Tabs>
         </CardContent>
       </Card>
+      <BigCalendar />
     </div>
   );
 }
-
-
-
-
-

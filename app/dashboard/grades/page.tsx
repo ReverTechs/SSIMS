@@ -33,6 +33,7 @@ import { GuardianGradesView } from "@/components/guardian/guardian-grades-view";
 import { hasPermission } from "@/lib/auth/authz";
 import { createClient } from "@/lib/supabase/server";
 import StudentPerformanceHistoryChart from "@/components/dashboard/student-performance-history-chart";
+import { StudentSubjectsPerformanceTrend } from "@/components/dashboard/student-subjects-per-chart";
 
 // Mock function to fetch guardian's children
 // In production, replace this with actual database query
@@ -509,6 +510,9 @@ export default async function GradesPage({
 
       <div className="mt-6">
         <StudentPerformanceHistoryChart />
+      </div>
+      <div className="mt-6">
+        <StudentSubjectsPerformanceTrend />
       </div>
     </div>
   );
