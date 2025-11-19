@@ -333,7 +333,7 @@ const SidebarContent = ({
       {/* Footer decoration */}
       <div className="relative z-10 border-t border-border/50 p-4 bg-card/50 backdrop-blur-sm">
         <a
-          href="https://rever-official.netlify.app"
+          href="https://reverbc-official.netlify.app"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"

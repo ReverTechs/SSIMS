@@ -57,6 +57,14 @@ const managementAreas = [
     statLabel: "Budget Coverage",
     statValue: "86%",
   },
+  {
+    title: "School Departments",
+    description: "Add, modify, and manage.",
+    href: "/dashboard/management/departments",
+    icon: PiggyBank,
+    statLabel: "Active Units",
+    statValue: "10",
+  },
 ];
 
 const highlightMetrics = [
@@ -86,16 +94,16 @@ export default function ManagementHubPage() {
   return (
     <div className="space-y-3 sm:space-y-4 lg:space-y-6">
       <div className="space-y-2">
-        <Badge variant="secondary" className="w-fit bg-amber-50 text-amber-800">
+        {/* <Badge variant="secondary" className="w-fit bg-amber-50 text-amber-800">
           Management Suite
-        </Badge>
+        </Badge> */}
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">
             Unified management control
           </h1>
           <p className="text-muted-foreground">
-            Navigate every operational area from one modern, visual hub. Choose a
-            card to drill into fine-grained actions.
+            Navigate every operational area from one modern, visual hub. Choose
+            a card to drill into fine-grained actions.
           </p>
         </div>
       </div>
@@ -164,4 +172,3 @@ export default function ManagementHubPage() {
     </div>
   );
 }
-
