@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { Breadcrumb } from "./breadcrumb";
 
 interface HeaderProps {
   user: {
@@ -73,80 +74,52 @@ export function Header({ user, onMenuClick }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/10 dark:bg-black/10 backdrop-blur-md border-b border-white/10 shadow-sm">
+    <header className="relative w-full rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
       {/* Subtle gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-50/10 via-transparent to-purple-50/10 dark:from-blue-950/10 dark:via-transparent dark:to-purple-950/10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 
-      <div className="relative flex h-16 sm:h-20 items-center z-10">
-        {/* Left side - Menu button (mobile) + Title with Image */}
-        <div className="flex items-center gap-3 sm:gap-4 pl-4 sm:pl-6">
+      <div className="relative flex h-16 items-center px-4 sm:px-6 justify-between gap-4">
+        {/* Left side - Menu button (mobile) + Breadcrumbs */}
+        <div className="flex items-center gap-4 flex-1 min-w-0">
           {/* Mobile menu button */}
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden h-10 w-10 rounded-xl hover:bg-muted transition-all duration-300"
+            className="lg:hidden h-9 w-9 rounded-xl hover:bg-accent text-foreground"
             onClick={onMenuClick}
           >
-            <Menu className="h-5 w-5 text-foreground" />
+            <Menu className="h-5 w-5" />
           </Button>
 
-          <Link
-            href="/"
-            className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-opacity cursor-pointer"
-          >
-            <div className="hidden sm:flex h-10 w-10 sm:h-12 sm:w-12 border-2 border-border/50 rounded-full overflow-hidden items-center justify-center bg-background flex-shrink-0">
-              <Image
-                src="/images/Coat_of_arms_of_Malawi.svg.png"
-                alt="Coat of Arms of Malawi"
-                width={48}
-                height={48}
-                className="object-contain"
-              />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
-                Wynberg Boys' High School
-              </h1>
-              <div className="flex items-center gap-4">
-                <p className="text-sm text-muted-foreground/70 ">
-                  {user.fullName}
-                </p>
-                <span
-                  className={cn(
-                    "text-xs px-2 py-0.5 rounded-full bg-gradient-to-r text-white font-medium",
-                    getRoleColor(user.role)
-                  )}
-                >
-                  {getRoleDisplayName(user.role)}
-                </span>
-              </div>
-            </div>
-          </Link>
+          {/* Breadcrumbs - Integrated into header */}
+          <div className="flex-1 min-w-0 overflow-x-auto scrollbar-hide">
+            <Breadcrumb />
+          </div>
         </div>
 
-        {/* Right side - Actions - aligned to viewport edge */}
-        <div className="flex items-center gap-1 sm:gap-2 ml-auto pr-1 sm:pr-2">
-          {/* Search button (optional) - hidden on mobile */}
+        {/* Right side - Actions */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Search button (optional) */}
           <Button
             variant="ghost"
             size="icon"
-            className="hidden sm:flex relative h-10 w-10 rounded-xl hover:bg-muted transition-all duration-300 hover:scale-105"
+            className="hidden sm:flex h-9 w-9 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
           >
-            <Search className="h-5 w-5 text-foreground" />
+            <Search className="h-4 w-4" />
           </Button>
 
           {/* Notifications */}
           <Button
             variant="ghost"
             size="icon"
-            className="relative h-9 w-9 sm:h-10 sm:w-10 rounded-xl hover:bg-muted transition-all duration-300 hover:scale-105"
+            className="relative h-9 w-9 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
           >
-            <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
-            <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 border-2 border-card" />
+            <Bell className="h-4 w-4" />
+            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border-2 border-card" />
           </Button>
 
           {/* Theme switcher */}
-          <div className="px-0.5 sm:px-1">
+          <div className="px-1">
             <ThemeSwitcher />
           </div>
 
@@ -155,13 +128,17 @@ export function Header({ user, onMenuClick }: HeaderProps) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="relative h-9 w-9 sm:h-12 sm:w-12 rounded-xl hover:bg-muted transition-all duration-300 hover:scale-105 p-0 group"
+                className="relative h-10 pl-2 pr-1 rounded-xl hover:bg-accent transition-all border border-transparent hover:border-border group gap-3"
               >
-                <Avatar className="relative h-9 w-9 sm:h-12 sm:w-12 border-2 border-border group-hover:border-blue-500 transition-colors duration-300">
+                <div className="hidden md:flex flex-col items-end mr-1">
+                  <span className="text-sm font-medium text-foreground leading-none">{user.fullName}</span>
+                  <span className="text-[10px] text-muted-foreground leading-none mt-1">{getRoleDisplayName(user.role)}</span>
+                </div>
+                <Avatar className="h-8 w-8 border border-border group-hover:border-primary/50 transition-colors">
                   <AvatarImage src={user.avatar} alt={user.fullName} />
                   <AvatarFallback
                     className={cn(
-                      "bg-gradient-to-br text-white font-semibold text-xs sm:text-sm",
+                      "bg-gradient-to-br text-white font-semibold text-xs",
                       getRoleColor(user.role)
                     )}
                   >
@@ -171,13 +148,13 @@ export function Header({ user, onMenuClick }: HeaderProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-64 border-2 border-border bg-card p-2"
+              className="w-64 border border-border bg-card text-foreground p-2 shadow-xl"
               align="end"
               forceMount
             >
               <DropdownMenuLabel className="font-normal p-3">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12 border-2 border-border/50">
+                  <Avatar className="h-10 w-10 border border-border">
                     <AvatarImage src={user.avatar} alt={user.fullName} />
                     <AvatarFallback
                       className={cn(
@@ -188,55 +165,39 @@ export function Header({ user, onMenuClick }: HeaderProps) {
                       {getInitials(user.fullName)}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col space-y-1 flex-1">
-                    <p className="text-sm font-semibold leading-none">
+                  <div className="flex flex-col space-y-1 flex-1 min-w-0">
+                    <p className="text-sm font-semibold leading-none truncate">
                       {user.fullName}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground truncate">
                       {user.email}
                     </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span
-                        className={cn(
-                          "text-xs px-2 py-0.5 rounded-full bg-gradient-to-r text-white font-medium",
-                          getRoleColor(user.role)
-                        )}
-                      >
-                        {getRoleDisplayName(user.role)}
-                      </span>
-                    </div>
                   </div>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="my-2 bg-border/50" />
+              <DropdownMenuSeparator className="my-2 bg-border" />
               <DropdownMenuItem
                 asChild
-                className="rounded-lg hover:bg-muted transition-colors cursor-pointer"
+                className="rounded-lg hover:bg-accent focus:bg-accent focus:text-accent-foreground cursor-pointer"
               >
                 <Link
                   href="/dashboard/profile"
                   className="flex items-center gap-3 p-2"
                 >
-                  <div className="p-1.5 rounded-lg bg-blue-500/10">
-                    <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  </div>
+                  <User className="h-4 w-4 text-blue-500" />
                   <span>Profile</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-lg hover:bg-muted transition-colors cursor-pointer gap-3 p-2">
-                <div className="p-1.5 rounded-lg bg-purple-500/10">
-                  <Settings className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                </div>
+              <DropdownMenuItem className="rounded-lg hover:bg-accent focus:bg-accent focus:text-accent-foreground cursor-pointer gap-3 p-2">
+                <Settings className="h-4 w-4 text-purple-500" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-2 bg-border/50" />
+              <DropdownMenuSeparator className="my-2 bg-border" />
               <DropdownMenuItem
-                className="text-destructive rounded-lg hover:bg-destructive/10 transition-colors cursor-pointer gap-3 p-2"
+                className="text-destructive rounded-lg hover:bg-destructive/10 focus:bg-destructive/10 focus:text-destructive cursor-pointer gap-3 p-2"
                 onClick={handleLogout}
               >
-                <div className="p-1.5 rounded-lg bg-destructive/10">
-                  <LogOut className="h-4 w-4 text-destructive" />
-                </div>
+                <LogOut className="h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

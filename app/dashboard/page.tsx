@@ -78,7 +78,7 @@ export default async function DashboardPage() {
       {/* Hero Section */}
       <div className="relative overflow-hidden rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/3 via-purple-600/3 to-pink-600/3 rounded-lg" />
-        <div className="relative space-y-2 sm:space-y-3 p-4 sm:p-6">
+        <div className="relative space-y-2 sm:space-y-3">
           {/* Profile Header Card */}
           <Card className="border bg-card">
             <CardContent className="pt-6">
@@ -106,17 +106,17 @@ export default async function DashboardPage() {
                   {(user?.role === "teacher" ||
                     user?.role === "headteacher" ||
                     user?.role === "deputy_headteacher") && (
-                    <div className="flex items-center justify-center gap-2 mt-1">
-                      <Building2 className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {user?.role === "headteacher"
-                          ? "Administration"
-                          : user?.role === "deputy_headteacher"
-                          ? "Administration"
-                          : "Sciences"}
-                      </span>
-                    </div>
-                  )}
+                      <div className="flex items-center justify-center gap-2 mt-1">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {user?.role === "headteacher"
+                            ? "Administration"
+                            : user?.role === "deputy_headteacher"
+                              ? "Administration"
+                              : "Sciences"}
+                        </span>
+                      </div>
+                    )}
                 </div>
               </div>
 
@@ -143,19 +143,19 @@ export default async function DashboardPage() {
                   {(user?.role === "teacher" ||
                     user?.role === "headteacher" ||
                     user?.role === "deputy_headteacher") && (
-                    <div className="flex items-center gap-4 flex-wrap">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium text-muted-foreground">
-                          {user?.role === "headteacher"
-                            ? "Administration"
-                            : user?.role === "deputy_headteacher"
-                            ? "Administration"
-                            : "Sciences"}
-                        </span>
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Building2 className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium text-muted-foreground">
+                            {user?.role === "headteacher"
+                              ? "Administration"
+                              : user?.role === "deputy_headteacher"
+                                ? "Administration"
+                                : "Sciences"}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
             </CardContent>

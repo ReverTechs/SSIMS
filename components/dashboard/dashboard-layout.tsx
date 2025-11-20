@@ -6,6 +6,7 @@ import { Header } from "./header";
 import { Breadcrumb } from "./breadcrumb";
 import { BreadcrumbProvider } from "./breadcrumb-context";
 import { UserRole } from "@/types";
+import { cn } from "@/lib/utils";
 import {
   DashboardOverviewSkeleton,
   DashboardShellSkeleton,
@@ -28,6 +29,7 @@ export function DashboardLayout({
   user,
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [showBootScreen, setShowBootScreen] = useState(true);
 
   useEffect(() => {
@@ -45,23 +47,38 @@ export function DashboardLayout({
 
   return (
     <BreadcrumbProvider>
-      <div className="flex h-screen flex-col overflow-hidden bg-background">
-        <Header user={user} onMenuClick={() => setSidebarOpen(true)} />
-        <div className="flex flex-1 overflow-hidden">
-          {/* Desktop Sidebar */}
-          <Sidebar userRole={userRole} />
-          
-          {/* Mobile Sidebar */}
-          <Sidebar 
-            userRole={userRole} 
-            mobile 
-            open={sidebarOpen} 
-            onOpenChange={setSidebarOpen} 
+      <div className="flex h-screen w-full overflow-hidden bg-muted/20">
+        {/* Desktop Sidebar - Floating */}
+        <div className={cn(
+          "hidden lg:flex flex-col py-3 pl-3 transition-all duration-300 ease-in-out",
+          isCollapsed ? "w-[80px]" : "w-72"
+        )}>
+          <Sidebar
+            userRole={userRole}
+            collapsed={isCollapsed}
+            onCollapse={() => setIsCollapsed(!isCollapsed)}
           />
-          
-          <main className="flex-1 overflow-y-auto bg-background">
-            <div className="container max-w-7xl mx-auto px-4 py-4 sm:px-6 sm:py-6">
-              <Breadcrumb />
+        </div>
+
+        {/* Mobile Sidebar */}
+        <Sidebar
+          userRole={userRole}
+          mobile
+          open={sidebarOpen}
+          onOpenChange={setSidebarOpen}
+        />
+
+        <div className="flex flex-1 flex-col overflow-hidden min-w-0">
+          {/* Header - Floating */}
+          <div className="p-3 pb-0">
+            <Header
+              user={user}
+              onMenuClick={() => setSidebarOpen(true)}
+            />
+          </div>
+
+          <main className="flex-1 overflow-y-auto scrollbar-hide">
+            <div className="w-full p-3 pt-4">
               {children}
             </div>
           </main>

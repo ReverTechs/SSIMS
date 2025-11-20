@@ -21,9 +21,20 @@ import {
   School,
   Building2,
   Info,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
 } from "lucide-react";
 import { UserRole } from "@/types";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Image from "next/image";
 
 type IconCategory =
   | "dashboard"
@@ -74,12 +85,6 @@ const navItems: NavItem[] = [
     ],
     category: "academic",
   },
-  // {
-  //   title: "Enter Grades",
-  //   href: "/dashboard/enter-grades",
-  //   icon: BookOpen,
-  //   roles: ["teacher", "headteacher", "deputy_headteacher"],
-  // },
   {
     title: "Fees",
     href: "/dashboard/fees",
@@ -275,14 +280,22 @@ interface SidebarProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   mobile?: boolean;
+  collapsed?: boolean;
+  onCollapse?: () => void;
 }
 
 const SidebarContent = ({
   userRole,
   onLinkClick,
+  collapsed,
+  onCollapse,
+  mobile,
 }: {
   userRole: UserRole;
   onLinkClick?: () => void;
+  collapsed?: boolean;
+  onCollapse?: () => void;
+  mobile?: boolean;
 }) => {
   const pathname = usePathname();
   const filteredNavItems = navItems.filter((item) =>
@@ -290,58 +303,158 @@ const SidebarContent = ({
   );
 
   return (
-    <>
-      {/* Navigation */}
-      <nav className="relative z-10 flex-1 space-y-0.5 p-3 overflow-y-auto scrollbar-thin pt-4">
-        {filteredNavItems.map((item) => {
-          const Icon = item.icon;
-          // Fix: For dashboard, only match exactly. For other routes, match exact or sub-paths
-          const isActive =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard" || pathname === "/dashboard/"
-              : pathname === item.href || pathname?.startsWith(item.href + "/");
-
-          const iconColor = getIconColor(item.category, isActive);
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onLinkClick}
-              className={cn(
-                "group relative flex items-center gap-3 rounded-lg py-2.5 text-sm font-medium transition-all duration-200",
-                isActive
-                  ? "bg-blue-50 dark:bg-blue-950/30 text-foreground shadow-sm border-l-2 border-blue-500 pl-2.5 pr-3"
-                  : "text-foreground hover:bg-gray-100 dark:hover:bg-gray-800/50 px-3 border-l-2 border-transparent"
-              )}
-            >
-              {/* Icon - colored only */}
-              <Icon
-                className={cn(
-                  "h-5 w-5 transition-colors duration-200",
-                  iconColor
-                )}
+    <div className="flex h-full flex-col">
+      {/* Header / Logo Area */}
+      <div
+        className={cn(
+          "flex items-center p-4",
+          collapsed ? "justify-center" : "justify-between"
+        )}
+      >
+        {!collapsed && (
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent">
+              <Image
+                src="/images/Coat_of_arms_of_Malawi.svg.png"
+                alt="Logo"
+                width={32}
+                height={32}
+                className="object-contain"
               />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold leading-none text-sm text-foreground">
+                {" "}
+                Wynberg Boys' High School
+              </span>
+              {/* <span className="font-bold leading-none text-sm text-foreground">
+                University
+              </span> */}
+            </div>
+          </div>
+        )}
 
-              {/* Label */}
-              <span className="flex-1 relative font-medium">{item.title}</span>
-            </Link>
-          );
-        })}
+        {collapsed && (
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent">
+            <Image
+              src="/images/Coat_of_arms_of_Malawi.svg.png"
+              alt="Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+          </div>
+        )}
+
+        {!mobile && !collapsed && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-accent text-muted-foreground hover:text-foreground"
+            onClick={onCollapse}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 p-3 overflow-y-auto scrollbar-thin">
+        {!mobile && collapsed && (
+          <div className="mb-4 flex justify-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full hover:bg-accent text-muted-foreground hover:text-foreground"
+              onClick={onCollapse}
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+
+        <TooltipProvider delayDuration={0}>
+          {filteredNavItems.map((item) => {
+            const Icon = item.icon;
+            const isActive =
+              item.href === "/dashboard"
+                ? pathname === "/dashboard" || pathname === "/dashboard/"
+                : pathname === item.href ||
+                pathname?.startsWith(item.href + "/");
+
+            const iconColor = getIconColor(item.category, isActive);
+
+            if (collapsed && !mobile) {
+              return (
+                <Tooltip key={item.href}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={item.href}
+                      onClick={onLinkClick}
+                      className={cn(
+                        "relative flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200 mx-auto mb-2",
+                        isActive
+                          ? "bg-accent text-primary"
+                          : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                      )}
+                    >
+                      {isActive && (
+                        <div className="absolute left-0 h-5 w-1 rounded-r-full bg-primary" />
+                      )}
+                      <Icon
+                        className={cn(
+                          "h-5 w-5",
+                          isActive ? "text-primary" : iconColor
+                        )}
+                      />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="font-medium">
+                    {item.title}
+                  </TooltipContent>
+                </Tooltip>
+              );
+            }
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onLinkClick}
+                className={cn(
+                  "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+                  isActive
+                    ? "bg-accent text-foreground"
+                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                )}
+              >
+                {isActive && (
+                  <div className="absolute left-0 h-5 w-1 rounded-r-full bg-primary" />
+                )}
+                <Icon
+                  className={cn(
+                    "h-5 w-5 transition-colors duration-200",
+                    isActive ? "text-primary" : iconColor
+                  )}
+                />
+                <span className="flex-1 truncate">{item.title}</span>
+              </Link>
+            );
+          })}
+        </TooltipProvider>
       </nav>
 
       {/* Footer decoration */}
-      <div className="relative z-10 border-t border-border/50 p-4 bg-card/50 backdrop-blur-sm">
-        <a
-          href="https://reverbc-official.netlify.app"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
-        >
-          <span className="font-medium">🛠️ REVER ENGINEERING</span>
-        </a>
-      </div>
-    </>
+      {!collapsed && (
+        <div className="p-4 mt-auto">
+          <div className="rounded-xl bg-accent/50 p-4 border border-border/50">
+            <p className="text-xs font-medium text-center text-muted-foreground">
+              © 2024 SSIMS
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -350,6 +463,8 @@ export function Sidebar({
   open,
   onOpenChange,
   mobile,
+  collapsed,
+  onCollapse,
 }: SidebarProps) {
   const handleLinkClick = () => {
     if (mobile && onOpenChange) {
@@ -360,10 +475,17 @@ export function Sidebar({
   if (mobile) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="left" className="w-72 p-0">
+        <SheetContent
+          side="left"
+          className="w-72 p-0 border-r-0 bg-card text-foreground"
+        >
           <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-          <div className="relative flex h-full w-full flex-col border-r border-border/50 bg-card/95 backdrop-blur-sm">
-            <SidebarContent userRole={userRole} onLinkClick={handleLinkClick} />
+          <div className="h-full w-full bg-card">
+            <SidebarContent
+              userRole={userRole}
+              onLinkClick={handleLinkClick}
+              mobile
+            />
           </div>
         </SheetContent>
       </Sheet>
@@ -371,8 +493,18 @@ export function Sidebar({
   }
 
   return (
-    <div className="relative hidden lg:flex h-full w-64 flex-col border-r border-border/50 bg-card/95 backdrop-blur-sm">
-      <SidebarContent userRole={userRole} />
+    <div
+      className={cn(
+        "h-full w-full rounded-2xl border border-border bg-card shadow-sm overflow-hidden transition-all duration-300"
+        // Glassmorphism effect if desired, but solid dark is safer for contrast
+        // "bg-opacity-90 backdrop-blur-xl"
+      )}
+    >
+      <SidebarContent
+        userRole={userRole}
+        collapsed={collapsed}
+        onCollapse={onCollapse}
+      />
     </div>
   );
 }

@@ -97,7 +97,7 @@ export function Breadcrumb() {
   const filteredSegments = pathSegments.filter(
     (segment) => segment !== "dashboard"
   );
-  
+
   const breadcrumbItems = filteredSegments.map((segment, index) => {
     const segmentIndex = pathSegments.indexOf(segment);
     const href = "/" + pathSegments.slice(0, segmentIndex + 1).join("/");
@@ -151,7 +151,7 @@ export function Breadcrumb() {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="mb-3 animate-fade-in-up opacity-0"
+      className="animate-fade-in-up opacity-0"
       style={{ animationDelay: "100ms" }}
     >
       <ol className="flex items-center gap-1.5 text-sm font-normal flex-wrap">
