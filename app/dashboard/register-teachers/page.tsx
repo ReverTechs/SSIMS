@@ -36,17 +36,45 @@ export default function RegisterTeachersPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input id="fullName" placeholder="Enter full name" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="title">Title</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mr">Mr.</SelectItem>
+                    <SelectItem value="mrs">Mrs.</SelectItem>
+                    <SelectItem value="ms">Ms.</SelectItem>
+                    <SelectItem value="dr">Dr.</SelectItem>
+                    <SelectItem value="prof">Prof.</SelectItem>
+                    <SelectItem value="rev">Rev.</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input id="firstName" placeholder="John" />
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="middleName">Middle Name <span className="text-muted-foreground text-xs">(Optional)</span></Label>
+                <Input id="middleName" placeholder="D." />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input id="lastName" placeholder="Doe" />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="teacher@school.mw" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="teacherId">Teacher ID</Label>
-              <Input id="teacherId" placeholder="T001" />
+              <Label htmlFor="employeeId">Employee ID</Label>
+              <Input id="employeeId" placeholder="EMP001" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="department">Department</Label>
@@ -116,9 +144,9 @@ export default function RegisterTeachersPage() {
             <div className="text-xs text-muted-foreground">
               <p>CSV format should include:</p>
               <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Full Name</li>
+                <li>Title, First Name, Last Name</li>
                 <li>Email</li>
-                <li>Teacher ID</li>
+                <li>Employee ID</li>
                 <li>Department</li>
                 <li>Subjects</li>
                 <li>Role</li>

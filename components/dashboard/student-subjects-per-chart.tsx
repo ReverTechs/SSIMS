@@ -35,27 +35,27 @@ const chartConfig = {
   },
   chrome: {
     label: "Chrome",
-    color: "var(--chart-1)",
+    color: "#3b82f6",
   },
   safari: {
     label: "Safari",
-    color: "var(--chart-2)",
+    color: "#ec4899",
   },
   firefox: {
     label: "Firefox",
-    color: "var(--chart-3)",
+    color: "#f97316",
   },
   edge: {
     label: "Edge",
-    color: "var(--chart-4)",
+    color: "#22c55e",
   },
   rever: {
     label: "rever",
-    color: "var(--chart-4)",
+    color: "#06b6d4",
   },
   other: {
     label: "Other",
-    color: "var(--chart-5)",
+    color: "#8b5cf6",
   },
 } satisfies ChartConfig;
 
