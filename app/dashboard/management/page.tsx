@@ -15,6 +15,7 @@ import {
   School,
   Users,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const managementAreas = [
   {
@@ -24,6 +25,7 @@ const managementAreas = [
     icon: School,
     statLabel: "Active Profiles",
     statValue: "56",
+    borderGradient: "border-blue-500/20",
   },
   {
     title: "Manage Students",
@@ -32,6 +34,7 @@ const managementAreas = [
     icon: Users,
     statLabel: "Enrolled Learners",
     statValue: "824",
+    borderGradient: "border-emerald-500/20",
   },
   {
     title: "Manage Calendar",
@@ -40,6 +43,7 @@ const managementAreas = [
     icon: CalendarCheck,
     statLabel: "Live Events",
     statValue: "12",
+    borderGradient: "border-amber-500/20",
   },
   {
     title: "Manage Timetable",
@@ -48,6 +52,7 @@ const managementAreas = [
     icon: Clock9,
     statLabel: "Weekly Blocks",
     statValue: "48",
+    borderGradient: "border-pink-500/20",
   },
   {
     title: "Manage Finances",
@@ -56,6 +61,7 @@ const managementAreas = [
     icon: PiggyBank,
     statLabel: "Budget Coverage",
     statValue: "86%",
+    borderGradient: "border-blue-500/20",
   },
   {
     title: "School Departments",
@@ -64,6 +70,7 @@ const managementAreas = [
     icon: PiggyBank,
     statLabel: "Active Units",
     statValue: "10",
+    borderGradient: "border-emerald-500/20",
   },
 ];
 
@@ -112,7 +119,7 @@ export default function ManagementHubPage() {
         {highlightMetrics.map((metric) => (
           <Card
             key={metric.label}
-            className="border border-border/70 bg-card/80"
+            className="border border-border/70 bg-card/80 hover:bg-accent/50 transition-colors duration-200"
           >
             <CardHeader className="pb-2">
               <CardDescription className="text-[0.7rem] uppercase tracking-wide">
@@ -138,7 +145,12 @@ export default function ManagementHubPage() {
               href={area.href}
               className="group block h-full"
             >
-              <Card className="relative h-full border border-border/70 bg-card/90 transition-colors duration-150 hover:border-primary">
+              <Card
+                className={cn(
+                  "relative h-full border bg-card/90 transition-all duration-200 hover:bg-accent/50 hover:border-primary",
+                  area.borderGradient
+                )}
+              >
                 <CardHeader className="relative z-10 pb-3">
                   <div className="flex items-center gap-3">
                     <span className="rounded-lg border border-border/70 bg-background p-2 text-amber-600">

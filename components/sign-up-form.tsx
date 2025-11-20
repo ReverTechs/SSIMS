@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Select,
   SelectContent,
@@ -35,6 +36,7 @@ export function SignUpForm({
   const [role, setRole] = useState<UserRole>("student");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -42,6 +44,12 @@ export function SignUpForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+
+    if (!isPasswordValid) {
+      setError("Please ensure your password meets all requirements.");
+      setIsLoading(false);
+      return;
+    }
 
     if (password !== repeatPassword) {
       setError("Passwords do not match");
@@ -62,7 +70,7 @@ export function SignUpForm({
           },
         },
       });
-      
+
       if (signUpError) throw signUpError;
 
       // If user is created, update the profile with role
@@ -158,12 +166,12 @@ export function SignUpForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onValidityChange={setIsPasswordValid}
                   disabled={isLoading}
                 />
               </div>

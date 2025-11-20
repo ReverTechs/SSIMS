@@ -10,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -22,6 +22,7 @@ export function UpdatePasswordForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const router = useRouter();
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -29,6 +30,12 @@ export function UpdatePasswordForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+
+    if (!isPasswordValid) {
+      setError("Please ensure your password meets all requirements.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { error } = await supabase.auth.updateUser({ password });
@@ -56,13 +63,13 @@ export function UpdatePasswordForm({
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="password">New password</Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
-                  placeholder="New password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onValidityChange={setIsPasswordValid}
+                  disabled={isLoading}
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
