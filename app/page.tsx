@@ -33,13 +33,13 @@ export default function Home() {
         <div className="w-full max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 h-16">
           {/* Logo + Title */}
           <div className="flex items-center gap-3 sm:gap-4 group cursor-pointer">
-            <div className="h-10 w-10 border border-border/40 rounded-xl overflow-hidden flex items-center justify-center bg-background/50 shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-primary shadow-lg ring-2 ring-accent/50 transition-transform duration-300 group-hover:scale-110 bg-gradient-to-br from-background/60 to-background/30 flex items-center justify-center">
               <Image
                 src="/images/Coat_of_arms_of_Malawi.svg.png"
                 alt="Coat of Arms of Malawi"
-                width={40}
-                height={40}
-                className="object-contain p-1"
+                width={48}
+                height={48}
+                className="object-cover"
               />
             </div>
             <Link
@@ -65,26 +65,37 @@ export default function Home() {
         <section className="w-full py-24 px-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background -z-10" />
           <div className="max-w-5xl mx-auto text-center space-y-6 animate-fade-in-up">
-            <div className="inline-flex items-center rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-sm font-medium text-primary backdrop-blur-sm mb-4">
+            {/*  <div className="inline-flex items-center rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-sm font-medium text-primary backdrop-blur-sm mb-4">
               <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
               Next Generation School Management
-            </div>
-
+            </div> */}
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-balance bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 pb-2">
               The future of <br className="hidden md:block" />
               school administration.
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed text-balance">
-              A powerful, intuitive platform designed to transform how secondary schools in Malawi operate.
+              A powerful, intuitive platform designed to transform how secondary
+              schools in Malawi operate.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6 items-center">
-              <Button asChild size="lg" className="rounded-full px-8 h-11 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5">
+              <Button
+                asChild
+                size="lg"
+                className="rounded-full px-8 h-11 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
+              >
                 <Link href="/auth/login">Get Started</Link>
               </Button>
-              <Button asChild variant="ghost" size="lg" className="rounded-full px-8 h-11 text-base font-medium hover:bg-secondary/80">
-                <Link href="/auth/sign-up">Create Account <span className="ml-2">→</span></Link>
+              <Button
+                asChild
+                variant="ghost"
+                size="lg"
+                className="rounded-full px-8 h-11 text-base font-medium hover:bg-secondary/80"
+              >
+                <Link href="/auth/sign-up">
+                  Create Account <span className="ml-2">→</span>
+                </Link>
               </Button>
             </div>
           </div>
@@ -111,7 +122,8 @@ export default function Home() {
                   </div>
                   <CardTitle className="text-xl">Student Management</CardTitle>
                   <CardDescription>
-                    Comprehensive profiles, enrollment tracking, and digital records.
+                    Comprehensive profiles, enrollment tracking, and digital
+                    records.
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -198,10 +210,19 @@ export default function Home() {
               Join the growing network of modern schools in Malawi.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 relative z-10">
-              <Button asChild size="lg" className="rounded-full px-8 h-11 text-base font-medium shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20 transition-all">
+              <Button
+                asChild
+                size="lg"
+                className="rounded-full px-8 h-11 text-base font-medium shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20 transition-all"
+              >
                 <Link href="/auth/login">Login Now</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full px-8 h-11 text-base font-medium bg-background border border-border/50 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-300">
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="rounded-full px-8 h-11 text-base font-medium bg-background border border-border/50 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-300"
+              >
                 <Link href="/auth/sign-up">Create Account</Link>
               </Button>
             </div>
@@ -212,7 +233,8 @@ export default function Home() {
       <footer className="w-full border-t border-border/40 bg-background/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto py-12 px-4 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2025 Malawi Secondary School Information Management System. All rights reserved.
+            © 2025 Malawi Secondary School Information Management System. All
+            rights reserved.
           </p>
         </div>
       </footer>
