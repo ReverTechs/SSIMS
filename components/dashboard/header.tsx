@@ -74,7 +74,7 @@ export function Header({ user, onMenuClick }: HeaderProps) {
   };
 
   return (
-    <header className="relative w-full rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+    <header className="relative w-full rounded-2xl border border-border bg-background/60 backdrop-blur-md shadow-sm overflow-hidden">
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 

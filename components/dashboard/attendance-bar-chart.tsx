@@ -18,7 +18,7 @@ const COLORS = {
   girls: "#ec4899", // Pink
 };
 
-export function AttendanceBarChart() {
+export function AttendanceBarChart({ height = 320 }: { height?: number }) {
   return (
     <Card className="hidden md:block group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden">
       <CardHeader className="relative">
@@ -28,7 +28,7 @@ export function AttendanceBarChart() {
             <CardDescription className="text-xs">
               Student attendance by day of the week
             </CardDescription>
-             <CardDescription className="text-xs">
+            <CardDescription className="text-xs">
               Week 13 of Term 3 (2025/2026)
             </CardDescription>
           </div>
@@ -38,7 +38,7 @@ export function AttendanceBarChart() {
         </div>
       </CardHeader>
       <CardContent className="relative">
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={height}>
           <BarChart
             data={attendanceData}
             margin={{
@@ -49,12 +49,12 @@ export function AttendanceBarChart() {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-            <XAxis 
-              dataKey="day" 
+            <XAxis
+              dataKey="day"
               stroke="hsl(var(--muted-foreground))"
               style={{ fontSize: "12px" }}
             />
-            <YAxis 
+            <YAxis
               stroke="hsl(var(--muted-foreground))"
               style={{ fontSize: "12px" }}
             />
@@ -77,15 +77,15 @@ export function AttendanceBarChart() {
               }}
               iconType="circle"
             />
-            <Bar 
-              dataKey="boys" 
-              name="Boys" 
+            <Bar
+              dataKey="boys"
+              name="Boys"
               fill={COLORS.boys}
               radius={[8, 8, 0, 0]}
             />
-            <Bar 
-              dataKey="girls" 
-              name="Girls" 
+            <Bar
+              dataKey="girls"
+              name="Girls"
               fill={COLORS.girls}
               radius={[8, 8, 0, 0]}
             />

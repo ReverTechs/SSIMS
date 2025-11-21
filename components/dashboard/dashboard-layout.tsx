@@ -68,16 +68,16 @@ export function DashboardLayout({
           onOpenChange={setSidebarOpen}
         />
 
-        <div className="flex flex-1 flex-col overflow-hidden min-w-0">
+        <div className="flex flex-1 flex-col overflow-y-auto scrollbar-hide min-w-0 relative">
           {/* Header - Floating */}
-          <div className="p-3 pb-0">
+          <div className="sticky top-0 z-50 p-3 pb-0">
             <Header
               user={user}
               onMenuClick={() => setSidebarOpen(true)}
             />
           </div>
 
-          <main className="flex-1 overflow-y-auto scrollbar-hide">
+          <main className="flex-1">
             <div className="w-full p-3 pt-4">
               {children}
             </div>

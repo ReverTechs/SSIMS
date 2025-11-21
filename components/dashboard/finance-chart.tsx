@@ -34,7 +34,7 @@ const COLORS = {
   expenses: "#ef4444", // Red
 };
 
-const AreaChartExample = ({ isAnimationActive = true }) => (
+const AreaChartExample = ({ isAnimationActive = true, height = 320 }: { isAnimationActive?: boolean; height?: number }) => (
   <Card className="hidden md:block group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden">
     <CardHeader className="relative">
       <div className="flex items-center justify-between gap-4">
@@ -55,7 +55,7 @@ const AreaChartExample = ({ isAnimationActive = true }) => (
       </div>
     </CardHeader>
     <CardContent className="relative">
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={height}>
         <AreaChart
           data={financeData}
           margin={{
