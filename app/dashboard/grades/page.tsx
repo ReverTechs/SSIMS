@@ -156,14 +156,14 @@ export default async function GradesPage({
 
     return (
       <div className="space-y-6">
-        <div>
+        {/* <div>
           <h1 className="text-3xl font-bold tracking-tight">
             Grade Management
           </h1>
           <p className="text-muted-foreground">
             Access all grade-related features and tools
           </p>
-        </div>
+        </div> */}
 
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {gradeFeatures.map((feature) => {
@@ -255,12 +255,12 @@ export default async function GradesPage({
 
   return (
     <div className="space-y-6">
-      <div>
+      {/* <div>
         <h1 className="text-3xl font-bold tracking-tight">Grades</h1>
         <p className="text-muted-foreground">
           View your academic performance across all subjects
         </p>
-      </div>
+      </div> */}
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
@@ -325,8 +325,8 @@ export default async function GradesPage({
                                   grade.overall >= 85
                                     ? "#34d399"
                                     : grade.overall >= 75
-                                    ? "#60a5fa"
-                                    : "#f59e0b",
+                                      ? "#60a5fa"
+                                      : "#f59e0b",
                               }}
                             />
                           </div>

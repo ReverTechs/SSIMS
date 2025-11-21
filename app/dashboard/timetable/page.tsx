@@ -203,12 +203,12 @@ export default function TimetablePage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      {/* <div>
         <h1 className="text-3xl font-bold tracking-tight">School Timetable</h1>
         <p className="text-muted-foreground">
           View your class schedule for the week
         </p>
-      </div>
+      </div> */}
 
       <Card>
         <CardHeader>

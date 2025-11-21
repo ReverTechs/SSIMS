@@ -104,7 +104,7 @@ export default function ManagementHubPage() {
         {/* <Badge variant="secondary" className="w-fit bg-amber-50 text-amber-800">
           Management Suite
         </Badge> */}
-        <div>
+        {/* <div>
           <h1 className="text-3xl font-semibold tracking-tight">
             Unified management control
           </h1>
@@ -112,7 +112,7 @@ export default function ManagementHubPage() {
             Navigate every operational area from one modern, visual hub. Choose
             a card to drill into fine-grained actions.
           </p>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-2 xl:grid-cols-4">
