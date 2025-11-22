@@ -4,6 +4,7 @@ import { TeacherProfileContent } from "./teacher-profile-content";
 import { StudentProfileContent } from "./student-profile-content";
 import { GuardianProfileContent } from "./guardian-profile-content";
 import { AdminProfileContent } from "./admin-profile-content";
+import { getCurrentTeacherProfile } from "@/lib/data/teachers";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
@@ -12,20 +13,41 @@ export default async function ProfilePage() {
     redirect("/auth/login");
   }
 
-  // Mock teacher data - in production, this would come from the database
-  const teacherData = {
-    teacherId: "T001",
-    department: "Mathematics",
-    subjects: ["Mathematics", "Advanced Mathematics", "Statistics"],
-    phoneNumber: "+265 991 234 567",
-    address: "Lilongwe, Malawi",
-    dateOfBirth: "1985-05-15",
-    yearsOfExperience: 8,
-    qualification: "M.Ed. Mathematics",
-    specialization: "Pure Mathematics",
-    classes: ["Form 4A", "Form 4B", "Form 5A"],
-    totalStudents: 120,
-  };
+  // Fetch teacher data from database if user is a teacher
+  let teacherData = null;
+  if (user.role === "teacher" || user.role === "headteacher" || user.role === "deputy_headteacher") {
+    const teacherProfile = await getCurrentTeacherProfile();
+    if (teacherProfile) {
+      teacherData = {
+        teacherId: teacherProfile.id,
+        department: teacherProfile.department || "",
+        subjects: teacherProfile.subjects || [],
+        phoneNumber: teacherProfile.phone || "",
+        address: teacherProfile.address || "",
+        dateOfBirth: teacherProfile.dateOfBirth || "",
+        yearsOfExperience: teacherProfile.yearsOfExperience || 0,
+        qualification: teacherProfile.qualification || "",
+        specialization: teacherProfile.specialization || "",
+        classes: teacherProfile.classes || [],
+        totalStudents: teacherProfile.totalStudents || 0,
+      };
+    } else {
+      // Fallback to empty data if teacher profile not found
+      teacherData = {
+        teacherId: user.id,
+        department: "",
+        subjects: [],
+        phoneNumber: "",
+        address: "",
+        dateOfBirth: "",
+        yearsOfExperience: 0,
+        qualification: "",
+        specialization: "",
+        classes: [],
+        totalStudents: 0,
+      };
+    }
+  }
 
   // Mock student data
   const studentData = {
