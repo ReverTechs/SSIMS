@@ -205,8 +205,8 @@ export function GuardianProfileContent({
 
           <div className="w-full">
             <TabsContent value="personal" className="mt-0 space-y-6">
-              <Card className="border-none shadow-none bg-transparent">
-                <CardContent className="p-0 space-y-6">
+              <Card className="bg-card border rounded-xl shadow-sm">
+                <CardContent className="p-6 space-y-6">
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label className="text-xs text-muted-foreground flex items-center gap-2">
@@ -237,8 +237,8 @@ export function GuardianProfileContent({
             </TabsContent>
 
             <TabsContent value="dependents" className="mt-0 space-y-6">
-              <Card className="border-none shadow-none bg-transparent">
-                <CardContent className="p-0 space-y-4">
+              <Card className="bg-card border rounded-xl shadow-sm">
+                <CardContent className="p-6 space-y-4">
                   {guardianData.dependents.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
                       No dependents linked.
@@ -281,8 +281,8 @@ export function GuardianProfileContent({
             </TabsContent>
 
             <TabsContent value="contact" className="mt-0 space-y-6">
-              <Card className="border-none shadow-none bg-transparent">
-                <CardContent className="p-0 space-y-6">
+              <Card className="bg-card border rounded-xl shadow-sm">
+                <CardContent className="p-6 space-y-6">
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label className="text-xs text-muted-foreground flex items-center gap-2">
@@ -322,7 +322,7 @@ export function GuardianProfileContent({
             </TabsContent>
 
             <TabsContent value="security" className="mt-0 space-y-6">
-              <Card className="border bg-card">
+              <Card className="bg-card border rounded-xl shadow-sm">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-md bg-amber-500/10">
