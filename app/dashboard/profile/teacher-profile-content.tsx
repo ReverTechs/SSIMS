@@ -26,6 +26,8 @@ import {
   Lock,
   CheckCircle2,
   AlertCircle,
+  Calculator,
+  Pencil,
 } from "lucide-react";
 import { User as UserType } from "@/types";
 import { createClient } from "@/lib/supabase/client";
@@ -92,14 +94,14 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
     try {
       const supabase = createClient();
       const { error } = await supabase.auth.updateUser({ password: newPassword });
-      
+
       if (error) throw error;
-      
+
       setSuccess("Password updated successfully!");
       setNewPassword("");
       setConfirmPassword("");
       setCurrentPassword("");
-      
+
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
@@ -133,105 +135,104 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
   };
 
   return (
-    <div className="space-y-6">
-      {/* Profile Header Card */}
-      <Card className="border bg-card">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-6">
-            <Avatar className="h-24 w-24 border-2 border-primary/20">
-              <AvatarImage src={user.avatar} alt={user.fullName} />
-              <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                {getInitials(user.fullName)}
-              </AvatarFallback>
+    <div className="max-w-5xl mx-auto space-y-8">
+      {/* YouTube Style Header */}
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+        <Avatar className="h-32 w-32 md:h-40 md:w-40 border-4 border-background shadow-xl">
+          <AvatarImage src={user.avatar} alt={user.fullName} className="object-cover" />
+          <AvatarFallback className="text-4xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+            {getInitials(user.fullName)}
+          </AvatarFallback>
+        </Avatar>
+
+        <div className="flex-1 space-y-4 pt-2">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{user.fullName}</h1>
+            <div className="flex items-center gap-2 text-muted-foreground mt-1">
+              <span className="text-sm md:text-base">@{user.email.split('@')[0]}</span>
+              <span className="text-xs">•</span>
+              <span className="text-sm md:text-base">{teacherData.department} Department</span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Button className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-medium px-6">
+              Edit profile
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Bar (Replacing "Create Post" area) - 3/4 Width */}
+      <div className="w-full md:w-3/4 space-y-8">
+        <div className="bg-card border rounded-xl p-4 md:p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.avatar} />
+              <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
             </Avatar>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h2 className="text-2xl font-semibold tracking-tight">{user.fullName}</h2>
-                <Badge variant="secondary" className="text-xs">
-                  {teacherData.teacherId}
-                </Badge>
+            <span className="font-medium text-sm">{user.fullName}</span>
+            <Badge variant="secondary" className="ml-auto text-xs font-normal">Public</Badge>
+          </div>
+
+          <div className="flex flex-wrap gap-4 md:gap-8 pt-2">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors cursor-default">
+              <Calculator className="h-5 w-5 text-blue-500" />
+              <div className="flex flex-col">
+                <span className="font-semibold text-sm">Mathematics</span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Specialization</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-3">{user.email}</p>
-              <div className="flex items-center gap-4 flex-wrap">
-                <div className="flex items-center gap-2 text-sm">
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">{teacherData.department}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <BookOpen className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">
-                    {teacherData.subjects.length} {teacherData.subjects.length === 1 ? "Subject" : "Subjects"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">
-                    {teacherData.totalStudents} Students
-                  </span>
-                </div>
+            </div>
+
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors cursor-default">
+              <BookOpen className="h-5 w-5 text-emerald-500" />
+              <div className="flex flex-col">
+                <span className="font-semibold text-sm">{teacherData.subjects.length} Subjects</span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Teaching</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors cursor-default">
+              <Users className="h-5 w-5 text-purple-500" />
+              <div className="flex flex-col">
+                <span className="font-semibold text-sm">{teacherData.totalStudents} Students</span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Enrolled</span>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Windows 11 Settings Style Tabs */}
-      <Tabs
-        value={activeTab}
-        onValueChange={(val) => {
-          setActiveTab(val);
-          if (val === "security" && !hasVerifiedCredentials) {
-            setSecurityDialogOpen(true);
-          }
-        }}
-        className="w-full"
-      >
-        {/* Tabs Navigation - Horizontal Row on All Screen Sizes */}
-        <div className="w-full mb-6">
-          <TabsList className="flex flex-row h-auto w-full bg-muted/30 p-1.5 gap-1.5 rounded-lg border overflow-x-auto">
-            <TabsTrigger
-              value="personal"
-              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
-            >
-              <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-              <span className="font-medium">Personal</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="teaching"
-              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
-            >
-              <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-              <span className="font-medium">Teaching</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="contact"
-              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
-            >
-              <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-              <span className="font-medium">Contact</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="security"
-              className="flex-1 justify-start gap-2 sm:gap-3 h-10 sm:h-12 px-3 sm:px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border transition-all text-xs sm:text-sm"
-            >
-              <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-              <span className="font-medium">Security</span>
-            </TabsTrigger>
-          </TabsList>
         </div>
 
-        {/* Content Area */}
-        <div className="w-full">
+        {/* YouTube Style Tabs - 3/4 Width (inherited from parent div) */}
+        <Tabs
+          value={activeTab}
+          onValueChange={(val) => {
+            setActiveTab(val);
+            if (val === "security" && !hasVerifiedCredentials) {
+              setSecurityDialogOpen(true);
+            }
+          }}
+          className="w-full"
+        >
+          <div className="border-b mb-6">
+            <TabsList className="flex h-auto w-full justify-start gap-8 bg-transparent p-0 rounded-none">
+              {["Personal", "Teaching", "Contact", "Security"].map((tab) => (
+                <TabsTrigger
+                  key={tab}
+                  value={tab.toLowerCase()}
+                  className="relative h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-foreground"
+                >
+                  {tab.toUpperCase()}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+
+          {/* Content Area */}
+          <div className="w-full">
             {/* Personal Information Tab */}
             <TabsContent value="personal" className="mt-0 space-y-6">
-              <Card className="border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-xl">Personal Information</CardTitle>
-                  <CardDescription>
-                    Your basic profile details and personal information
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <Card className="border-none shadow-none bg-transparent">
+                <CardContent className="p-0 space-y-6">
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label className="text-xs text-muted-foreground flex items-center gap-2">
@@ -282,50 +283,36 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
                       <p className="text-sm font-medium">{teacherData.specialization}</p>
                     </div>
                   </div>
-                  <Separator />
-                  <Button variant="outline" className="w-full sm:w-auto">
-                    Edit Personal Information
-                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
 
             {/* Teaching Information Tab */}
             <TabsContent value="teaching" className="mt-0 space-y-6">
-              <Card className="border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-xl">Teaching Information</CardTitle>
-                  <CardDescription>
-                    Your teaching assignments, subjects, and classes
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground flex items-center gap-2">
-                        <Building2 className="h-3.5 w-3.5" />
+              <Card className="border-none shadow-none bg-transparent">
+                <CardContent className="p-0 space-y-6">
+                  <div className="space-y-8">
+                    <div className="space-y-3">
+                      <Label className="text-sm font-semibold flex items-center gap-2">
+                        <Building2 className="h-4 w-4" />
                         Department
                       </Label>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-sm px-3 py-1">
-                          {teacherData.department}
-                        </Badge>
-                      </div>
+                      <Badge variant="secondary" className="text-sm px-4 py-1.5 rounded-full">
+                        {teacherData.department}
+                      </Badge>
                     </div>
 
-                    <Separator />
-
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground flex items-center gap-2 mb-3">
-                        <BookOpen className="h-3.5 w-3.5" />
-                        Subjects Teaching ({teacherData.subjects.length})
+                    <div className="space-y-3">
+                      <Label className="text-sm font-semibold flex items-center gap-2">
+                        <BookOpen className="h-4 w-4" />
+                        Subjects Teaching
                       </Label>
                       <div className="flex flex-wrap gap-2">
                         {teacherData.subjects.map((subject, index) => (
                           <Badge
                             key={index}
                             variant="outline"
-                            className="text-sm px-3 py-1.5 bg-gradient-to-br from-blue-500/10 to-purple-600/10 border-blue-500/20"
+                            className="text-sm px-4 py-1.5 rounded-full bg-background"
                           >
                             {subject}
                           </Badge>
@@ -333,50 +320,21 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
                       </div>
                     </div>
 
-                    <Separator />
-
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground flex items-center gap-2 mb-3">
-                        <Users className="h-3.5 w-3.5" />
-                        Classes Assigned ({teacherData.classes.length})
+                    <div className="space-y-3">
+                      <Label className="text-sm font-semibold flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        Classes Assigned
                       </Label>
                       <div className="flex flex-wrap gap-2">
                         {teacherData.classes.map((className, index) => (
                           <Badge
                             key={index}
                             variant="outline"
-                            className="text-sm px-3 py-1.5"
+                            className="text-sm px-4 py-1.5 rounded-full bg-background"
                           >
                             {className}
                           </Badge>
                         ))}
-                      </div>
-                    </div>
-
-                    <Separator />
-
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="p-4 rounded-lg bg-muted/50 border">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-md bg-blue-500/10">
-                            <BookOpen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground">Total Subjects</p>
-                            <p className="text-lg font-semibold">{teacherData.subjects.length}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-4 rounded-lg bg-muted/50 border">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 rounded-md bg-emerald-500/10">
-                            <Users className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground">Total Students</p>
-                            <p className="text-lg font-semibold">{teacherData.totalStudents}</p>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -386,14 +344,8 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
 
             {/* Contact Information Tab */}
             <TabsContent value="contact" className="mt-0 space-y-6">
-              <Card className="border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-xl">Contact Information</CardTitle>
-                  <CardDescription>
-                    Your contact details and communication preferences
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <Card className="border-none shadow-none bg-transparent">
+                <CardContent className="p-0 space-y-6">
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label className="text-xs text-muted-foreground flex items-center gap-2">
@@ -417,15 +369,14 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
                       <p className="text-sm font-medium">{teacherData.address}</p>
                     </div>
                   </div>
-                  <Separator />
-                  <Button variant="outline" className="w-full sm:w-auto">
+                  <Button variant="outline" className="rounded-full">
                     Update Contact Information
                   </Button>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Security Tab - gated by credentials dialog */}
+            {/* Security Tab */}
             <TabsContent value="security" className="mt-0 space-y-6">
               <Card className="border bg-card">
                 <CardHeader>
@@ -516,8 +467,10 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
                 </CardContent>
               </Card>
             </TabsContent>
-        </div>
-      </Tabs>
+          </div>
+        </Tabs>
+      </div>
+
       <Dialog open={securityDialogOpen} onOpenChange={setSecurityDialogOpen}>
         <DialogContent className="rounded-2xl sm:rounded-2xl md:rounded-2xl">
           <DialogHeader>
@@ -581,4 +534,3 @@ export function TeacherProfileContent({ user, teacherData }: TeacherProfileConte
     </div>
   );
 }
-
