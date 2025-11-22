@@ -69,6 +69,19 @@ export default function RegisterTeachersPage() {
               </div>
             </div>
             <div className="space-y-2">
+              {/* <Label htmlFor="gender">Gender <span className="text-red-500">*</span></Label> */}
+              <Label htmlFor="gender">Gender</Label>
+              <Select required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="teacher@school.mw" />
             </div>
