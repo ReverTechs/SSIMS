@@ -96,10 +96,14 @@ export default async function ProfilePage() {
         </p>
       </div> */}
 
-      {user.role === "teacher" || 
-       user.role === "headteacher" || 
+      {user.role === "teacher" ||
+       user.role === "headteacher" ||
        user.role === "deputy_headteacher" ? (
-        <TeacherProfileContent user={user} teacherData={teacherData} />
+        teacherData ? (
+          <TeacherProfileContent user={user} teacherData={teacherData} />
+        ) : (
+          <div>Loading teacher data...</div>
+        )
       ) : user.role === "student" ? (
         <StudentProfileContent user={user} studentData={studentData} />
       ) : user.role === "guardian" ? (
