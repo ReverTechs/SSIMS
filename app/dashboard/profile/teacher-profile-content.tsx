@@ -430,7 +430,7 @@ export function TeacherProfileContent({
     try {
       const result = await updateTeacherProfile(teacherData.teacherId, {
         firstName: personalForm.firstName.trim(),
-        middleName: personalForm.middleName.trim() || undefined,
+        middleName: personalForm.middleName.trim(),
         lastName: personalForm.lastName.trim(),
         email: personalForm.email.trim(),
         gender: personalForm.gender
@@ -440,8 +440,8 @@ export function TeacherProfileContent({
         yearsOfExperience: personalForm.yearsOfExperience
           ? parseInt(personalForm.yearsOfExperience, 10)
           : undefined,
-        qualification: personalForm.qualification.trim() || undefined,
-        specialization: personalForm.specialization.trim() || undefined,
+        qualification: personalForm.qualification.trim(),
+        specialization: personalForm.specialization.trim(),
       });
 
       if (result.success) {
@@ -471,8 +471,8 @@ export function TeacherProfileContent({
 
     try {
       const result = await updateTeacherProfile(teacherData.teacherId, {
-        phoneNumber: contactForm.phone.trim() || undefined,
-        address: contactForm.address.trim() || undefined,
+        phoneNumber: contactForm.phone.trim(),
+        address: contactForm.address.trim(),
       });
 
       if (result.success) {
@@ -548,9 +548,11 @@ export function TeacherProfileContent({
 
           <div className="flex flex-wrap gap-4 md:gap-8 pt-2">
             <div className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors cursor-default">
-              <Calculator className="h-5 w-5 text-blue-500" />
+              <GraduationCap className="h-5 w-5 text-blue-500" />
               <div className="flex flex-col">
-                <span className="font-semibold text-sm">Mathematics</span>
+                <span className="font-semibold text-sm">
+                  {teacherData.specialization || "N/A"}
+                </span>
                 <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
                   Specialization
                 </span>
@@ -734,10 +736,10 @@ export function TeacherProfileContent({
                         className="text-sm px-4 py-1.5 rounded-full"
                       >
                         {teacherData.departments &&
-                        teacherData.departments.length > 0
+                          teacherData.departments.length > 0
                           ? teacherData.departments
-                              .map((d) => d.name)
-                              .join(", ")
+                            .map((d) => d.name)
+                            .join(", ")
                           : teacherData.department || "Unassigned"}
                       </Badge>
                     </div>
@@ -1600,10 +1602,10 @@ export function TeacherProfileContent({
               {departments.filter(
                 (dept) => !teachingForm.departmentIds.includes(dept.id)
               ).length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  All available departments have been added.
-                </p>
-              )}
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    All available departments have been added.
+                  </p>
+                )}
             </div>
           </div>
           <DialogFooter>
