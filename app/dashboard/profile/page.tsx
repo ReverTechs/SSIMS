@@ -16,12 +16,17 @@ export default async function ProfilePage() {
 
   // Fetch teacher data from database if user is a teacher
   let teacherData = null;
-  if (user.role === "teacher" || user.role === "headteacher" || user.role === "deputy_headteacher") {
+  if (
+    user.role === "teacher" ||
+    user.role === "headteacher" ||
+    user.role === "deputy_headteacher"
+  ) {
     const teacherProfile = await getCurrentTeacherProfile();
     if (teacherProfile) {
       teacherData = {
         teacherId: teacherProfile.id,
-        department: teacherProfile.departments?.map(d => d.name).join(", ") || "",
+        department:
+          teacherProfile.departments?.map((d) => d.name).join(", ") || "",
         departmentId: teacherProfile.departments?.[0]?.id || "",
         departments: teacherProfile.departments || [],
         subjects: teacherProfile.subjects || [],
@@ -126,9 +131,9 @@ export default async function ProfilePage() {
       </div> */}
 
       {user.role === "teacher" ||
-        user.role === "headteacher" ||
-        user.role === "deputy_headteacher" ? (
-        <TeacherProfileContent user={user} teacherData={teacherData!} />
+      user.role === "headteacher" ||
+      user.role === "deputy_headteacher" ? (
+        <TeacherProfileContent user={user} teacherData={teacherData} />
       ) : user.role === "student" ? (
         <StudentProfileContent user={user} studentData={studentData!} />
       ) : user.role === "guardian" ? (
