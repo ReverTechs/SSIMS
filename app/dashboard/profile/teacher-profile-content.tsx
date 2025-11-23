@@ -61,6 +61,7 @@ import { useRouter } from "next/navigation";
 
 interface TeacherData {
   teacherId: string;
+  title?: string;
   department: string;
 
   departmentId?: string; // Kept for backward compatibility
@@ -164,6 +165,7 @@ export function TeacherProfileContent({
 
   // Personal Information Form State
   const [personalForm, setPersonalForm] = useState({
+    title: teacherData.title || "",
     firstName: initialName.firstName,
     middleName: initialName.middleName,
     lastName: initialName.lastName,
@@ -259,6 +261,7 @@ export function TeacherProfileContent({
   const handleOpenPersonalDialog = () => {
     const parsed = parseName(user.fullName);
     setPersonalForm({
+      title: teacherData.title || "",
       firstName: parsed.firstName,
       middleName: parsed.middleName,
       lastName: parsed.lastName,
@@ -298,51 +301,59 @@ export function TeacherProfileContent({
     });
     setTeachingError(null);
     setTeachingSuccess(null);
-
-    // Fetch departments, subjects, and classes
-    try {
-      const supabase = createClient();
-
-      // Fetch departments
-      const { data: depts } = await supabase
-        .from("departments")
-        .select("id, name, code")
-        .order("name", { ascending: true });
-      setDepartments(depts || []);
-
-      // Fetch subjects
-      const { data: subs } = await supabase
-        .from("subjects")
-        .select("id, name, code, department_id")
-        .order("name", { ascending: true });
-      setSubjects(
-        (subs || []).map((s) => ({
-          id: s.id,
-          name: s.name,
-          code: s.code,
-          departmentId: s.department_id,
-        }))
-      );
-
-      // Fetch classes
-      const { data: cls } = await supabase
-        .from("classes")
-        .select("id, name, grade_level, academic_year")
-        .order("grade_level", { ascending: true })
-        .order("name", { ascending: true });
-      setClasses(
-        (cls || []).map((c) => ({
-          id: c.id,
-          name: c.name,
-          gradeLevel: c.grade_level,
-          academicYear: c.academic_year,
-        }))
-      );
-    } catch (err) {
-      console.error("Error fetching teaching data:", err);
-    }
-
     setTeachingDialogOpen(true);
+
+    // Only fetch if we haven't already
+    if (departments.length === 0 || subjects.length === 0 || classes.length === 0) {
+      try {
+        const supabase = createClient();
+
+        const [deptsResult, subsResult, clsResult] = await Promise.all([
+          // Fetch departments
+          supabase
+            .from("departments")
+            .select("id, name, code")
+            .order("name", { ascending: true }),
+          // Fetch subjects
+          supabase
+            .from("subjects")
+            .select("id, name, code, department_id")
+            .order("name", { ascending: true }),
+          // Fetch classes
+          supabase
+            .from("classes")
+            .select("id, name, grade_level, academic_year")
+            .order("grade_level", { ascending: true })
+            .order("name", { ascending: true }),
+        ]);
+
+        if (deptsResult.data) setDepartments(deptsResult.data);
+
+        if (subsResult.data) {
+          setSubjects(
+            subsResult.data.map((s) => ({
+              id: s.id,
+              name: s.name,
+              code: s.code,
+              departmentId: s.department_id,
+            }))
+          );
+        }
+
+        if (clsResult.data) {
+          setClasses(
+            clsResult.data.map((c) => ({
+              id: c.id,
+              name: c.name,
+              gradeLevel: c.grade_level,
+              academicYear: c.academic_year,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error("Error fetching teaching data:", err);
+      }
+    }
   };
 
   // Handle teaching form submission
@@ -429,6 +440,7 @@ export function TeacherProfileContent({
 
     try {
       const result = await updateTeacherProfile(teacherData.teacherId, {
+        title: personalForm.title.trim(),
         firstName: personalForm.firstName.trim(),
         middleName: personalForm.middleName.trim(),
         lastName: personalForm.lastName.trim(),
@@ -1013,7 +1025,7 @@ export function TeacherProfileContent({
 
       {/* Edit Personal Information Dialog */}
       <Dialog open={personalDialogOpen} onOpenChange={setPersonalDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Personal Information</DialogTitle>
             <DialogDescription>
@@ -1034,127 +1046,161 @@ export function TeacherProfileContent({
               </AlertDescription>
             </Alert>
           )}
-          <form onSubmit={handlePersonalSubmit} className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First Name *</Label>
-                <Input
-                  id="firstName"
-                  value={personalForm.firstName}
-                  onChange={(e) =>
-                    setPersonalForm({
-                      ...personalForm,
-                      firstName: e.target.value,
-                    })
-                  }
-                  required
-                  placeholder="First name"
-                />
+          <form onSubmit={handlePersonalSubmit} className="space-y-6">
+            <div className="space-y-6">
+              {/* Row 1: Name Details */}
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-12 sm:col-span-2 space-y-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Select
+                    value={personalForm.title}
+                    onValueChange={(value) =>
+                      setPersonalForm({ ...personalForm, title: value })
+                    }
+                  >
+                    <SelectTrigger id="title">
+                      <SelectValue placeholder="Title" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Mr">Mr.</SelectItem>
+                      <SelectItem value="Mrs">Mrs.</SelectItem>
+                      <SelectItem value="Ms">Ms.</SelectItem>
+                      <SelectItem value="Dr">Dr.</SelectItem>
+                      <SelectItem value="Prof">Prof.</SelectItem>
+                      <SelectItem value="Rev">Rev.</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="col-span-12 sm:col-span-4 space-y-2">
+                  <Label htmlFor="firstName">First Name *</Label>
+                  <Input
+                    id="firstName"
+                    value={personalForm.firstName}
+                    onChange={(e) =>
+                      setPersonalForm({
+                        ...personalForm,
+                        firstName: e.target.value,
+                      })
+                    }
+                    placeholder="First Name"
+                    required
+                  />
+                </div>
+                <div className="col-span-12 sm:col-span-3 space-y-2">
+                  <Label htmlFor="middleName">Middle Name</Label>
+                  <Input
+                    id="middleName"
+                    value={personalForm.middleName}
+                    onChange={(e) =>
+                      setPersonalForm({
+                        ...personalForm,
+                        middleName: e.target.value,
+                      })
+                    }
+                    placeholder="Optional"
+                  />
+                </div>
+                <div className="col-span-12 sm:col-span-3 space-y-2">
+                  <Label htmlFor="lastName">Last Name *</Label>
+                  <Input
+                    id="lastName"
+                    value={personalForm.lastName}
+                    onChange={(e) =>
+                      setPersonalForm({
+                        ...personalForm,
+                        lastName: e.target.value,
+                      })
+                    }
+                    required
+                    placeholder="Last name"
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="middleName">Middle Name</Label>
-                <Input
-                  id="middleName"
-                  value={personalForm.middleName}
-                  onChange={(e) =>
-                    setPersonalForm({
-                      ...personalForm,
-                      middleName: e.target.value,
-                    })
-                  }
-                  placeholder="Middle name (optional)"
-                />
+
+              {/* Row 2: Contact & Bio */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={personalForm.email}
+                    onChange={(e) =>
+                      setPersonalForm({ ...personalForm, email: e.target.value })
+                    }
+                    required
+                    placeholder="email@example.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="gender">Gender</Label>
+                  <Select
+                    value={personalForm.gender}
+                    onValueChange={(value) =>
+                      setPersonalForm({ ...personalForm, gender: value })
+                    }
+                  >
+                    <SelectTrigger id="gender">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                  <Input
+                    id="dateOfBirth"
+                    type="date"
+                    value={personalForm.dateOfBirth}
+                    onChange={(e) =>
+                      setPersonalForm({
+                        ...personalForm,
+                        dateOfBirth: e.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name *</Label>
-                <Input
-                  id="lastName"
-                  value={personalForm.lastName}
-                  onChange={(e) =>
-                    setPersonalForm({
-                      ...personalForm,
-                      lastName: e.target.value,
-                    })
-                  }
-                  required
-                  placeholder="Last name"
-                />
+
+              {/* Row 3: Professional Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="yearsOfExperience">Years of Experience</Label>
+                  <Input
+                    id="yearsOfExperience"
+                    type="number"
+                    min="0"
+                    value={personalForm.yearsOfExperience}
+                    onChange={(e) =>
+                      setPersonalForm({
+                        ...personalForm,
+                        yearsOfExperience: e.target.value,
+                      })
+                    }
+                    placeholder="0"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="qualification">Qualification</Label>
+                  <Input
+                    id="qualification"
+                    value={personalForm.qualification}
+                    onChange={(e) =>
+                      setPersonalForm({
+                        ...personalForm,
+                        qualification: e.target.value,
+                      })
+                    }
+                    placeholder="e.g., B.Ed, M.Sc"
+                  />
+                </div>
               </div>
+
+              {/* Row 4: Specialization */}
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={personalForm.email}
-                  onChange={(e) =>
-                    setPersonalForm({ ...personalForm, email: e.target.value })
-                  }
-                  required
-                  placeholder="email@example.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
-                <Select
-                  value={personalForm.gender}
-                  onValueChange={(value) =>
-                    setPersonalForm({ ...personalForm, gender: value })
-                  }
-                >
-                  <SelectTrigger id="gender">
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={personalForm.dateOfBirth}
-                  onChange={(e) =>
-                    setPersonalForm({
-                      ...personalForm,
-                      dateOfBirth: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="yearsOfExperience">Years of Experience</Label>
-                <Input
-                  id="yearsOfExperience"
-                  type="number"
-                  min="0"
-                  value={personalForm.yearsOfExperience}
-                  onChange={(e) =>
-                    setPersonalForm({
-                      ...personalForm,
-                      yearsOfExperience: e.target.value,
-                    })
-                  }
-                  placeholder="0"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="qualification">Qualification</Label>
-                <Input
-                  id="qualification"
-                  value={personalForm.qualification}
-                  onChange={(e) =>
-                    setPersonalForm({
-                      ...personalForm,
-                      qualification: e.target.value,
-                    })
-                  }
-                  placeholder="e.g., B.Ed, M.Sc"
-                />
-              </div>
-              <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="specialization">Specialization</Label>
                 <Input
                   id="specialization"
@@ -1185,10 +1231,10 @@ export function TeacherProfileContent({
             </DialogFooter>
           </form>
         </DialogContent>
-      </Dialog>
+      </Dialog >
 
       {/* Edit Contact Information Dialog */}
-      <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
+      < Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen} >
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit Contact Information</DialogTitle>
@@ -1251,10 +1297,10 @@ export function TeacherProfileContent({
             </DialogFooter>
           </form>
         </DialogContent>
-      </Dialog>
+      </Dialog >
 
       {/* Edit Teaching Information Dialog */}
-      <Dialog open={teachingDialogOpen} onOpenChange={setTeachingDialogOpen}>
+      < Dialog open={teachingDialogOpen} onOpenChange={setTeachingDialogOpen} >
         <DialogContent className="max-w-[95vw] sm:max-w-3xl lg:max-w-4xl xl:max-w-5xl w-full max-h-[95vh] overflow-hidden p-0 gap-0 flex flex-col">
           {/* Fixed Header */}
           <div className="flex-shrink-0 px-6 pt-6 pb-4 border-b">
@@ -1543,10 +1589,10 @@ export function TeacherProfileContent({
             </DialogFooter>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog >
 
       {/* Add Department Dialog - Nested */}
-      <Dialog
+      < Dialog
         open={addDepartmentDialogOpen}
         onOpenChange={(open) => {
           setAddDepartmentDialogOpen(open);
@@ -1557,7 +1603,8 @@ export function TeacherProfileContent({
             // Reset temp selection when closing without saving
             setTempSelectedDeptIds([]);
           }
-        }}
+        }
+        }
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -1649,7 +1696,7 @@ export function TeacherProfileContent({
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
-    </div>
+      </Dialog >
+    </div >
   );
 }

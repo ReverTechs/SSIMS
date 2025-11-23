@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 export interface TeacherProfile {
   id: string;
   name: string;
+  title?: string;
   email: string;
   phone?: string;
   departments?: { id: string; name: string }[];
@@ -171,6 +172,7 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
   return {
     id: teacherData.id,
     name: fullName,
+    title: teacherData.title || undefined,
     email: profile.email,
     phone: teacherData.phone_number || undefined,
     departments: departments.length > 0 ? departments : undefined,

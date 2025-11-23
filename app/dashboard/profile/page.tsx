@@ -25,6 +25,7 @@ export default async function ProfilePage() {
     if (teacherProfile) {
       teacherData = {
         teacherId: teacherProfile.id,
+        title: teacherProfile.title || "",
         department:
           teacherProfile.departments?.map((d) => d.name).join(", ") || "",
         departmentId: teacherProfile.departments?.[0]?.id || "",
@@ -131,8 +132,8 @@ export default async function ProfilePage() {
       </div> */}
 
       {user.role === "teacher" ||
-      user.role === "headteacher" ||
-      user.role === "deputy_headteacher" ? (
+        user.role === "headteacher" ||
+        user.role === "deputy_headteacher" ? (
         teacherData ? (
           <TeacherProfileContent user={user} teacherData={teacherData} />
         ) : (

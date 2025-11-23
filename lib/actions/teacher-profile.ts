@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 export interface UpdateTeacherProfileData {
   // Profile fields
+  title?: string;
   firstName?: string;
   middleName?: string;
   lastName?: string;
@@ -63,6 +64,7 @@ export async function updateTeacherProfile(
 
     // Prepare teacher updates
     const teacherUpdates: Record<string, any> = {};
+    if (data.title !== undefined) teacherUpdates.title = data.title.trim() || null;
     if (data.phoneNumber !== undefined) teacherUpdates.phone_number = data.phoneNumber.trim() || null;
     if (data.gender !== undefined) teacherUpdates.gender = data.gender;
     if (data.dateOfBirth !== undefined) teacherUpdates.date_of_birth = data.dateOfBirth || null;
