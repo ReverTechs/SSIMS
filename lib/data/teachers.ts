@@ -5,14 +5,16 @@ export interface TeacherProfile {
   name: string;
   email: string;
   phone?: string;
-  department?: string;
+  departments?: { id: string; name: string }[];
   subjects?: string[];
+  subjectIds?: string[];
   gender?: "male" | "female";
   dateOfBirth?: string;
   yearsOfExperience?: number;
   qualification?: string;
   specialization?: string;
   classes?: string[];
+  classIds?: string[];
   totalStudents?: number;
   address?: string;
 }
@@ -40,9 +42,11 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
       address,
       employee_id,
       title,
-      departments!teachers_department_id_fkey(name),
-      teacher_subjects(subjects(name)),
-      teacher_classes(classes(name))
+      department_id,
+      departments!teachers_department_id_fkey(id, name),
+      teacher_departments(departments(id, name)),
+      teacher_subjects(subjects(id, name)),
+      teacher_classes(classes(id, name))
     `)
     .eq("id", teacherId)
     .maybeSingle();
@@ -103,19 +107,47 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
   const middleName = profile.middle_name ? ` ${profile.middle_name}` : "";
   const fullName = `${title} ${profile.first_name}${middleName} ${profile.last_name}`.trim();
 
-  // Extract subjects array
+  // Extract subjects array and IDs
   const subjects = Array.isArray(teacherData.teacher_subjects)
     ? teacherData.teacher_subjects
-        .map((ts: any) => ts?.subjects?.name)
-        .filter((name: string | undefined): name is string => Boolean(name))
+      .map((ts: any) => ts?.subjects?.name)
+      .filter((name: string | undefined): name is string => Boolean(name))
+    : [];
+  const subjectIds = Array.isArray(teacherData.teacher_subjects)
+    ? teacherData.teacher_subjects
+      .map((ts: any) => ts?.subjects?.id)
+      .filter((id: string | undefined): id is string => Boolean(id))
     : [];
 
-  // Extract classes array
+  // Extract classes array and IDs
   const classes = Array.isArray(teacherData.teacher_classes)
     ? teacherData.teacher_classes
-        .map((tc: any) => tc?.classes?.name)
-        .filter((name: string | undefined): name is string => Boolean(name))
+      .map((tc: any) => tc?.classes?.name)
+      .filter((name: string | undefined): name is string => Boolean(name))
     : [];
+  const classIds = Array.isArray(teacherData.teacher_classes)
+    ? teacherData.teacher_classes
+      .map((tc: any) => tc?.classes?.id)
+      .filter((id: string | undefined): id is string => Boolean(id))
+    : [];
+
+  // Extract departments
+  const departments = Array.isArray(teacherData.teacher_departments)
+    ? teacherData.teacher_departments
+      .map((td: any) => ({
+        id: td?.departments?.id,
+        name: td?.departments?.name,
+      }))
+      .filter((d: { id: string; name: string }) => Boolean(d.id && d.name))
+    : [];
+
+  // Fallback for backward compatibility if migration hasn't run or data is mixed
+  if (departments.length === 0 && teacherData.department_id && (teacherData.departments as any)?.name) {
+    departments.push({
+      id: teacherData.department_id,
+      name: (teacherData.departments as any).name,
+    });
+  }
 
   // Count total students (if students table exists)
   let totalStudents = 0;
@@ -123,7 +155,7 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
     const classIds = Array.isArray(teacherData.teacher_classes)
       ? teacherData.teacher_classes.map((tc: any) => tc?.classes?.id).filter(Boolean)
       : [];
-    
+
     if (classIds.length > 0) {
       const { count } = await supabase
         .from("students")
@@ -141,14 +173,16 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
     name: fullName,
     email: profile.email,
     phone: teacherData.phone_number || undefined,
-    department: (teacherData.departments as any)?.name || undefined,
+    departments: departments.length > 0 ? departments : undefined,
     subjects: subjects.length > 0 ? subjects : undefined,
+    subjectIds: subjectIds.length > 0 ? subjectIds : undefined,
     gender: teacherData.gender || undefined,
     dateOfBirth: teacherData.date_of_birth || undefined,
     yearsOfExperience: teacherData.years_of_experience || undefined,
     qualification: teacherData.qualification || undefined,
     specialization: teacherData.specialization || undefined,
     classes: classes.length > 0 ? classes : undefined,
+    classIds: classIds.length > 0 ? classIds : undefined,
     totalStudents: totalStudents > 0 ? totalStudents : undefined,
     address: teacherData.address || undefined,
   };

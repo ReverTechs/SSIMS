@@ -33,7 +33,8 @@ interface Teacher {
   name: string;
   email: string;
   phone?: string;
-  department?: string;
+  department?: string; // Kept for backward compatibility
+  departments?: { id: string; name: string }[]; // Multiple departments support
   subjects?: string[];
   gender?: "male" | "female";
   dateOfBirth?: string;
@@ -106,14 +107,18 @@ export function TeacherProfileView({ teacher, open, onOpenChange }: TeacherProfi
                 
                 {/* Quick Stats */}
                 <div className="flex items-center gap-4 sm:gap-6 flex-wrap pt-2">
-                  {teacher.department && (
+                  {(teacher.departments && teacher.departments.length > 0) || teacher.department ? (
                     <div className="flex items-center gap-2 text-xs sm:text-sm">
                       <div className="p-1.5 rounded-md bg-blue-500/10">
                         <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <span className="font-medium">{teacher.department}</span>
+                      <span className="font-medium">
+                        {teacher.departments && teacher.departments.length > 0
+                          ? teacher.departments.map(d => d.name).join(", ")
+                          : teacher.department || "Unassigned"}
+                      </span>
                     </div>
-                  )}
+                  ) : null}
                   {teacher.subjects && teacher.subjects.length > 0 && (
                     <div className="flex items-center gap-2 text-xs sm:text-sm">
                       <div className="p-1.5 rounded-md bg-purple-500/10">
@@ -267,15 +272,32 @@ export function TeacherProfileView({ teacher, open, onOpenChange }: TeacherProfi
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4 sm:space-y-6">
-                        {teacher.department && (
+                        {((teacher.departments && teacher.departments.length > 0) || teacher.department) && (
                           <div className="space-y-3">
-                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2 mb-3">
                               <Building2 className="h-3.5 w-3.5" />
-                              Department
+                              {teacher.departments && teacher.departments.length > 1 ? "Departments" : "Department"}
+                              {teacher.departments && teacher.departments.length > 1 && (
+                                <span className="text-xs text-muted-foreground">({teacher.departments.length})</span>
+                              )}
                             </Label>
-                            <Badge variant="secondary" className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
-                              {teacher.department}
-                            </Badge>
+                            <div className="flex flex-wrap gap-2">
+                              {teacher.departments && teacher.departments.length > 0 ? (
+                                teacher.departments.map((dept, index) => (
+                                  <Badge
+                                    key={dept.id || index}
+                                    variant="secondary"
+                                    className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
+                                  >
+                                    {dept.name}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <Badge variant="secondary" className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
+                                  {teacher.department || "Unassigned"}
+                                </Badge>
+                              )}
+                            </div>
                             <Separator />
                           </div>
                         )}

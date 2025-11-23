@@ -5,6 +5,7 @@ import { StudentProfileContent } from "./student-profile-content";
 import { GuardianProfileContent } from "./guardian-profile-content";
 import { AdminProfileContent } from "./admin-profile-content";
 import { getCurrentTeacherProfile } from "@/lib/data/teachers";
+import { getCurrentStudentProfile } from "@/lib/data/students";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
@@ -20,8 +21,11 @@ export default async function ProfilePage() {
     if (teacherProfile) {
       teacherData = {
         teacherId: teacherProfile.id,
-        department: teacherProfile.department || "",
+        department: teacherProfile.departments?.map(d => d.name).join(", ") || "",
+        departmentId: teacherProfile.departments?.[0]?.id || "",
+        departments: teacherProfile.departments || [],
         subjects: teacherProfile.subjects || [],
+        subjectIds: teacherProfile.subjectIds || [],
         phoneNumber: teacherProfile.phone || "",
         address: teacherProfile.address || "",
         dateOfBirth: teacherProfile.dateOfBirth || "",
@@ -29,13 +33,16 @@ export default async function ProfilePage() {
         qualification: teacherProfile.qualification || "",
         specialization: teacherProfile.specialization || "",
         classes: teacherProfile.classes || [],
+        classIds: teacherProfile.classIds || [],
         totalStudents: teacherProfile.totalStudents || 0,
+        gender: teacherProfile.gender,
       };
     } else {
       // Fallback to empty data if teacher profile not found
       teacherData = {
         teacherId: user.id,
         department: "",
+        departments: [],
         subjects: [],
         phoneNumber: "",
         address: "",
@@ -49,18 +56,40 @@ export default async function ProfilePage() {
     }
   }
 
-  // Mock student data
-  const studentData = {
-    studentId: "S001",
-    className: "Form 3A",
-    subjects: ["Mathematics", "English", "Biology", "Geography"],
-    phoneNumber: "+265 998 765 432",
-    address: "Blantyre, Malawi",
-    dateOfBirth: "2007-08-23",
-    guardianName: "John Banda",
-    guardianPhone: "+265 991 111 222",
-    guardianRelationship: "Father",
-  };
+  // Fetch student data from database if user is a student
+  let studentData = null;
+  if (user.role === "student") {
+    const studentProfile = await getCurrentStudentProfile();
+    if (studentProfile) {
+      studentData = studentProfile;
+    } else {
+      // Fallback to empty data if student profile not found
+      studentData = {
+        studentId: user.id,
+        className: "",
+        subjects: [],
+        phoneNumber: "",
+        address: "",
+        dateOfBirth: "",
+        guardianName: "",
+        guardianPhone: "",
+        guardianRelationship: "",
+      };
+    }
+  } else {
+    // Mock data for other roles (or just empty)
+    studentData = {
+      studentId: "S001",
+      className: "Form 3A",
+      subjects: ["Mathematics", "English", "Biology", "Geography"],
+      phoneNumber: "+265 998 765 432",
+      address: "Blantyre, Malawi",
+      dateOfBirth: "2007-08-23",
+      guardianName: "John Banda",
+      guardianPhone: "+265 991 111 222",
+      guardianRelationship: "Father",
+    };
+  }
 
   // Mock guardian data
   const guardianData = {
@@ -96,12 +125,12 @@ export default async function ProfilePage() {
         </p>
       </div> */}
 
-      {user.role === "teacher" || 
-       user.role === "headteacher" || 
-       user.role === "deputy_headteacher" ? (
-        <TeacherProfileContent user={user} teacherData={teacherData} />
+      {user.role === "teacher" ||
+        user.role === "headteacher" ||
+        user.role === "deputy_headteacher" ? (
+        <TeacherProfileContent user={user} teacherData={teacherData!} />
       ) : user.role === "student" ? (
-        <StudentProfileContent user={user} studentData={studentData} />
+        <StudentProfileContent user={user} studentData={studentData!} />
       ) : user.role === "guardian" ? (
         <GuardianProfileContent user={user} guardianData={guardianData} />
       ) : user.role === "admin" ? (

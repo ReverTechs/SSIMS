@@ -1,11 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   User,
   Mail,
@@ -19,7 +39,12 @@ import {
   Award,
   Briefcase,
   CheckCircle2,
+  Pencil,
+  AlertCircle,
+  Loader2,
 } from "lucide-react";
+import { updateTeacherProfile } from "@/lib/actions/teacher-profile";
+import { useRouter } from "next/navigation";
 
 interface Teacher {
   id: string;
@@ -43,6 +68,53 @@ interface TeacherProfilePageProps {
 }
 
 export function TeacherProfilePage({ teacher }: TeacherProfilePageProps) {
+  const router = useRouter();
+  const [personalDialogOpen, setPersonalDialogOpen] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  // Parse name to extract first, middle, and last name
+  const parseName = (fullName: string) => {
+    // Remove title prefixes (Mr., Mrs., Ms., Dr., Prof., Rev.)
+    const nameWithoutTitle = fullName.replace(/^(Mr\.?|Mrs\.?|Ms\.?|Dr\.?|Prof\.?|Rev\.?)\s+/i, "").trim();
+    const parts = nameWithoutTitle.split(/\s+/);
+    if (parts.length === 1) {
+      return { firstName: parts[0], middleName: "", lastName: "" };
+    } else if (parts.length === 2) {
+      return { firstName: parts[0], middleName: "", lastName: parts[1] };
+    } else {
+      return {
+        firstName: parts[0],
+        middleName: parts.slice(1, -1).join(" "),
+        lastName: parts[parts.length - 1],
+      };
+    }
+  };
+
+  // Initialize parsed name
+  const initialName = parseName(teacher.name);
+
+  // Personal Information Form State
+  const [personalForm, setPersonalForm] = useState({
+    firstName: initialName.firstName,
+    middleName: initialName.middleName,
+    lastName: initialName.lastName,
+    email: teacher.email,
+    gender: teacher.gender || "",
+    dateOfBirth: teacher.dateOfBirth ? new Date(teacher.dateOfBirth).toISOString().split("T")[0] : "",
+    yearsOfExperience: teacher.yearsOfExperience?.toString() || "",
+    qualification: teacher.qualification || "",
+    specialization: teacher.specialization || "",
+  });
+
+  // Contact Information Form State
+  const [contactForm, setContactForm] = useState({
+    phone: teacher.phone || "",
+    address: teacher.address || "",
+  });
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -50,6 +122,99 @@ export function TeacherProfilePage({ teacher }: TeacherProfilePageProps) {
       .join("")
       .toUpperCase()
       .slice(0, 2);
+  };
+
+
+  // Initialize form when dialog opens
+  const handleOpenPersonalDialog = () => {
+    const parsed = parseName(teacher.name);
+    setPersonalForm({
+      firstName: parsed.firstName,
+      middleName: parsed.middleName,
+      lastName: parsed.lastName,
+      email: teacher.email,
+      gender: teacher.gender || "",
+      dateOfBirth: teacher.dateOfBirth ? new Date(teacher.dateOfBirth).toISOString().split("T")[0] : "",
+      yearsOfExperience: teacher.yearsOfExperience?.toString() || "",
+      qualification: teacher.qualification || "",
+      specialization: teacher.specialization || "",
+    });
+    setError(null);
+    setSuccess(null);
+    setPersonalDialogOpen(true);
+  };
+
+  const handleOpenContactDialog = () => {
+    setContactForm({
+      phone: teacher.phone || "",
+      address: teacher.address || "",
+    });
+    setError(null);
+    setSuccess(null);
+    setContactDialogOpen(true);
+  };
+
+  const handlePersonalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const result = await updateTeacherProfile(teacher.id, {
+        firstName: personalForm.firstName.trim(),
+        middleName: personalForm.middleName.trim() || undefined,
+        lastName: personalForm.lastName.trim(),
+        email: personalForm.email.trim(),
+        gender: personalForm.gender as "male" | "female" | undefined,
+        dateOfBirth: personalForm.dateOfBirth || undefined,
+        yearsOfExperience: personalForm.yearsOfExperience ? parseInt(personalForm.yearsOfExperience, 10) : undefined,
+        qualification: personalForm.qualification.trim() || undefined,
+        specialization: personalForm.specialization.trim() || undefined,
+      });
+
+      if (result.success) {
+        setSuccess("Profile updated successfully!");
+        setTimeout(() => {
+          setPersonalDialogOpen(false);
+          router.refresh();
+        }, 1500);
+      } else {
+        setError(result.error || "Failed to update profile");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const result = await updateTeacherProfile(teacher.id, {
+        phoneNumber: contactForm.phone.trim() || undefined,
+        address: contactForm.address.trim() || undefined,
+      });
+
+      if (result.success) {
+        setSuccess("Contact information updated successfully!");
+        setTimeout(() => {
+          setContactDialogOpen(false);
+          router.refresh();
+        }, 1500);
+      } else {
+        setError(result.error || "Failed to update contact information");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -172,15 +337,28 @@ export function TeacherProfilePage({ teacher }: TeacherProfilePageProps) {
             <TabsContent value="personal" className="mt-0 space-y-4">
               <Card className="border shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-blue-500/10">
-                      <User className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-blue-500/10">
+                        <User className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg sm:text-xl">Personal Information</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">
+                          Basic profile details and personal information
+                        </CardDescription>
+                      </div>
                     </div>
-                    Personal Information
-                  </CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">
-                    Basic profile details and personal information
-                  </CardDescription>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleOpenPersonalDialog}
+                      className="gap-2"
+                    >
+                      <Pencil className="h-4 w-4" />
+                      <span className="hidden sm:inline">Edit</span>
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4 sm:space-y-6">
                   <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
@@ -361,15 +539,28 @@ export function TeacherProfilePage({ teacher }: TeacherProfilePageProps) {
             <TabsContent value="contact" className="mt-0 space-y-4">
               <Card className="border shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-emerald-500/10">
-                      <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-emerald-500/10">
+                        <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg sm:text-xl">Contact Information</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">
+                          Contact details and communication information
+                        </CardDescription>
+                      </div>
                     </div>
-                    Contact Information
-                  </CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">
-                    Contact details and communication information
-                  </CardDescription>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleOpenContactDialog}
+                      className="gap-2"
+                    >
+                      <Pencil className="h-4 w-4" />
+                      <span className="hidden sm:inline">Edit</span>
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4 sm:space-y-6">
                   <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
@@ -405,6 +596,205 @@ export function TeacherProfilePage({ teacher }: TeacherProfilePageProps) {
           </div>
         </Tabs>
       </div>
+
+      {/* Edit Personal Information Dialog */}
+      <Dialog open={personalDialogOpen} onOpenChange={setPersonalDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Personal Information</DialogTitle>
+            <DialogDescription>
+              Update your personal details and information.
+            </DialogDescription>
+          </DialogHeader>
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert className="border-emerald-500/50 bg-emerald-500/10">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <AlertDescription className="text-emerald-700 dark:text-emerald-300">
+                {success}
+              </AlertDescription>
+            </Alert>
+          )}
+          <form onSubmit={handlePersonalSubmit} className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name *</Label>
+                <Input
+                  id="firstName"
+                  value={personalForm.firstName}
+                  onChange={(e) => setPersonalForm({ ...personalForm, firstName: e.target.value })}
+                  required
+                  placeholder="First name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="middleName">Middle Name</Label>
+                <Input
+                  id="middleName"
+                  value={personalForm.middleName}
+                  onChange={(e) => setPersonalForm({ ...personalForm, middleName: e.target.value })}
+                  placeholder="Middle name (optional)"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name *</Label>
+                <Input
+                  id="lastName"
+                  value={personalForm.lastName}
+                  onChange={(e) => setPersonalForm({ ...personalForm, lastName: e.target.value })}
+                  required
+                  placeholder="Last name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={personalForm.email}
+                  onChange={(e) => setPersonalForm({ ...personalForm, email: e.target.value })}
+                  required
+                  placeholder="email@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="gender">Gender</Label>
+                <Select
+                  value={personalForm.gender}
+                  onValueChange={(value) => setPersonalForm({ ...personalForm, gender: value })}
+                >
+                  <SelectTrigger id="gender">
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                <Input
+                  id="dateOfBirth"
+                  type="date"
+                  value={personalForm.dateOfBirth}
+                  onChange={(e) => setPersonalForm({ ...personalForm, dateOfBirth: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="yearsOfExperience">Years of Experience</Label>
+                <Input
+                  id="yearsOfExperience"
+                  type="number"
+                  min="0"
+                  value={personalForm.yearsOfExperience}
+                  onChange={(e) => setPersonalForm({ ...personalForm, yearsOfExperience: e.target.value })}
+                  placeholder="0"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="qualification">Qualification</Label>
+                <Input
+                  id="qualification"
+                  value={personalForm.qualification}
+                  onChange={(e) => setPersonalForm({ ...personalForm, qualification: e.target.value })}
+                  placeholder="e.g., B.Ed, M.Sc"
+                />
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="specialization">Specialization</Label>
+                <Input
+                  id="specialization"
+                  value={personalForm.specialization}
+                  onChange={(e) => setPersonalForm({ ...personalForm, specialization: e.target.value })}
+                  placeholder="e.g., Mathematics, Science"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setPersonalDialogOpen(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Contact Information Dialog */}
+      <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edit Contact Information</DialogTitle>
+            <DialogDescription>
+              Update your contact details and address.
+            </DialogDescription>
+          </DialogHeader>
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert className="border-emerald-500/50 bg-emerald-500/10">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <AlertDescription className="text-emerald-700 dark:text-emerald-300">
+                {success}
+              </AlertDescription>
+            </Alert>
+          )}
+          <form onSubmit={handleContactSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={contactForm.phone}
+                onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                placeholder="+1234567890"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="address">Address</Label>
+              <Textarea
+                id="address"
+                value={contactForm.address}
+                onChange={(e) => setContactForm({ ...contactForm, address: e.target.value })}
+                placeholder="Enter your full address"
+                rows={4}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setContactDialogOpen(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -16,7 +16,6 @@ import {
   Phone,
   MapPin,
   Calendar,
-  GraduationCap,
   BookOpen,
   School,
   Users,
@@ -36,6 +35,8 @@ interface StudentData {
   phoneNumber?: string;
   address?: string;
   dateOfBirth?: string;
+  gender?: "male" | "female";
+  studentType?: "internal" | "external";
   guardianName?: string;
   guardianPhone?: string;
   guardianRelationship?: string;
@@ -159,7 +160,9 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
               <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
             </Avatar>
             <span className="font-medium text-sm">{user.fullName}</span>
-            <Badge variant="secondary" className="ml-auto text-xs font-normal">Student</Badge>
+            <Badge variant="secondary" className="ml-auto text-xs font-normal capitalize">
+              {studentData.studentType || "Student"}
+            </Badge>
           </div>
 
           <div className="flex flex-wrap gap-4 md:gap-8 pt-2">
@@ -234,6 +237,15 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
                       </Label>
                       <p className="text-sm font-medium">{user.email}</p>
                     </div>
+                    {studentData.gender && (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                          <User className="h-3.5 w-3.5" />
+                          Gender
+                        </Label>
+                        <p className="text-sm font-medium capitalize">{studentData.gender}</p>
+                      </div>
+                    )}
                     {studentData.dateOfBirth && (
                       <div className="space-y-2">
                         <Label className="text-xs text-muted-foreground flex items-center gap-2">
@@ -516,5 +528,3 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
     </div>
   );
 }
-
-

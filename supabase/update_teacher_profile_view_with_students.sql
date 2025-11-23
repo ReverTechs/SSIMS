@@ -84,3 +84,4 @@ GROUP BY
 GRANT SELECT ON teacher_profile_view TO authenticated;
 
 
+
