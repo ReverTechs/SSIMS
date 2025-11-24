@@ -8,14 +8,14 @@ export default async function RegisterTeachersPage() {
   const departments = await getDepartments();
   return (
     <div className="space-y-6">
-      <div>
+      {/* <div>
         <h1 className="text-3xl font-bold tracking-tight">
           Register Teachers
         </h1>
         <p className="text-muted-foreground">
           Register and verify new teachers in the system
         </p>
-      </div>
+      </div> */}
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>

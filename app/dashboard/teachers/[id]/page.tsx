@@ -8,7 +8,7 @@ export default async function TeacherProfilePageRoute({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  
+
   // Fetch teacher data from database
   const teacher = await getTeacherProfile(id);
 

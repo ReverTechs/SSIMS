@@ -212,3 +212,137 @@ export async function getCurrentTeacherProfile(): Promise<TeacherProfile | null>
   return getTeacherProfile(user.id);
 }
 
+
+/**
+ * Fetch all teachers with their profile data
+ */
+export async function getAllTeachers(): Promise<TeacherProfile[]> {
+  const supabase = await createClient();
+
+  const { data: teachersData, error } = await supabase
+    .from("teachers")
+    .select(`
+      id,
+      phone_number,
+      gender,
+      date_of_birth,
+      years_of_experience,
+      qualification,
+      specialization,
+      address,
+      employee_id,
+      title,
+      teacher_type,
+      department_id,
+      departments!teachers_department_id_fkey(id, name),
+      teacher_departments(departments(id, name)),
+      teacher_subjects(subjects(id, name)),
+      teacher_classes(classes(id, name))
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching teachers:", error);
+    return [];
+  }
+
+  if (!teachersData) {
+    return [];
+  }
+
+  // Fetch profiles for all teachers
+  const teacherIds = teachersData.map((t) => t.id);
+  const { data: profiles, error: profilesError } = await supabase
+    .from("profiles")
+    .select("id, email, first_name, middle_name, last_name")
+    .in("id", teacherIds);
+
+  if (profilesError) {
+    console.error("Error fetching teacher profiles:", profilesError);
+    return [];
+  }
+
+  const profilesMap = new Map(profiles?.map((p) => [p.id, p]));
+
+  const titleMap: Record<string, string> = {
+    Mr: "Mr.",
+    Mrs: "Mrs.",
+    Ms: "Ms.",
+    Dr: "Dr.",
+    Prof: "Prof.",
+    Rev: "Rev.",
+  };
+
+  return teachersData.map((teacher) => {
+    const profile = profilesMap.get(teacher.id);
+    const title = teacher.title ? titleMap[teacher.title] || "" : "";
+    const middleName = profile?.middle_name ? ` ${profile.middle_name}` : "";
+    const fullName = profile
+      ? `${title} ${profile.first_name}${middleName} ${profile.last_name}`.trim()
+      : "Unknown Teacher";
+
+    // Extract subjects
+    const subjects = Array.isArray(teacher.teacher_subjects)
+      ? teacher.teacher_subjects
+        .map((ts: any) => ts?.subjects?.name)
+        .filter((name: string | undefined): name is string => Boolean(name))
+      : [];
+
+    const subjectIds = Array.isArray(teacher.teacher_subjects)
+      ? teacher.teacher_subjects
+        .map((ts: any) => ts?.subjects?.id)
+        .filter((id: string | undefined): id is string => Boolean(id))
+      : [];
+
+    // Extract classes
+    const classes = Array.isArray(teacher.teacher_classes)
+      ? teacher.teacher_classes
+        .map((tc: any) => tc?.classes?.name)
+        .filter((name: string | undefined): name is string => Boolean(name))
+      : [];
+
+    const classIds = Array.isArray(teacher.teacher_classes)
+      ? teacher.teacher_classes
+        .map((tc: any) => tc?.classes?.id)
+        .filter((id: string | undefined): id is string => Boolean(id))
+      : [];
+
+    // Extract departments
+    const departments = Array.isArray(teacher.teacher_departments)
+      ? teacher.teacher_departments
+        .map((td: any) => ({
+          id: td?.departments?.id,
+          name: td?.departments?.name,
+        }))
+        .filter((d: { id: string; name: string }) => Boolean(d.id && d.name))
+      : [];
+
+    // Fallback for backward compatibility
+    if (departments.length === 0 && teacher.department_id && (teacher.departments as any)?.name) {
+      departments.push({
+        id: teacher.department_id,
+        name: (teacher.departments as any).name,
+      });
+    }
+
+    return {
+      id: teacher.id,
+      name: fullName,
+      title: teacher.title || undefined,
+      email: profile?.email || "",
+      phone: teacher.phone_number || undefined,
+      departments: departments.length > 0 ? departments : undefined,
+      subjects: subjects.length > 0 ? subjects : undefined,
+      subjectIds: subjectIds.length > 0 ? subjectIds : undefined,
+      gender: teacher.gender || undefined,
+      dateOfBirth: teacher.date_of_birth || undefined,
+      yearsOfExperience: teacher.years_of_experience || undefined,
+      qualification: teacher.qualification || undefined,
+      specialization: teacher.specialization || undefined,
+      classes: classes.length > 0 ? classes : undefined,
+      classIds: classIds.length > 0 ? classIds : undefined,
+      address: teacher.address || undefined,
+      teacherType: teacher.teacher_type || undefined,
+    };
+  });
+}

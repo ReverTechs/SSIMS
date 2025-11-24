@@ -1,3 +1,5 @@
+'use server'
+
 import { createClient } from "@/lib/supabase/server";
 
 export interface Class {
@@ -8,9 +10,6 @@ export interface Class {
   capacity?: number;
 }
 
-/**
- * Fetch all classes from the database
- */
 export async function getClasses(): Promise<Class[]> {
   const supabase = await createClient();
 
@@ -39,8 +38,4 @@ export async function getClasses(): Promise<Class[]> {
     capacity: c.capacity,
   }));
 }
-
-
-
-
 
