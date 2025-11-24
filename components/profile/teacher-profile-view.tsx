@@ -44,6 +44,7 @@ interface Teacher {
   classes?: string[];
   totalStudents?: number;
   address?: string;
+  teacherType?: "permanent" | "temporary" | "tp";
 }
 
 interface TeacherProfileViewProps {
@@ -96,8 +97,8 @@ export function TeacherProfileView({ teacher, open, onOpenChange }: TeacherProfi
               <div className="space-y-2">
                 <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">{teacher.name}</h2>
-                  <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1">
-                    {teacher.id}
+                  <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1 capitalize">
+                    {teacher.teacherType || "Teacher"}
                   </Badge>
                   <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                     <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -148,18 +149,27 @@ export function TeacherProfileView({ teacher, open, onOpenChange }: TeacherProfi
           <Tabs defaultValue="personal" className="w-full h-full flex flex-col">
             {/* Tabs Navigation */}
             <div className="w-full mb-6 flex-shrink-0">
-              <TabsList className="w-full">
-                <TabsTrigger value="personal" className="flex-1">
-                  <User className="h-4 w-4" />
-                  <span>Personal</span>
+              <TabsList className="w-full h-auto p-1 bg-muted/50 rounded-lg">
+                <TabsTrigger
+                  value="personal"
+                  className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Personal
                 </TabsTrigger>
-                <TabsTrigger value="teaching" className="flex-1">
-                  <GraduationCap className="h-4 w-4" />
-                  <span>Teaching</span>
+                <TabsTrigger
+                  value="teaching"
+                  className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+                >
+                  <GraduationCap className="h-4 w-4 mr-2" />
+                  Teaching
                 </TabsTrigger>
-                <TabsTrigger value="contact" className="flex-1">
-                  <Phone className="h-4 w-4" />
-                  <span>Contact</span>
+                <TabsTrigger
+                  value="contact"
+                  className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  Contact
                 </TabsTrigger>
               </TabsList>
             </div>
