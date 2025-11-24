@@ -78,6 +78,7 @@ interface TeacherData {
   classIds?: string[];
   totalStudents: number;
   gender?: "male" | "female";
+  teacherType?: "permanent" | "temporary" | "tp";
 }
 
 interface TeacherProfileContentProps {
@@ -537,9 +538,14 @@ export function TeacherProfileContent({
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-medium px-6">
-              Edit profile
-            </Button>
+            <Badge
+              className={`rounded-full bg-foreground text-background hover:bg-foreground/90 font-medium px-6 py-2 ${teacherData.teacherType !== "tp" ? "capitalize" : ""
+                }`}
+            >
+              {teacherData.teacherType === "tp"
+                ? "TP (Teaching Practice)"
+                : teacherData.teacherType}
+            </Badge>
           </div>
         </div>
       </div>

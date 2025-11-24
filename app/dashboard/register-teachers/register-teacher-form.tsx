@@ -118,6 +118,19 @@ export function RegisterTeacherForm({ departments }: RegisterTeacherFormProps) {
           </SelectContent>
         </Select>
       </div>
+      <div className="space-y-2">
+        <Label htmlFor="teacherType">Teacher Type</Label>
+        <Select defaultValue="permanent">
+          <SelectTrigger>
+            <SelectValue placeholder="Select teacher type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="permanent">Permanent</SelectItem>
+            <SelectItem value="temporary">Temporary</SelectItem>
+            <SelectItem value="tp">TP (Teaching Practice)</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="flex items-center space-x-2">
         <Checkbox id="verify" />
         <Label htmlFor="verify" className="text-sm">
@@ -128,7 +141,7 @@ export function RegisterTeacherForm({ departments }: RegisterTeacherFormProps) {
         <Shield className="h-4 w-4 mr-2" />
         Register Teacher
       </Button>
-    </div>
+    </div >
   );
 }
 

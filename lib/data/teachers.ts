@@ -18,6 +18,7 @@ export interface TeacherProfile {
   classIds?: string[];
   totalStudents?: number;
   address?: string;
+  teacherType?: "permanent" | "temporary" | "tp";
 }
 
 /**
@@ -43,6 +44,7 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
       address,
       employee_id,
       title,
+      teacher_type,
       department_id,
       departments!teachers_department_id_fkey(id, name),
       teacher_departments(departments(id, name)),
@@ -187,6 +189,7 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
     classIds: classIds.length > 0 ? classIds : undefined,
     totalStudents: totalStudents > 0 ? totalStudents : undefined,
     address: teacherData.address || undefined,
+    teacherType: teacherData.teacher_type || undefined,
   };
 }
 

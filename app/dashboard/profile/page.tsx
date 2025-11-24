@@ -42,6 +42,7 @@ export default async function ProfilePage() {
         classIds: teacherProfile.classIds || [],
         totalStudents: teacherProfile.totalStudents || 0,
         gender: teacherProfile.gender,
+        teacherType: teacherProfile.teacherType,
       };
     } else {
       // Fallback to empty data if teacher profile not found
