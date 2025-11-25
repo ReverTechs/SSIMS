@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, GraduationCap, UserCheck, ArrowRight } from "lucide-react";
+import { Users, GraduationCap, UserCheck, ArrowRight, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function RegistrationPage() {
@@ -31,6 +31,15 @@ export default function RegistrationPage() {
       gradient: "from-green-500 to-emerald-600",
       iconBg: "bg-green-500/10",
       iconColor: "text-green-600 dark:text-green-400",
+    },
+    {
+      title: "Register Admins",
+      description: "Add new administrators to the system. Manage system access and roles.",
+      href: "/dashboard/register-admin",
+      icon: Shield,
+      gradient: "from-orange-500 to-red-600",
+      iconBg: "bg-orange-500/10",
+      iconColor: "text-orange-600 dark:text-orange-400",
     },
   ];
 
