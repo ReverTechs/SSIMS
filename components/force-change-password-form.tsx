@@ -48,6 +48,7 @@ export function ForceChangePasswordForm({
             return;
         }
 
+
         try {
             // Update password and clear the must_change_password flag
             const { error } = await supabase.auth.updateUser({
@@ -57,9 +58,14 @@ export function ForceChangePasswordForm({
 
             if (error) throw error;
 
+            // CRITICAL: Refresh the session to ensure new metadata is loaded
+            // This prevents the redirect loop by ensuring middleware sees the updated flag
+            const { error: refreshError } = await supabase.auth.refreshSession();
+            if (refreshError) throw refreshError;
+
             setSuccess("Password updated successfully! Redirecting...");
 
-            // Force a hard reload to ensure middleware sees the new session/cookie state
+            // Redirect to dashboard after session is refreshed
             setTimeout(() => {
                 window.location.href = "/dashboard";
             }, 1500);
