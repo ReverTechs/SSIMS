@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useRouter } from "next/navigation";   
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function LoginForm({
@@ -101,10 +101,9 @@ export function LoginForm({
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
             </fieldset>
-
           </form>
         </CardContent>
       </Card>
-    </div >
+    </div>
   );
 }

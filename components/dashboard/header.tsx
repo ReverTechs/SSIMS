@@ -92,7 +92,7 @@ export function Header({ user, onMenuClick }: HeaderProps) {
           </Button>
 
           {/* Breadcrumbs - Integrated into header */}
-          <div className="flex-1 min-w-0 overflow-x-auto scrollbar-hide">
+          <div className="flex-1 min-w-0 overflow-x-auto scrollbar-hide hidden md:block">
             <Breadcrumb />
           </div>
         </div>
@@ -112,14 +112,14 @@ export function Header({ user, onMenuClick }: HeaderProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="relative h-9 w-9 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
+            className="relative h-9 w-9 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-all hidden md:block"
           >
             <Bell className="h-4 w-4" />
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border-2 border-card" />
           </Button>
 
           {/* Theme switcher */}
-          <div className="px-1">
+          <div className="px-1 hidden md:block">
             <ThemeSwitcher />
           </div>
 
