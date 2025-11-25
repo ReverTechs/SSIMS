@@ -75,6 +75,7 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
 
         const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
             email: userEmail,
+            password: 'Student@sssims2025', // Default password - user should change on first login
             email_confirm: true,
             user_metadata: {
                 first_name: firstName,

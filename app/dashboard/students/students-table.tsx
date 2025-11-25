@@ -14,7 +14,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { MoreHorizontal, Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { StudentListItem } from "@/lib/data/students";
 import { Button } from "@/components/ui/button";
@@ -53,7 +53,6 @@ type StudentsTableProps = {
 };
 
 export function StudentsTable({ students }: StudentsTableProps) {
-  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -158,13 +157,11 @@ export function StudentsTable({ students }: StudentsTableProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => {
-                  router.push(`/dashboard/students/${student.id}`);
-                }}
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                View Profile
+              <DropdownMenuItem asChild>
+                <Link href={`/dashboard/students/${student.id}`}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  View Profile
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Email Guardian</DropdownMenuItem>
@@ -320,8 +317,3 @@ export function StudentsTable({ students }: StudentsTableProps) {
     </Card>
   );
 }
-
-
-
-
-

@@ -27,6 +27,7 @@ export interface StudentListItem {
     guardianName?: string;
     guardianPhone?: string;
     guardianRelationship?: string;
+    studentType?: "internal" | "external";
 }
 
 /**
@@ -125,6 +126,7 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
       created_at,
       date_of_birth,
       gender,
+      student_type,
       address,
       phone_number,
       guardian_name,
@@ -178,6 +180,80 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
             guardianName: student.guardian_name || undefined,
             guardianPhone: student.guardian_phone || undefined,
             guardianRelationship: student.guardian_relationship || undefined,
+            studentType: student.student_type || undefined,
         };
     });
+}
+
+/**
+ * Fetch student profile for display in profile view page
+ * Returns data in format expected by StudentProfilePage component
+ */
+export async function getStudentProfileForView(studentId: string): Promise<StudentListItem | null> {
+    const supabase = await createClient();
+
+    // Fetch student with all related data
+    const { data: studentData, error } = await supabase
+        .from("students")
+        .select(`
+      id,
+      date_of_birth,
+      gender,
+      student_type,
+      address,
+      phone_number,
+      guardian_name,
+      guardian_phone,
+      guardian_relationship,
+      classes(name),
+      student_subjects(subjects(name)),
+      profiles(email, first_name, middle_name, last_name)
+    `)
+        .eq("id", studentId)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Error fetching student for view:", {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+            studentId,
+            fullError: JSON.stringify(error, null, 2),
+        });
+        return null;
+    }
+
+    if (!studentData) {
+        console.warn(`Student record not found for ID: ${studentId}`);
+        return null;
+    }
+
+    const profile = studentData.profiles as any;
+    const nameParts = [
+        profile?.first_name,
+        profile?.middle_name,
+        profile?.last_name,
+    ].filter(Boolean);
+
+    const subjects = Array.isArray(studentData.student_subjects)
+        ? studentData.student_subjects
+            .map((ss: any) => ss?.subjects?.name)
+            .filter((name: string | undefined): name is string => Boolean(name))
+        : [];
+
+    return {
+        id: studentData.id,
+        name: nameParts.length > 0 ? nameParts.join(" ") : "Unknown Student",
+        email: profile?.email || "",
+        phone: studentData.phone_number || undefined,
+        class: (studentData.classes as any)?.name || undefined,
+        subjects,
+        gender: studentData.gender || undefined,
+        dateOfBirth: studentData.date_of_birth || undefined,
+        address: studentData.address || undefined,
+        guardianName: studentData.guardian_name || undefined,
+        guardianPhone: studentData.guardian_phone || undefined,
+        guardianRelationship: studentData.guardian_relationship || undefined,
+    };
 }

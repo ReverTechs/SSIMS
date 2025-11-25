@@ -32,6 +32,7 @@ interface Student {
   guardianName?: string;
   guardianPhone?: string;
   guardianRelationship?: string;
+  studentType?: "internal" | "external";
 }
 
 interface StudentProfilePageProps {
@@ -54,7 +55,7 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
       <div className="relative w-full h-32 lg:h-40 flex-shrink-0 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 overflow-visible rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/80 via-teal-600/80 to-cyan-600/80 rounded-lg"></div>
         <div className="absolute bottom-0 left-0 right-0 h-16 lg:h-20 bg-gradient-to-t from-background to-transparent rounded-lg"></div>
-        
+
         {/* Profile Picture - Suspended halfway down the background */}
         <div className="absolute left-4 sm:left-6 lg:left-8 bottom-0 translate-y-1/2 z-10">
           <Avatar className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 border-4 border-background shadow-xl ring-4 ring-emerald-500/10">
@@ -79,15 +80,15 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
             <div className="space-y-2">
               <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">{student.name}</h2>
-                <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1">
-                  {student.id}
+                <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1 capitalize">
+                  {student.studentType || "Student"}
                 </Badge>
                 <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
                   <span className="text-xs sm:text-sm font-medium">Verified Student</span>
                 </div>
               </div>
-              
+
               {/* Quick Stats */}
               <div className="flex items-center gap-4 sm:gap-6 flex-wrap pt-2">
                 {student.class && (
@@ -117,41 +118,31 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
       {/* Main Content Area */}
       <div className="px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
         <Tabs defaultValue="personal" className="w-full">
-          {/* Stunning Horizontal Tabs Navigation */}
+          {/* Standard Solid Tabs Navigation */}
           <div className="w-full mb-6">
-            <div className="relative">
-              {/* Background with gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 rounded-xl blur-xl"></div>
-              <TabsList className="relative flex flex-row h-auto w-full bg-gradient-to-r from-muted/50 via-muted/40 to-muted/50 backdrop-blur-sm p-1.5 gap-2 rounded-xl border border-border/50 shadow-lg">
-                <TabsTrigger
-                  value="personal"
-                  className="group relative flex-1 justify-center gap-2 sm:gap-3 h-12 sm:h-14 px-4 sm:px-6 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:via-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-emerald-500/50 data-[state=active]:scale-[1.02] transition-all duration-300 text-sm sm:text-base font-semibold hover:bg-accent/50"
-                >
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-emerald-500/20 to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <User className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                  <span className="relative z-10">Personal</span>
-                  <div className="absolute inset-0 rounded-lg ring-2 ring-emerald-500/0 group-hover:ring-emerald-500/30 transition-all duration-300"></div>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="academic"
-                  className="group relative flex-1 justify-center gap-2 sm:gap-3 h-12 sm:h-14 px-4 sm:px-6 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:via-teal-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-teal-500/50 data-[state=active]:scale-[1.02] transition-all duration-300 text-sm sm:text-base font-semibold hover:bg-accent/50"
-                >
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-teal-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                  <span className="relative z-10">Academic</span>
-                  <div className="absolute inset-0 rounded-lg ring-2 ring-teal-500/0 group-hover:ring-teal-500/30 transition-all duration-300"></div>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="contact"
-                  className="group relative flex-1 justify-center gap-2 sm:gap-3 h-12 sm:h-14 px-4 sm:px-6 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:via-cyan-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/50 data-[state=active]:scale-[1.02] transition-all duration-300 text-sm sm:text-base font-semibold hover:bg-accent/50"
-                >
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <Phone className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110" />
-                  <span className="relative z-10">Contact</span>
-                  <div className="absolute inset-0 rounded-lg ring-2 ring-cyan-500/0 group-hover:ring-cyan-500/30 transition-all duration-300"></div>
-                </TabsTrigger>
-              </TabsList>
-            </div>
+            <TabsList className="w-full h-auto p-1 bg-muted/50 rounded-lg">
+              <TabsTrigger
+                value="personal"
+                className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Personal
+              </TabsTrigger>
+              <TabsTrigger
+                value="academic"
+                className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+              >
+                <GraduationCap className="h-4 w-4 mr-2" />
+                Academic
+              </TabsTrigger>
+              <TabsTrigger
+                value="contact"
+                className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+              >
+                <Phone className="h-4 w-4 mr-2" />
+                Contact
+              </TabsTrigger>
+            </TabsList>
           </div>
 
           {/* Content Area */}
