@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 
+import { StreamType } from "@/types";
+
 export interface StudentProfile {
     studentId: string;
     className?: string;
@@ -12,6 +14,7 @@ export interface StudentProfile {
     guardianName?: string;
     guardianPhone?: string;
     guardianRelationship?: string;
+    stream?: StreamType;
 }
 
 export interface StudentListItem {
@@ -28,6 +31,7 @@ export interface StudentListItem {
     guardianPhone?: string;
     guardianRelationship?: string;
     studentType?: "internal" | "external";
+    stream?: StreamType;
 }
 
 /**
@@ -49,6 +53,7 @@ export async function getStudentProfile(studentId: string): Promise<StudentProfi
       guardian_name,
       guardian_phone,
       guardian_relationship,
+      stream,
       classes(name),
       student_subjects(subjects(name))
     `)
@@ -91,6 +96,7 @@ export async function getStudentProfile(studentId: string): Promise<StudentProfi
         guardianName: studentData.guardian_name || undefined,
         guardianPhone: studentData.guardian_phone || undefined,
         guardianRelationship: studentData.guardian_relationship || undefined,
+        stream: studentData.stream || undefined,
     };
 }
 

@@ -28,6 +28,9 @@ import { User as UserType } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+import { StudentSubjectsManager } from "@/components/dashboard/student-subjects-manager";
+import { StreamType } from "@/types";
+
 interface StudentData {
   studentId: string;
   className?: string;
@@ -40,6 +43,7 @@ interface StudentData {
   guardianName?: string;
   guardianPhone?: string;
   guardianRelationship?: string;
+  stream?: StreamType;
 }
 
 interface StudentProfileContentProps {
@@ -283,21 +287,19 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
                       </div>
                     )}
 
-                    {studentData.subjects && studentData.subjects.length > 0 && (
-                      <div className="space-y-3">
-                        <Label className="text-sm font-semibold flex items-center gap-2">
-                          <BookOpen className="h-4 w-4" />
-                          Subjects Enrolled
-                        </Label>
-                        <div className="flex flex-wrap gap-2">
-                          {studentData.subjects.map((subject, i) => (
-                            <Badge key={i} variant="outline" className="text-sm px-4 py-1.5 rounded-full bg-background">
-                              {subject}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    <div className="space-y-3">
+                      <Label className="text-sm font-semibold flex items-center gap-2">
+                        <BookOpen className="h-4 w-4" />
+                        Curriculum & Subjects
+                      </Label>
+                      <StudentSubjectsManager
+                        studentId={studentData.studentId}
+                        className={studentData.className || ""}
+                        currentSubjects={studentData.subjects || []}
+                        stream={studentData.stream}
+                        onUpdate={() => window.location.reload()}
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>

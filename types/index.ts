@@ -18,6 +18,19 @@ export interface User {
   createdAt: Date;
 }
 
+export type CurriculumLevel = "junior" | "senior";
+export type StreamType = "sciences" | "humanities" | "commercial" | "general";
+export type SubjectCategory = "core" | "sciences" | "humanities" | "commercial" | "languages" | "technical" | "other";
+
+export interface CurriculumSubject {
+  id: string;
+  subjectId: string;
+  level: CurriculumLevel;
+  stream?: StreamType;
+  isCompulsory: boolean;
+  category: SubjectCategory;
+}
+
 export interface Student extends User {
   role: "student";
   studentId: string;
@@ -30,6 +43,7 @@ export interface Student extends User {
   phoneNumber?: string;
   gender?: 'male' | 'female';
   studentType?: 'internal' | 'external';
+  stream?: StreamType;
 }
 
 
