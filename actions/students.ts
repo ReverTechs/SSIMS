@@ -81,7 +81,8 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
                 first_name: firstName,
                 middle_name: middleName,
                 last_name: lastName,
-                role: 'student'
+                role: 'student',
+                must_change_password: true,
             }
         });
 

@@ -125,6 +125,7 @@ export async function registerTeacher(
             user_metadata: {
                 first_name: firstName,
                 last_name: lastName,
+                must_change_password: true,
             },
         })
 

@@ -104,6 +104,7 @@ export async function registerAdmin(
                 first_name: firstName,
                 last_name: lastName,
                 role: 'admin', // Default role for new users
+                must_change_password: true,
             },
         })
 
