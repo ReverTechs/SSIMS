@@ -198,7 +198,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
     const selectedGender = (table.getColumn("gender")?.getFilterValue() as string[]) || [];
 
     return (
-        <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200">
+        <Card className="group relative border bg-card">
             <CardHeader>
                 <CardTitle>All Teachers</CardTitle>
                 <CardDescription>
