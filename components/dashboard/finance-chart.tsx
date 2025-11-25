@@ -35,7 +35,7 @@ const COLORS = {
 };
 
 const AreaChartExample = ({ isAnimationActive = true, height = 320 }: { isAnimationActive?: boolean; height?: number }) => (
-  <Card className="hidden md:block group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden">
+  <Card className="hidden md:block group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden rounded-2xl">
     <CardHeader className="relative">
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">

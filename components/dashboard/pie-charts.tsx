@@ -85,7 +85,7 @@ export function PieCharts() {
   return (
     <div className="flex flex-col sm:flex-row gap-3 w-full">
       {/* Students Pie Chart */}
-      <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden flex-1">
+      <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden flex-1 rounded-2xl">
         <CardHeader className="relative">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
@@ -128,7 +128,7 @@ export function PieCharts() {
       </Card>
 
       {/* Teachers Pie Chart */}
-      <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden flex-1">
+      <Card className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden flex-1 rounded-2xl">
         <CardHeader className="relative">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">

@@ -16,6 +16,7 @@ import { getGreeting } from "@/utils/getGreeting";
 import { getPermissionsForRole } from "@/lib/auth/permissions";
 import { statsRegistry } from "@/lib/dashboard/widgets";
 import FinanceChartClient from "@/components/dashboard/finance-chart-client";
+import { createClient } from "@/lib/supabase/server";
 
 const greeting = getGreeting();
 
@@ -27,6 +28,27 @@ export default async function DashboardPage() {
     .flatMap((p) => statsRegistry[p as keyof typeof statsRegistry] ?? []);
   const effectiveStats =
     stats.length > 0 ? stats : statsRegistry["stats:student:view"] ?? [];
+
+  // Fetch department for teachers
+  let departmentName = "Academic Staff";
+  if (user?.role === "teacher") {
+    const supabase = await createClient();
+    const { data: teacherData } = await supabase
+      .from("teachers")
+      .select(`
+        department_id,
+        departments (
+          name
+        )
+      `)
+      .eq("id", user.id)
+      .single();
+
+    if (teacherData?.departments) {
+      // @ts-ignore
+      departmentName = teacherData.departments.name;
+    }
+  }
 
   const events = [
     {
@@ -76,11 +98,11 @@ export default async function DashboardPage() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-lg">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/3 via-purple-600/3 to-pink-600/3 rounded-lg" />
+      <div className="relative overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/3 via-purple-600/3 to-pink-600/3 rounded-2xl" />
         <div className="relative space-y-2 sm:space-y-3">
           {/* Profile Header Card */}
-          <Card className="border bg-card">
+          <Card className="border bg-card rounded-2xl">
             <CardContent className="pt-6">
               {/* Mobile View - Column Layout */}
               <div className="flex flex-col items-center gap-4 sm:hidden">
@@ -103,20 +125,20 @@ export default async function DashboardPage() {
                   <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                     {user?.fullName ?? "Guest"}
                   </h2>
-                  {(user?.role === "teacher" ||
-                    user?.role === "headteacher" ||
-                    user?.role === "deputy_headteacher") && (
-                      <div className="flex items-center justify-center gap-2 mt-1">
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-xs font-medium text-muted-foreground">
-                          {user?.role === "headteacher"
-                            ? "Administration"
-                            : user?.role === "deputy_headteacher"
-                              ? "Administration"
-                              : "Sciences"}
-                        </span>
-                      </div>
-                    )}
+                  {user?.role && (
+                    <div className="flex items-center justify-center gap-2 mt-1">
+                      <Building2 className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {user.role === "headteacher" || user.role === "deputy_headteacher"
+                          ? "Administration"
+                          : user.role === "teacher"
+                            ? departmentName
+                            : user.role === "admin"
+                              ? "Administrator"
+                              : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -140,22 +162,22 @@ export default async function DashboardPage() {
                       {user?.fullName ?? "Guest"}
                     </h2>
                   </div>
-                  {(user?.role === "teacher" ||
-                    user?.role === "headteacher" ||
-                    user?.role === "deputy_headteacher") && (
-                      <div className="flex items-center gap-4 flex-wrap">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Building2 className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium text-muted-foreground">
-                            {user?.role === "headteacher"
-                              ? "Administration"
-                              : user?.role === "deputy_headteacher"
-                                ? "Administration"
-                                : "Sciences"}
-                          </span>
-                        </div>
+                  {user?.role && (
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium text-muted-foreground">
+                          {user.role === "headteacher" || user.role === "deputy_headteacher"
+                            ? "Administration"
+                            : user.role === "teacher"
+                              ? departmentName
+                              : user.role === "admin"
+                                ? "Administrator"
+                                : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                        </span>
                       </div>
-                    )}
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -173,7 +195,7 @@ export default async function DashboardPage() {
                 >
                   <Card
                     className={cn(
-                      "relative border bg-card hover:bg-accent/50 transition-all duration-200",
+                      "relative border bg-card hover:bg-accent/50 transition-all duration-200 rounded-2xl",
                       stat.borderGradient
                     )}
                   >
@@ -210,7 +232,7 @@ export default async function DashboardPage() {
           <div className="grid gap-2.5 sm:gap-3 grid-cols-1 lg:grid-cols-2">
             {/* Upcoming Events */}
             <Card
-              className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0"
+              className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0 rounded-2xl"
               style={{ animationDelay: "400ms" }}
             >
               <CardHeader className="relative">
@@ -255,7 +277,7 @@ export default async function DashboardPage() {
 
             {/* Today's Schedule */}
             <Card
-              className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0"
+              className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0 rounded-2xl"
               style={{ animationDelay: "500ms" }}
             >
               <CardHeader className="relative">
