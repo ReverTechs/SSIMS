@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, GraduationCap, ArrowRight } from "lucide-react";
+import { Users, GraduationCap, UserCheck, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function RegistrationPage() {
@@ -23,7 +23,17 @@ export default function RegistrationPage() {
       iconBg: "bg-purple-500/10",
       iconColor: "text-purple-600 dark:text-purple-400",
     },
+    {
+      title: "Register Guardians",
+      description: "Add new guardians/parents to the system. Link them to their students.",
+      href: "/dashboard/register-guardians",
+      icon: UserCheck,
+      gradient: "from-green-500 to-emerald-600",
+      iconBg: "bg-green-500/10",
+      iconColor: "text-green-600 dark:text-green-400",
+    },
   ];
+
 
   return (
     <div className="space-y-6">
@@ -34,7 +44,7 @@ export default function RegistrationPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         {registrationOptions.map((option, index) => {
           const Icon = option.icon;
           return (

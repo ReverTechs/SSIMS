@@ -6,6 +6,7 @@ import { GuardianProfileContent } from "./guardian-profile-content";
 import { AdminProfileContent } from "./admin-profile-content";
 import { getCurrentTeacherProfile } from "@/lib/data/teachers";
 import { getCurrentStudentProfile } from "@/lib/data/students";
+import { getCurrentGuardianProfile } from "@/lib/data/guardians";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
@@ -98,17 +99,21 @@ export default async function ProfilePage() {
     };
   }
 
-  // Mock guardian data
-  const guardianData = {
-    guardianId: "G001",
-    relationship: "Mother",
-    phoneNumber: "+265 992 222 333",
-    address: "Mzuzu, Malawi",
-    dependents: [
-      { id: "S001", name: "Blessings Chilemba", className: "Form 3A" },
-      { id: "S045", name: "Mary Chilemba", className: "Form 1B" },
-    ],
-  };
+  // Fetch guardian data from database if user is a guardian
+  let guardianData = null;
+  if (user.role === "guardian") {
+    const guardianProfile = await getCurrentGuardianProfile();
+    if (guardianProfile) {
+      guardianData = guardianProfile;
+    } else {
+      // Fallback to empty data if guardian profile not found
+      guardianData = {
+        guardianId: user.id,
+        relationship: "",
+        dependents: [],
+      };
+    }
+  }
 
   // Mock admin data
   const adminData = {
@@ -145,7 +150,7 @@ export default async function ProfilePage() {
       ) : user.role === "student" ? (
         <StudentProfileContent user={user} studentData={studentData!} />
       ) : user.role === "guardian" ? (
-        <GuardianProfileContent user={user} guardianData={guardianData} />
+        <GuardianProfileContent user={user} guardianData={guardianData!} />
       ) : user.role === "admin" ? (
         <AdminProfileContent user={user} adminData={adminData} />
       ) : null}

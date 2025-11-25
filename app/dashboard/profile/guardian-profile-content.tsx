@@ -33,22 +33,15 @@ import {
 import { User as UserType } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { updateGuardianProfile } from "@/app/actions/update-guardian-profile";
+import { Briefcase, Building2, PhoneCall } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-interface GuardianData {
-  guardianId: string;
-  relationship: string;
-  phoneNumber?: string;
-  address?: string;
-  dependents: Array<{
-    id: string;
-    name: string;
-    className?: string;
-  }>;
-}
+import { GuardianProfile } from "@/lib/data/guardians";
 
 interface GuardianProfileContentProps {
   user: UserType;
-  guardianData: GuardianData;
+  guardianData: GuardianProfile;
 }
 
 export function GuardianProfileContent({
@@ -62,9 +55,42 @@ export function GuardianProfileContent({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [securityDialogOpen, setSecurityDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [hasVerifiedCredentials, setHasVerifiedCredentials] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [email, setEmail] = useState(user.email);
+
+  // Edit form state
+  const [formData, setFormData] = useState({
+    firstName: user.fullName.split(" ")[0] || "",
+    lastName: user.fullName.split(" ").slice(1).join(" ") || "",
+    phoneNumber: guardianData.phoneNumber || "",
+    address: guardianData.address || "",
+    occupation: guardianData.occupation || "",
+    workplace: guardianData.workplace || "",
+    workPhone: guardianData.workPhone || "",
+  });
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const result = await updateGuardianProfile(formData);
+      if (result.error) {
+        throw new Error(result.error);
+      }
+      setSuccess("Profile updated successfully!");
+      setEditDialogOpen(false);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getInitials = (name: string) => {
     return name
@@ -132,7 +158,10 @@ export function GuardianProfileContent({
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-medium px-6">
+            <Button
+              className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-medium px-6"
+              onClick={() => setEditDialogOpen(true)}
+            >
               Edit profile
             </Button>
           </div>
@@ -222,15 +251,42 @@ export function GuardianProfileContent({
                       </Label>
                       <p className="text-sm font-medium">{user.email}</p>
                     </div>
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2">
                       <Label className="text-xs text-muted-foreground flex items-center gap-2">
                         <User className="h-3.5 w-3.5" />
                         Relationship
                       </Label>
                       <p className="text-sm font-medium capitalize">
-                        {guardianData.relationship}
+                        {guardianData.relationship || "Guardian"}
                       </p>
                     </div>
+                    {guardianData.occupation && (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                          <Briefcase className="h-3.5 w-3.5" />
+                          Occupation
+                        </Label>
+                        <p className="text-sm font-medium">{guardianData.occupation}</p>
+                      </div>
+                    )}
+                    {guardianData.workplace && (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                          <Building2 className="h-3.5 w-3.5" />
+                          Workplace
+                        </Label>
+                        <p className="text-sm font-medium">{guardianData.workplace}</p>
+                      </div>
+                    )}
+                    {guardianData.nationalId && (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                          <Shield className="h-3.5 w-3.5" />
+                          National ID
+                        </Label>
+                        <p className="text-sm font-medium">{guardianData.nationalId}</p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -313,8 +369,23 @@ export function GuardianProfileContent({
                         </p>
                       </div>
                     )}
+                    {guardianData.workPhone && (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                          <PhoneCall className="h-3.5 w-3.5" />
+                          Work Phone
+                        </Label>
+                        <p className="text-sm font-medium">
+                          {guardianData.workPhone}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <Button variant="outline" className="rounded-full mt-4">
+                  <Button
+                    variant="outline"
+                    className="rounded-full mt-4"
+                    onClick={() => setEditDialogOpen(true)}
+                  >
                     Update Contact Information
                   </Button>
                 </CardContent>
@@ -484,6 +555,106 @@ export function GuardianProfileContent({
                       }}
                     >
                       Cancel
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+
+            {/* Edit Profile Dialog */}
+            <Dialog
+              open={editDialogOpen}
+              onOpenChange={(open) => {
+                setEditDialogOpen(open);
+                if (open) {
+                  setFormData({
+                    firstName: user.fullName.split(" ")[0] || "",
+                    lastName: user.fullName.split(" ").slice(1).join(" ") || "",
+                    phoneNumber: guardianData.phoneNumber || "",
+                    address: guardianData.address || "",
+                    occupation: guardianData.occupation || "",
+                    workplace: guardianData.workplace || "",
+                    workPhone: guardianData.workPhone || "",
+                  });
+                }
+              }}
+            >
+              <DialogContent className="rounded-2xl sm:rounded-2xl md:rounded-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Edit Profile</DialogTitle>
+                  <DialogDescription>Update your personal and contact information.</DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleProfileUpdate} className="space-y-6">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        value={formData.firstName}
+                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        value={formData.lastName}
+                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phoneNumber">Phone Number</Label>
+                      <Input
+                        id="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="workPhone">Work Phone</Label>
+                      <Input
+                        id="workPhone"
+                        value={formData.workPhone}
+                        onChange={(e) => setFormData({ ...formData, workPhone: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="occupation">Occupation</Label>
+                      <Input
+                        id="occupation"
+                        value={formData.occupation}
+                        onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="workplace">Workplace</Label>
+                      <Input
+                        id="workplace"
+                        value={formData.workplace}
+                        onChange={(e) => setFormData({ ...formData, workplace: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="address">Address</Label>
+                      <Input
+                        id="address"
+                        value={formData.address}
+                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setEditDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={isLoading}>
+                      {isLoading ? "Saving..." : "Save Changes"}
                     </Button>
                   </div>
                 </form>
