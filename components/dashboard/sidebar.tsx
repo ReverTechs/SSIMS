@@ -15,7 +15,7 @@ import {
   Users,
   GraduationCap,
   Settings,
-  Shield,
+  FileCheck,
   AlertCircle,
   Key,
   School,
@@ -218,7 +218,7 @@ const navItems: NavItem[] = [
   {
     title: "Registration",
     href: "/dashboard/registration",
-    icon: Shield,
+    icon: FileCheck,
     roles: ["admin", "headteacher"],
     category: "security",
   },
@@ -380,7 +380,7 @@ const SidebarContent = ({
               item.href === "/dashboard"
                 ? pathname === "/dashboard" || pathname === "/dashboard/"
                 : pathname === item.href ||
-                pathname?.startsWith(item.href + "/");
+                  pathname?.startsWith(item.href + "/");
 
             const iconColor = getIconColor(item.category, isActive);
 

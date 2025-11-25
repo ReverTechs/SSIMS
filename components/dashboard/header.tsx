@@ -99,14 +99,14 @@ export function Header({ user, onMenuClick }: HeaderProps) {
 
         {/* Right side - Actions */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Search button (optional) */}
+          {/* Search button (optional) 
           <Button
             variant="ghost"
             size="icon"
             className="hidden sm:flex h-9 w-9 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
           >
             <Search className="h-4 w-4" />
-          </Button>
+          </Button>*/}
 
           {/* Notifications */}
           <Button
@@ -131,8 +131,12 @@ export function Header({ user, onMenuClick }: HeaderProps) {
                 className="relative h-10 pl-2 pr-1 rounded-xl hover:bg-accent transition-all border border-transparent hover:border-border group gap-3"
               >
                 <div className="hidden md:flex flex-col items-end mr-1">
-                  <span className="text-sm font-medium text-foreground leading-none">{user.fullName}</span>
-                  <span className="text-[10px] text-muted-foreground leading-none mt-1">{getRoleDisplayName(user.role)}</span>
+                  <span className="text-sm font-medium text-foreground leading-none">
+                    {user.fullName}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground leading-none mt-1">
+                    {getRoleDisplayName(user.role)}
+                  </span>
                 </div>
                 <Avatar className="h-8 w-8 border border-border group-hover:border-primary/50 transition-colors">
                   <AvatarImage src={user.avatar} alt={user.fullName} />
