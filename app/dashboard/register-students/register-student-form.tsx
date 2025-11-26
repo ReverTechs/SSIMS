@@ -109,10 +109,10 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                             <Label htmlFor="middleName">Middle Name</Label>
                             <Input
                                 id="middleName"
-                                placeholder="Middle Name"
+                                placeholder="(optional)"
                                 value={formData.middleName}
                                 onChange={(e) => handleChange('middleName', e.target.value)}
-                                required
+                            // required
                             />
                         </div>
                         <div className="space-y-2">

@@ -5,16 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Users, GraduationCap } from "lucide-react";
 
-// Mock data - in production, this would come from the database
-const studentsData = [
-  { name: "Boys", value: 78, fill: "var(--color-Boys)" },
-  { name: "Girls", value: 42, fill: "var(--color-Girls)" },
-];
-
-const teachersData = [
-  { name: "Males", value: 15, fill: "var(--color-Males)" },
-  { name: "Females", value: 10, fill: "var(--color-Females)" },
-];
+interface PieChartsProps {
+  studentsData: {
+    name: string;
+    value: number;
+    fill: string;
+  }[];
+  teachersData: {
+    name: string;
+    value: number;
+    fill: string;
+  }[];
+}
 
 const studentsChartConfig = {
   Boys: {
@@ -38,17 +40,22 @@ const teachersChartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PieCharts() {
+export function PieCharts({ studentsData, teachersData }: PieChartsProps) {
+  const totalStudents = studentsData.reduce((acc, curr) => acc + curr.value, 0);
+  const totalTeachers = teachersData.reduce((acc, curr) => acc + curr.value, 0);
+
   // Custom legend content to show totals
   const StudentsLegendContent = ({ payload }: any) => {
     if (!payload?.length) return null;
     return (
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3">
         {payload.map((item: any) => {
-          const value = item.value;
-          const label = item.name === "Boys" ? `Total Boys: 78` : `Total Girls: 42`;
+          // item.value is the name (e.g., "Boys"), item.payload.value is the count
+          const name = item.value;
+          const value = item.payload?.value || 0;
+          const label = name === "Boys" ? `Total Boys: ${value}` : `Total Girls: ${value}`;
           return (
-            <div key={item.value} className="flex items-center gap-1.5">
+            <div key={name} className="flex items-center gap-1.5">
               <div
                 className="h-2 w-2 shrink-0 rounded-[2px]"
                 style={{ backgroundColor: item.color }}
@@ -66,10 +73,12 @@ export function PieCharts() {
     return (
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3">
         {payload.map((item: any) => {
-          const value = item.value;
-          const label = item.name === "Males" ? `Total Males: 15` : `Total Females: 10`;
+          // item.value is the name (e.g., "Males"), item.payload.value is the count
+          const name = item.value;
+          const value = item.payload?.value || 0;
+          const label = name === "Males" ? `Total Males: ${value}` : `Total Females: ${value}`;
           return (
-            <div key={item.value} className="flex items-center gap-1.5">
+            <div key={name} className="flex items-center gap-1.5">
               <div
                 className="h-2 w-2 shrink-0 rounded-[2px]"
                 style={{ backgroundColor: item.color }}
@@ -89,7 +98,7 @@ export function PieCharts() {
         <CardHeader className="relative">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm sm:text-base font-semibold mb-0.5">Students (360)</CardTitle>
+              <CardTitle className="text-sm sm:text-base font-semibold mb-0.5">Students ({totalStudents})</CardTitle>
               <CardDescription className="text-xs">
                 Distribution by gender
               </CardDescription>
@@ -132,7 +141,7 @@ export function PieCharts() {
         <CardHeader className="relative">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm sm:text-base font-semibold mb-0.5">Teachers (25)</CardTitle>
+              <CardTitle className="text-sm sm:text-base font-semibold mb-0.5">Teachers ({totalTeachers})</CardTitle>
               <CardDescription className="text-xs">
                 Distribution by gender
               </CardDescription>

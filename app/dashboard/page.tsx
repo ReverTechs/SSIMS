@@ -18,10 +18,13 @@ import { statsRegistry } from "@/lib/dashboard/widgets";
 import FinanceChartClient from "@/components/dashboard/finance-chart-client";
 import { createClient } from "@/lib/supabase/server";
 
+import { getGenderStats } from "@/lib/data/dashboard-stats";
+
 const greeting = getGreeting();
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
+  const genderStats = await getGenderStats();
   const permissions = user ? Array.from(getPermissionsForRole(user.role)) : [];
   const stats = permissions
     .filter((p) => p.startsWith("stats:"))
@@ -330,7 +333,16 @@ export default async function DashboardPage() {
           <div className="space-y-2.5 sm:space-y-3">
             {/* Students and Teachers Pie Charts - Row Layout */}
             <div className="w-full">
-              <PieCharts />
+              <PieCharts
+                studentsData={[
+                  { name: "Boys", value: genderStats.students.male, fill: "var(--color-Boys)" },
+                  { name: "Girls", value: genderStats.students.female, fill: "var(--color-Girls)" },
+                ]}
+                teachersData={[
+                  { name: "Males", value: genderStats.teachers.male, fill: "var(--color-Males)" },
+                  { name: "Females", value: genderStats.teachers.female, fill: "var(--color-Females)" },
+                ]}
+              />
             </div>
             {/* Attendance Bar Chart - Full Width Below */}
             <div className="w-full">
