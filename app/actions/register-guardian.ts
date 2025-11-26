@@ -331,8 +331,27 @@ export async function registerGuardian(
                 console.error('Failed to rollback user creation:', deleteError)
             }
 
+            // Provide user-friendly error messages based on error code
+            let errorMessage = 'Failed to create student-guardian relationships.'
+
+            if (relationshipsError.code === '23505') {
+                // Unique constraint violation
+                if (relationshipsError.message.includes('idx_student_one_primary_guardian')) {
+                    errorMessage = 'One or more students already have a primary guardian. Please uncheck "Primary Guardian" for those students.'
+                } else if (relationshipsError.message.includes('idx_student_guardian_unique_pair')) {
+                    errorMessage = 'This guardian is already linked to one or more of the selected students. Please check your selection.'
+                } else {
+                    errorMessage = 'A duplicate relationship was detected. Please check your selections.'
+                }
+            } else if (relationshipsError.code === '23503') {
+                // Foreign key violation
+                errorMessage = 'One or more selected students no longer exist. Please refresh and try again.'
+            } else {
+                errorMessage += ' ' + relationshipsError.message
+            }
+
             return {
-                message: 'Failed to create student-guardian relationships: ' + relationshipsError.message,
+                message: errorMessage,
                 success: false,
             }
         }

@@ -15,8 +15,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Shield, ChevronDown, ChevronUp } from "lucide-react";
+import { Shield, ChevronDown, ChevronUp, UserPlus, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { StudentSelectorDialog } from "@/components/guardian/student-selector-dialog";
+import { Badge } from "@/components/ui/badge";
 
 interface RegisterGuardianFormProps {
     students: StudentOption[];
@@ -31,6 +33,7 @@ export function RegisterGuardianForm({ students }: RegisterGuardianFormProps) {
     const [isVerified, setIsVerified] = useState(false);
     const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set());
     const [expandedStudents, setExpandedStudents] = useState<Set<string>>(new Set());
+    const [selectorOpen, setSelectorOpen] = useState(false);
 
     // Reset form on success
     useEffect(() => {
@@ -70,13 +73,38 @@ export function RegisterGuardianForm({ students }: RegisterGuardianFormProps) {
         setExpandedStudents(newExpanded);
     };
 
+    const handleStudentsSelected = (studentIds: string[]) => {
+        const newSelected = new Set(studentIds);
+        setSelectedStudents(newSelected);
+        // Auto-expand newly selected students
+        const newExpanded = new Set(expandedStudents);
+        studentIds.forEach(id => {
+            if (!expandedStudents.has(id)) {
+                newExpanded.add(id);
+            }
+        });
+        setExpandedStudents(newExpanded);
+    };
+
+    const handleRemoveStudent = (studentId: string) => {
+        const newSelected = new Set(selectedStudents);
+        newSelected.delete(studentId);
+        setSelectedStudents(newSelected);
+        const newExpanded = new Set(expandedStudents);
+        newExpanded.delete(studentId);
+        setExpandedStudents(newExpanded);
+    };
+
+    // Get selected student details
+    const selectedStudentDetails = students.filter(s => selectedStudents.has(s.id));
+
     return (
         <form action={action} className="space-y-4">
             {state.message && (
                 <div
                     className={`p-4 rounded-md ${state.success
-                            ? "bg-green-50 text-green-700 border border-green-200"
-                            : "bg-red-50 text-red-700 border border-red-200"
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : "bg-red-50 text-red-700 border border-red-200"
                         }`}
                 >
                     {state.message}
@@ -249,30 +277,45 @@ export function RegisterGuardianForm({ students }: RegisterGuardianFormProps) {
 
             {/* Student Connections */}
             <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Student Connections <span className="text-red-500">*</span></h3>
+                <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Student Connections <span className="text-red-500">*</span></h3>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectorOpen(true)}
+                    >
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        {selectedStudents.size > 0 ? 'Manage Students' : 'Select Students'}
+                    </Button>
+                </div>
 
-                <div className="border rounded-md p-4 space-y-3 max-h-96 overflow-y-auto">
-                    {students.length > 0 ? (
-                        students.map((student) => {
-                            const isSelected = selectedStudents.has(student.id);
+                {selectedStudentDetails.length > 0 ? (
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Badge variant="secondary">{selectedStudentDetails.length} student{selectedStudentDetails.length !== 1 ? 's' : ''} selected</Badge>
+                        </div>
+
+                        {selectedStudentDetails.map((student) => {
                             const isExpanded = expandedStudents.has(student.id);
 
                             return (
-                                <div key={student.id} className="border rounded-md p-3 space-y-3">
+                                <div key={student.id} className="border rounded-2xl p-4 space-y-3">
+                                    {/* Hidden input to include student ID in form submission */}
+                                    <input type="hidden" name="studentIds" value={student.id} />
+
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-2 flex-1">
-                                            <Checkbox
-                                                id={`student-${student.id}`}
-                                                name="studentIds"
-                                                value={student.id}
-                                                checked={isSelected}
-                                                onCheckedChange={() => handleStudentToggle(student.id)}
-                                            />
-                                            <Label htmlFor={`student-${student.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                                                {student.name} {student.class && `(${student.class})`}
-                                            </Label>
+                                        <div className="flex items-center gap-3 flex-1">
+                                            <div className="flex-1">
+                                                <p className="font-medium">{student.name}</p>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    {student.class && (
+                                                        <Badge variant="outline" className="text-xs">{student.class}</Badge>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-                                        {isSelected && (
+                                        <div className="flex items-center gap-2">
                                             <Button
                                                 type="button"
                                                 variant="ghost"
@@ -281,16 +324,24 @@ export function RegisterGuardianForm({ students }: RegisterGuardianFormProps) {
                                             >
                                                 {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                                             </Button>
-                                        )}
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => handleRemoveStudent(student.id)}
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                     </div>
 
-                                    {isSelected && isExpanded && (
-                                        <div className="ml-6 space-y-3 pt-2 border-t">
+                                    {isExpanded && (
+                                        <div className="space-y-3 pt-3 border-t">
                                             <div className="space-y-2">
                                                 <Label htmlFor={`relationship_${student.id}`} className="text-sm">
                                                     Relationship <span className="text-red-500">*</span>
                                                 </Label>
-                                                <Select name={`relationship_${student.id}`} required={isSelected}>
+                                                <Select name={`relationship_${student.id}`} required>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select relationship" />
                                                     </SelectTrigger>
@@ -314,7 +365,7 @@ export function RegisterGuardianForm({ students }: RegisterGuardianFormProps) {
 
                                             <div className="space-y-2">
                                                 <Label className="text-sm font-semibold">Permissions & Responsibilities</Label>
-                                                <div className="space-y-2">
+                                                <div className="grid grid-cols-2 gap-2">
                                                     <div className="flex items-center space-x-2">
                                                         <Checkbox
                                                             id={`isPrimary_${student.id}`}
@@ -397,16 +448,36 @@ export function RegisterGuardianForm({ students }: RegisterGuardianFormProps) {
                                     )}
                                 </div>
                             );
-                        })
-                    ) : (
-                        <p className="text-sm text-muted-foreground">No students available</p>
-                    )}
-                </div>
-                <p className="text-xs text-muted-foreground">Select all students this guardian is responsible for.</p>
+                        })}
+                    </div>
+                ) : (
+                    <div className="border rounded-2xl p-8 text-center">
+                        <p className="text-muted-foreground mb-3">No students selected</p>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setSelectorOpen(true)}
+                        >
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            Select Students
+                        </Button>
+                    </div>
+                )}
+
+                <p className="text-xs text-muted-foreground">Click "Select Students" to choose which students this guardian is responsible for.</p>
                 {state.errors?.studentIds && (
                     <p className="text-sm text-red-500">{state.errors.studentIds[0]}</p>
                 )}
             </div>
+
+            {/* Student Selector Dialog */}
+            <StudentSelectorDialog
+                open={selectorOpen}
+                onOpenChange={setSelectorOpen}
+                selectedStudentIds={selectedStudents}
+                onStudentsSelected={handleStudentsSelected}
+                initialSelectedStudents={selectedStudentDetails}
+            />
 
             <div className="flex items-center space-x-2">
                 <Checkbox

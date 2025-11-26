@@ -163,7 +163,7 @@ const navItems: NavItem[] = [
     title: "Students",
     href: "/dashboard/students",
     icon: Users,
-    roles: ["teacher", "headteacher", "deputy_headteacher"],
+    roles: ["teacher", "headteacher", "deputy_headteacher", "admin",],
     category: "academic",
   },
   {
@@ -177,7 +177,7 @@ const navItems: NavItem[] = [
     title: "Teachers",
     href: "/dashboard/teachers",
     icon: School,
-    roles: ["teacher", "headteacher", "deputy_headteacher"],
+    roles: ["teacher", "headteacher", "deputy_headteacher", "admin",],
     category: "academic",
   },
   {
@@ -380,7 +380,7 @@ const SidebarContent = ({
               item.href === "/dashboard"
                 ? pathname === "/dashboard" || pathname === "/dashboard/"
                 : pathname === item.href ||
-                  pathname?.startsWith(item.href + "/");
+                pathname?.startsWith(item.href + "/");
 
             const iconColor = getIconColor(item.category, isActive);
 
