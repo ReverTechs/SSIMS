@@ -21,7 +21,7 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
     const studentType = formData.get('studentType') as string;
     const classId = formData.get('classId') as string;
     const dateOfBirth = formData.get('dateOfBirth') as string;
-    const guardian = formData.get('guardian') as string;
+    const guardianEmail = formData.get('guardianEmail') as string;
 
     // Basic validation
     if (!firstName || !lastName || !gender || !classId) {
@@ -132,7 +132,7 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
                 date_of_birth: dateOfBirth || null,
                 gender: gender, // Assuming gender enum matches
                 student_type: studentType || 'internal',
-                guardian_name: guardian,
+                guardian_email: guardianEmail,
                 // address, phone_number etc if we had them
             });
 

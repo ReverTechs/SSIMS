@@ -39,7 +39,7 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
         studentType: '',
         classId: '',
         dateOfBirth: '',
-        guardian: '',
+        guardianEmail: '',
     });
 
     const [isVerified, setIsVerified] = useState(false);
@@ -70,7 +70,7 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                     studentType: '',
                     classId: '',
                     dateOfBirth: '',
-                    guardian: '',
+                    guardianEmail: '',
                 });
                 setIsVerified(false);
             }
@@ -219,12 +219,13 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="guardian">Guardian/Parent</Label>
+                        <Label htmlFor="guardianEmail">Guardian/Parent Email</Label>
                         <Input
-                            id="guardian"
-                            placeholder="Guardian name or ID"
-                            value={formData.guardian}
-                            onChange={(e) => handleChange('guardian', e.target.value)}
+                            id="guardianEmail"
+                            type="email"
+                            placeholder="guardian@example.com"
+                            value={formData.guardianEmail}
+                            onChange={(e) => handleChange('guardianEmail', e.target.value)}
                             required
                         />
                     </div>

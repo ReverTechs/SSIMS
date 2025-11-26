@@ -11,9 +11,19 @@ export interface StudentProfile {
     dateOfBirth?: string;
     gender?: "male" | "female";
     studentType?: "internal" | "external";
+    guardianEmail?: string;
     guardianName?: string;
     guardianPhone?: string;
     guardianRelationship?: string;
+    guardianDetails?: {
+        name: string;
+        email: string;
+        phone?: string;
+        alternativePhone?: string;
+        address?: string;
+        occupation?: string;
+        workplace?: string;
+    };
     stream?: StreamType;
 }
 
@@ -27,9 +37,19 @@ export interface StudentListItem {
     gender?: "male" | "female";
     dateOfBirth?: string;
     address?: string;
+    guardianEmail?: string;
     guardianName?: string;
     guardianPhone?: string;
     guardianRelationship?: string;
+    guardianDetails?: {
+        name: string;
+        email: string;
+        phone?: string;
+        alternativePhone?: string;
+        address?: string;
+        occupation?: string;
+        workplace?: string;
+    };
     studentType?: "internal" | "external";
     stream?: StreamType;
 }
@@ -50,6 +70,7 @@ export async function getStudentProfile(studentId: string): Promise<StudentProfi
       student_type,
       address,
       phone_number,
+      guardian_email,
       guardian_name,
       guardian_phone,
       guardian_relationship,
@@ -84,6 +105,70 @@ export async function getStudentProfile(studentId: string): Promise<StudentProfi
             .filter((name: string | undefined): name is string => Boolean(name))
         : [];
 
+    // Fetch guardian details if guardian_email is provided
+    let guardianDetails = undefined;
+    if (studentData.guardian_email) {
+        const { data: guardianData } = await supabase
+            .from("guardians")
+            .select(`
+                id,
+                phone_number,
+                alternative_phone,
+                address,
+                occupation,
+                workplace,
+                profiles(email, first_name, middle_name, last_name)
+            `)
+            .eq("id", supabase
+                .from("profiles")
+                .select("id")
+                .eq("email", studentData.guardian_email)
+                .single()
+            )
+            .maybeSingle();
+
+        // Alternative: Direct query using email join
+        const { data: guardianByEmail } = await supabase
+            .from("profiles")
+            .select(`
+                id,
+                email,
+                first_name,
+                middle_name,
+                last_name,
+                guardians(
+                    phone_number,
+                    alternative_phone,
+                    address,
+                    occupation,
+                    workplace
+                )
+            `)
+            .eq("email", studentData.guardian_email)
+            .maybeSingle();
+
+        if (guardianByEmail && guardianByEmail.guardians) {
+            const guardian = Array.isArray(guardianByEmail.guardians)
+                ? guardianByEmail.guardians[0]
+                : guardianByEmail.guardians;
+            const nameParts = [
+                guardianByEmail.first_name,
+                guardianByEmail.middle_name,
+                guardianByEmail.last_name,
+            ].filter(Boolean);
+
+            guardianDetails = {
+                name: nameParts.length > 0 ? nameParts.join(" ") : "Unknown Guardian",
+                email: guardianByEmail.email,
+                phone: guardian?.phone_number,
+                alternativePhone: guardian?.alternative_phone,
+                address: guardian?.address,
+                occupation: guardian?.occupation,
+                workplace: guardian?.workplace,
+            };
+        }
+    }
+
     return {
         studentId: studentData.id,
         className: (studentData.classes as any)?.name || undefined,
@@ -93,9 +178,11 @@ export async function getStudentProfile(studentId: string): Promise<StudentProfi
         dateOfBirth: studentData.date_of_birth || undefined,
         gender: studentData.gender || undefined,
         studentType: studentData.student_type || undefined,
+        guardianEmail: studentData.guardian_email || undefined,
         guardianName: studentData.guardian_name || undefined,
         guardianPhone: studentData.guardian_phone || undefined,
         guardianRelationship: studentData.guardian_relationship || undefined,
+        guardianDetails,
         stream: studentData.stream || undefined,
     };
 }
@@ -135,6 +222,7 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
       student_type,
       address,
       phone_number,
+      guardian_email,
       guardian_name,
       guardian_phone,
       guardian_relationship,
@@ -183,6 +271,7 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
             gender: student.gender || undefined,
             dateOfBirth: student.date_of_birth || undefined,
             address: student.address || undefined,
+            guardianEmail: student.guardian_email || undefined,
             guardianName: student.guardian_name || undefined,
             guardianPhone: student.guardian_phone || undefined,
             guardianRelationship: student.guardian_relationship || undefined,
@@ -208,6 +297,7 @@ export async function getStudentProfileForView(studentId: string): Promise<Stude
       student_type,
       address,
       phone_number,
+      guardian_email,
       guardian_name,
       guardian_phone,
       guardian_relationship,
@@ -248,6 +338,50 @@ export async function getStudentProfileForView(studentId: string): Promise<Stude
             .filter((name: string | undefined): name is string => Boolean(name))
         : [];
 
+    // Fetch guardian details if guardian_email is provided
+    let guardianDetails = undefined;
+    if (studentData.guardian_email) {
+        const { data: guardianByEmail } = await supabase
+            .from("profiles")
+            .select(`
+                id,
+                email,
+                first_name,
+                middle_name,
+                last_name,
+                guardians(
+                    phone_number,
+                    alternative_phone,
+                    address,
+                    occupation,
+                    workplace
+                )
+            `)
+            .eq("email", studentData.guardian_email)
+            .maybeSingle();
+
+        if (guardianByEmail && guardianByEmail.guardians) {
+            const guardian = Array.isArray(guardianByEmail.guardians)
+                ? guardianByEmail.guardians[0]
+                : guardianByEmail.guardians;
+            const nameParts = [
+                guardianByEmail.first_name,
+                guardianByEmail.middle_name,
+                guardianByEmail.last_name,
+            ].filter(Boolean);
+
+            guardianDetails = {
+                name: nameParts.length > 0 ? nameParts.join(" ") : "Unknown Guardian",
+                email: guardianByEmail.email,
+                phone: guardian?.phone_number,
+                alternativePhone: guardian?.alternative_phone,
+                address: guardian?.address,
+                occupation: guardian?.occupation,
+                workplace: guardian?.workplace,
+            };
+        }
+    }
+
     return {
         id: studentData.id,
         name: nameParts.length > 0 ? nameParts.join(" ") : "Unknown Student",
@@ -258,8 +392,11 @@ export async function getStudentProfileForView(studentId: string): Promise<Stude
         gender: studentData.gender || undefined,
         dateOfBirth: studentData.date_of_birth || undefined,
         address: studentData.address || undefined,
+        guardianEmail: studentData.guardian_email || undefined,
         guardianName: studentData.guardian_name || undefined,
         guardianPhone: studentData.guardian_phone || undefined,
         guardianRelationship: studentData.guardian_relationship || undefined,
+        guardianDetails,
+        studentType: studentData.student_type || undefined,
     };
 }
