@@ -112,7 +112,6 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                                 placeholder="(optional)"
                                 value={formData.middleName}
                                 onChange={(e) => handleChange('middleName', e.target.value)}
-                            // required
                             />
                         </div>
                         <div className="space-y-2">
@@ -242,7 +241,7 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                     </div>
 
                     {status.message && (
-                        <div className={`p-3 rounded-md text-sm ${status.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                        <div className={`p-3 rounded-md text-sm ${status.type === 'error' ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' : 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400'}`}>
                             {status.message}
                         </div>
                     )}
