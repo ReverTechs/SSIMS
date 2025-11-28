@@ -1,130 +1,101 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { AcademicYear } from "@/types";
-import { promoteStudents } from "@/actions/enrollments";
-import { checkEnrollmentsForeignKey } from "@/actions/debug-enrollments";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { AcademicYear } from "@/types"
+import { promoteStudents } from "@/actions/enrollments"
+import { checkEnrollmentsForeignKey } from "@/actions/debug-enrollments"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Loader2, ArrowRight, Users } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+} from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
+import { Loader2, ArrowRight, Users } from "lucide-react"
+import { getEnrolledStudents } from "@/actions/get-enrolled-students"
 
 interface Class {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface Student {
-  id: string;
-  firstName: string;
-  lastName: string;
-  classId: string;
+  id: string
+  firstName: string
+  lastName: string
+  classId: string
 }
 
 export function PromotionManager({
   years,
   classes,
 }: {
-  years: AcademicYear[];
-  classes: Class[];
+  years: AcademicYear[]
+  classes: Class[]
 }) {
-  const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [promoting, setPromoting] = useState(false);
+  const router = useRouter()
+  const [step, setStep] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [promoting, setPromoting] = useState(false)
 
   // Selection State
-  const [sourceYearId, setSourceYearId] = useState<string>("");
-  const [sourceClassId, setSourceClassId] = useState<string>("");
-  const [targetYearId, setTargetYearId] = useState<string>("");
-  const [targetClassId, setTargetClassId] = useState<string>("");
+  const [sourceYearId, setSourceYearId] = useState<string>("")
+  const [sourceClassId, setSourceClassId] = useState<string>("")
+  const [targetYearId, setTargetYearId] = useState<string>("")
+  const [targetClassId, setTargetClassId] = useState<string>("")
 
   // Data State
-  const [students, setStudents] = useState<Student[]>([]);
-  const [selectedStudentIds, setSelectedStudentIds] = useState<Set<string>>(
-    new Set()
-  );
+  const [students, setStudents] = useState<Student[]>([])
+  const [selectedStudentIds, setSelectedStudentIds] = useState<Set<string>>(new Set())
 
   async function fetchStudents() {
     if (!sourceYearId || !sourceClassId) {
-      toast.error("Please select source year and class");
-      return;
+      toast.error("Please select source year and class")
+      return
     }
 
-    setLoading(true);
-    const supabase = createClient();
+    setLoading(true)
 
     try {
-      // Fetch students enrolled in the source class for the source year
-      // Using explicit foreign key name because multiple relationships exist
-      const { data, error } = await supabase
-        .from("enrollments")
-        .select(
-          `
-          students!enrollments_student_id_fkey (
-            id,
-            profiles (
-              first_name,
-              last_name
-            )
-          )
-        `
-        )
-        .eq("academic_year_id", sourceYearId)
-        .eq("class_id", sourceClassId)
-        .eq("status", "active");
+      // Use server action to get stable, normalized student payload
+      const enrolled = await getEnrolledStudents({
+        academicYearId: sourceYearId,
+        classId: sourceClassId,
+      })
 
-      if (error) {
-        console.error("Supabase error:", error);
-        throw error;
-      }
+      const formattedStudents = (enrolled || []).map((s: any) => ({
+        id: s.id,
+        firstName: s.first_name,
+        lastName: s.last_name,
+        classId: s.class_id,
+      }))
 
-      if (!data) {
-        throw new Error("No data returned from query");
-      }
-
-      // Filter out any null student records and format
-      const formattedStudents = data
-        .filter((item: any) => item.students !== null && item.students.profiles)
-        .map((item: any) => ({
-          id: item.students.id,
-          firstName: item.students.profiles.first_name,
-          lastName: item.students.profiles.last_name,
-          classId: sourceClassId,
-        }));
-
-      setStudents(formattedStudents);
+      setStudents(formattedStudents)
       // Select all by default
-      setSelectedStudentIds(new Set(formattedStudents.map((s) => s.id)));
-      setStep(2);
+      setSelectedStudentIds(new Set(formattedStudents.map((s) => s.id)))
+      setStep(2)
 
       if (formattedStudents.length === 0) {
-        toast.info("No students found in the selected class");
+        toast.info("No students found in the selected class")
       }
     } catch (error) {
-      console.error("Error fetching students:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to fetch students";
-      toast.error(errorMessage);
+      console.error("Error fetching students:", error)
+      const errorMessage = error instanceof Error ? error.message : "Failed to fetch students"
+      toast.error(errorMessage)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
