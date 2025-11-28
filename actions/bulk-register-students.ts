@@ -80,6 +80,17 @@ export async function bulkRegisterStudents(
 
         const existingEmails = new Set(existingUsers?.map(u => u.email.toLowerCase()) || []);
 
+        // Step 1.5: Get Active Academic Year
+        const { data: activeYear, error: yearError } = await supabaseAdmin
+            .from('academic_years')
+            .select('id')
+            .eq('is_active', true)
+            .single();
+
+        if (yearError) {
+            console.warn('No active academic year found. Students will be registered but not enrolled in a year.');
+        }
+
         // Step 2: Process students in batches
         for (let i = 0; i < students.length; i += BATCH_SIZE) {
             const batch = students.slice(i, i + BATCH_SIZE);
@@ -211,6 +222,30 @@ export async function bulkRegisterStudents(
                             type: 'database',
                         });
                         continue;
+                    }
+
+                    // Step 6: Create Enrollment if active year exists
+                    if (activeYear) {
+                        const { error: enrollmentError } = await supabaseAdmin
+                            .from('enrollments')
+                            .insert({
+                                student_id: userId,
+                                class_id: classId,
+                                academic_year_id: activeYear.id,
+                                status: 'active'
+                            });
+
+                        if (enrollmentError) {
+                            console.error(`Enrollment error for ${student.email}:`, enrollmentError);
+                            // We don't fail the whole registration, just log it.
+                            errors.push({
+                                row: rowNumber,
+                                email: student.email,
+                                studentId: student.studentId,
+                                error: `Registered but failed to enroll in active year: ${enrollmentError.message}`,
+                                type: 'database',
+                            });
+                        }
                     }
 
                     // Success!

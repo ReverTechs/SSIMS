@@ -223,3 +223,35 @@ export interface AcademicProgress {
 
 
 
+
+export interface AcademicYear {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Term {
+  id: string;
+  academicYearId: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Enrollment {
+  id: string;
+  studentId: string;
+  classId: string;
+  academicYearId: string;
+  enrolledAt: Date;
+  status: 'active' | 'completed' | 'dropped' | 'transferred' | 'expelled';
+  createdAt: Date;
+  updatedAt: Date;
+}

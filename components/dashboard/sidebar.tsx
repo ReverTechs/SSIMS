@@ -236,6 +236,20 @@ const navItems: NavItem[] = [
     roles: ["admin"],
     category: "reports",
   },
+  {
+    title: "Academic Settings",
+    href: "/dashboard/admin/academic-years",
+    icon: Settings,
+    roles: ["admin"],
+    category: "management",
+  },
+  {
+    title: "Promotions",
+    href: "/dashboard/admin/promotions",
+    icon: Users,
+    roles: ["admin"],
+    category: "management",
+  },
 ];
 
 // Icon color mapping by category (Windows 11 style)

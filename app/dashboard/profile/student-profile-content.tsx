@@ -29,6 +29,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { StudentSubjectsManager } from "@/components/dashboard/student-subjects-manager";
+import { StudentEnrollmentHistory } from "@/components/dashboard/student-enrollment-history";
 import { StreamType } from "@/types";
 
 interface StudentData {
@@ -299,6 +300,14 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
                         stream={studentData.stream}
                         onUpdate={() => window.location.reload()}
                       />
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label className="text-sm font-semibold flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        Enrollment History
+                      </Label>
+                      <StudentEnrollmentHistory studentId={studentData.studentId} />
                     </div>
                   </div>
                 </CardContent>

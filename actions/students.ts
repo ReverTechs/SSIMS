@@ -2,6 +2,8 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { getActiveAcademicYear } from './academic-years';
+import { enrollStudent } from './enrollments';
 
 export type RegisterStudentState = {
     success?: boolean;
@@ -141,6 +143,24 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
             // Rollback auth user?
             await supabaseAdmin.auth.admin.deleteUser(userId);
             return { error: `Failed to create student record: ${studentError.message}` };
+        }
+
+        // 4. Create Enrollment for Active Academic Year
+        try {
+            const activeYear = await getActiveAcademicYear();
+            if (activeYear) {
+                await enrollStudent({
+                    studentId: userId,
+                    classId: classId,
+                    academicYearId: activeYear.id,
+                    status: 'active'
+                });
+            }
+        } catch (enrollError) {
+            console.error('Enrollment error:', enrollError);
+            // We don't rollback the student creation here, but we should probably alert or log it.
+            // The student exists but isn't enrolled in the year history.
+            // For now, we'll just log it.
         }
 
         revalidatePath('/dashboard/register-students');
