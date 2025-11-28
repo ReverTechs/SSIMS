@@ -1,18 +1,18 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   User,
   Mail,
@@ -58,7 +58,11 @@ interface StudentProfileViewProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function StudentProfileView({ student, open, onOpenChange }: StudentProfileViewProps) {
+export function StudentProfileView({
+  student,
+  open,
+  onOpenChange,
+}: StudentProfileViewProps) {
   if (!student) return null;
 
   const getInitials = (name: string) => {
@@ -101,13 +105,20 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
             <div className="flex-1 space-y-3 lg:space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">{student.name}</h2>
-                  <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1 capitalize">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+                    {student.name}
+                  </h2>
+                  <Badge
+                    variant="secondary"
+                    className="text-xs sm:text-sm px-2 sm:px-3 py-1 capitalize"
+                  >
                     {student.studentType || "Student"}
                   </Badge>
                   <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                     <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="text-xs sm:text-sm font-medium">Verified Student</span>
+                    <span className="text-xs sm:text-sm font-medium">
+                      Verified Student
+                    </span>
                   </div>
                 </div>
 
@@ -127,7 +138,8 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                         <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-teal-600 dark:text-teal-400" />
                       </div>
                       <span className="font-medium">
-                        {student.subjects.length} {student.subjects.length === 1 ? "Subject" : "Subjects"}
+                        {student.subjects.length}{" "}
+                        {student.subjects.length === 1 ? "Subject" : "Subjects"}
                       </span>
                     </div>
                   )}
@@ -191,14 +203,18 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                             <User className="h-3.5 w-3.5" />
                             Full Name
                           </Label>
-                          <p className="text-sm sm:text-base font-medium">{student.name}</p>
+                          <p className="text-sm sm:text-base font-medium">
+                            {student.name}
+                          </p>
                         </div>
                         <div className="space-y-2">
                           <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                             <Mail className="h-3.5 w-3.5" />
                             Email Address
                           </Label>
-                          <p className="text-sm sm:text-base font-medium break-all">{student.email}</p>
+                          <p className="text-sm sm:text-base font-medium break-all">
+                            {student.email}
+                          </p>
                         </div>
                         {student.gender && (
                           <div className="space-y-2">
@@ -206,7 +222,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                               <User className="h-3.5 w-3.5" />
                               Gender
                             </Label>
-                            <p className="text-sm sm:text-base font-medium capitalize">{student.gender}</p>
+                            <p className="text-sm sm:text-base font-medium capitalize">
+                              {student.gender}
+                            </p>
                           </div>
                         )}
                         {student.dateOfBirth && (
@@ -216,11 +234,14 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                               Date of Birth
                             </Label>
                             <p className="text-sm sm:text-base font-medium">
-                              {new Date(student.dateOfBirth).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}
+                              {new Date(student.dateOfBirth).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}
                             </p>
                           </div>
                         )}
@@ -230,7 +251,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                               <MapPin className="h-3.5 w-3.5" />
                               Address
                             </Label>
-                            <p className="text-sm sm:text-base font-medium">{student.address}</p>
+                            <p className="text-sm sm:text-base font-medium">
+                              {student.address}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -259,7 +282,10 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                             <School className="h-3.5 w-3.5" />
                             Class
                           </Label>
-                          <Badge variant="secondary" className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
+                          >
                             {student.class}
                           </Badge>
                           <Separator />
@@ -296,8 +322,12 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                 <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Total Subjects</p>
-                                <p className="text-xl sm:text-2xl font-bold">{student.subjects.length}</p>
+                                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
+                                  Total Subjects
+                                </p>
+                                <p className="text-xl sm:text-2xl font-bold">
+                                  {student.subjects.length}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -335,7 +365,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                 <Mail className="h-3.5 w-3.5" />
                                 Email Address
                               </Label>
-                              <p className="text-sm sm:text-base font-medium break-all">{student.email}</p>
+                              <p className="text-sm sm:text-base font-medium break-all">
+                                {student.email}
+                              </p>
                             </div>
                             {student.phone && (
                               <div className="space-y-2">
@@ -343,7 +375,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                   <Phone className="h-3.5 w-3.5" />
                                   Phone Number
                                 </Label>
-                                <p className="text-sm sm:text-base font-medium">{student.phone}</p>
+                                <p className="text-sm sm:text-base font-medium">
+                                  {student.phone}
+                                </p>
                               </div>
                             )}
                             {student.address && (
@@ -352,14 +386,19 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                   <MapPin className="h-3.5 w-3.5" />
                                   Address
                                 </Label>
-                                <p className="text-sm sm:text-base font-medium">{student.address}</p>
+                                <p className="text-sm sm:text-base font-medium">
+                                  {student.address}
+                                </p>
                               </div>
                             )}
                           </div>
                         </div>
 
                         {/* Guardian Information Section */}
-                        {(student.guardianDetails || student.guardianEmail || student.guardianName || student.guardianPhone) && (
+                        {(student.guardianDetails ||
+                          student.guardianEmail ||
+                          student.guardianName ||
+                          student.guardianPhone) && (
                           <>
                             <Separator />
                             <div className="space-y-4">
@@ -376,14 +415,18 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                         <User className="h-3.5 w-3.5" />
                                         Guardian Name
                                       </Label>
-                                      <p className="text-sm sm:text-base font-medium">{student.guardianDetails.name}</p>
+                                      <p className="text-sm sm:text-base font-medium">
+                                        {student.guardianDetails.name}
+                                      </p>
                                     </div>
                                     <div className="space-y-2">
                                       <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                                         <Mail className="h-3.5 w-3.5" />
                                         Guardian Email
                                       </Label>
-                                      <p className="text-sm sm:text-base font-medium break-all">{student.guardianDetails.email}</p>
+                                      <p className="text-sm sm:text-base font-medium break-all">
+                                        {student.guardianDetails.email}
+                                      </p>
                                     </div>
                                     {student.guardianDetails.phone && (
                                       <div className="space-y-2">
@@ -391,16 +434,24 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <Phone className="h-3.5 w-3.5" />
                                           Primary Phone
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianDetails.phone}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {student.guardianDetails.phone}
+                                        </p>
                                       </div>
                                     )}
-                                    {student.guardianDetails.alternativePhone && (
+                                    {student.guardianDetails
+                                      .alternativePhone && (
                                       <div className="space-y-2">
                                         <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                                           <Phone className="h-3.5 w-3.5" />
                                           Alternative Phone
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianDetails.alternativePhone}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {
+                                            student.guardianDetails
+                                              .alternativePhone
+                                          }
+                                        </p>
                                       </div>
                                     )}
                                     {student.guardianRelationship && (
@@ -409,7 +460,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <Users className="h-3.5 w-3.5" />
                                           Relationship
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium capitalize">{student.guardianRelationship}</p>
+                                        <p className="text-sm sm:text-base font-medium capitalize">
+                                          {student.guardianRelationship}
+                                        </p>
                                       </div>
                                     )}
                                     {student.guardianDetails.occupation && (
@@ -418,7 +471,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <User className="h-3.5 w-3.5" />
                                           Occupation
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianDetails.occupation}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {student.guardianDetails.occupation}
+                                        </p>
                                       </div>
                                     )}
                                     {student.guardianDetails.workplace && (
@@ -427,7 +482,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <MapPin className="h-3.5 w-3.5" />
                                           Workplace
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianDetails.workplace}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {student.guardianDetails.workplace}
+                                        </p>
                                       </div>
                                     )}
                                     {student.guardianDetails.address && (
@@ -436,7 +493,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <MapPin className="h-3.5 w-3.5" />
                                           Guardian Address
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianDetails.address}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {student.guardianDetails.address}
+                                        </p>
                                       </div>
                                     )}
                                   </>
@@ -449,9 +508,12 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <Mail className="h-3.5 w-3.5" />
                                           Guardian Email
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium break-all">{student.guardianEmail}</p>
+                                        <p className="text-sm sm:text-base font-medium break-all">
+                                          {student.guardianEmail}
+                                        </p>
                                         <p className="text-xs text-muted-foreground italic">
-                                          Guardian details not available. Email is used as reference.
+                                          Guardian details not available. Email
+                                          is used as reference.
                                         </p>
                                       </div>
                                     )}
@@ -461,7 +523,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <User className="h-3.5 w-3.5" />
                                           Guardian Name
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianName}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {student.guardianName}
+                                        </p>
                                       </div>
                                     )}
                                     {student.guardianRelationship && (
@@ -470,7 +534,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <Users className="h-3.5 w-3.5" />
                                           Relationship
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianRelationship}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {student.guardianRelationship}
+                                        </p>
                                       </div>
                                     )}
                                     {student.guardianPhone && (
@@ -479,7 +545,9 @@ export function StudentProfileView({ student, open, onOpenChange }: StudentProfi
                                           <Phone className="h-3.5 w-3.5" />
                                           Guardian Phone
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">{student.guardianPhone}</p>
+                                        <p className="text-sm sm:text-base font-medium">
+                                          {student.guardianPhone}
+                                        </p>
                                       </div>
                                     )}
                                   </>

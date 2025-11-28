@@ -1,6 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -79,13 +85,20 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
           <div className="flex-1 space-y-3 lg:space-y-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">{student.name}</h2>
-                <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1 capitalize">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+                  {student.name}
+                </h2>
+                <Badge
+                  variant="secondary"
+                  className="text-xs sm:text-sm px-2 sm:px-3 py-1 capitalize"
+                >
                   {student.studentType || "Student"}
                 </Badge>
                 <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                  <span className="text-xs sm:text-sm font-medium">Verified Student</span>
+                  <span className="text-xs sm:text-sm font-medium">
+                    Verified Student
+                  </span>
                 </div>
               </div>
 
@@ -105,7 +118,8 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                       <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-teal-600 dark:text-teal-400" />
                     </div>
                     <span className="font-medium">
-                      {student.subjects.length} {student.subjects.length === 1 ? "Subject" : "Subjects"}
+                      {student.subjects.length}{" "}
+                      {student.subjects.length === 1 ? "Subject" : "Subjects"}
                     </span>
                   </div>
                 )}
@@ -168,14 +182,18 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                         <User className="h-3.5 w-3.5" />
                         Full Name
                       </Label>
-                      <p className="text-sm sm:text-base font-medium">{student.name}</p>
+                      <p className="text-sm sm:text-base font-medium">
+                        {student.name}
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                         <Mail className="h-3.5 w-3.5" />
                         Email Address
                       </Label>
-                      <p className="text-sm sm:text-base font-medium break-all">{student.email}</p>
+                      <p className="text-sm sm:text-base font-medium break-all">
+                        {student.email}
+                      </p>
                     </div>
                     {student.gender && (
                       <div className="space-y-2">
@@ -183,7 +201,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                           <User className="h-3.5 w-3.5" />
                           Gender
                         </Label>
-                        <p className="text-sm sm:text-base font-medium capitalize">{student.gender}</p>
+                        <p className="text-sm sm:text-base font-medium capitalize">
+                          {student.gender}
+                        </p>
                       </div>
                     )}
                     {student.dateOfBirth && (
@@ -193,11 +213,14 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                           Date of Birth
                         </Label>
                         <p className="text-sm sm:text-base font-medium">
-                          {new Date(student.dateOfBirth).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {new Date(student.dateOfBirth).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
                         </p>
                       </div>
                     )}
@@ -207,7 +230,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                           <MapPin className="h-3.5 w-3.5" />
                           Address
                         </Label>
-                        <p className="text-sm sm:text-base font-medium">{student.address}</p>
+                        <p className="text-sm sm:text-base font-medium">
+                          {student.address}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -236,7 +261,10 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                         <School className="h-3.5 w-3.5" />
                         Class
                       </Label>
-                      <Badge variant="secondary" className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
+                      <Badge
+                        variant="secondary"
+                        className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
+                      >
                         {student.class}
                       </Badge>
                       <Separator />
@@ -273,8 +301,12 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                             <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Total Subjects</p>
-                            <p className="text-xl sm:text-2xl font-bold">{student.subjects.length}</p>
+                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
+                              Total Subjects
+                            </p>
+                            <p className="text-xl sm:text-2xl font-bold">
+                              {student.subjects.length}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -312,7 +344,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                             <Mail className="h-3.5 w-3.5" />
                             Email Address
                           </Label>
-                          <p className="text-sm sm:text-base font-medium break-all">{student.email}</p>
+                          <p className="text-sm sm:text-base font-medium break-all">
+                            {student.email}
+                          </p>
                         </div>
                         {student.phone && (
                           <div className="space-y-2">
@@ -320,7 +354,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                               <Phone className="h-3.5 w-3.5" />
                               Phone Number
                             </Label>
-                            <p className="text-sm sm:text-base font-medium">{student.phone}</p>
+                            <p className="text-sm sm:text-base font-medium">
+                              {student.phone}
+                            </p>
                           </div>
                         )}
                         {student.address && (
@@ -329,7 +365,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                               <MapPin className="h-3.5 w-3.5" />
                               Address
                             </Label>
-                            <p className="text-sm sm:text-base font-medium">{student.address}</p>
+                            <p className="text-sm sm:text-base font-medium">
+                              {student.address}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -351,7 +389,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                                   <User className="h-3.5 w-3.5" />
                                   Guardian Name
                                 </Label>
-                                <p className="text-sm sm:text-base font-medium">{student.guardianName}</p>
+                                <p className="text-sm sm:text-base font-medium">
+                                  {student.guardianName}
+                                </p>
                               </div>
                             )}
                             {student.guardianRelationship && (
@@ -360,7 +400,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                                   <Users className="h-3.5 w-3.5" />
                                   Relationship
                                 </Label>
-                                <p className="text-sm sm:text-base font-medium">{student.guardianRelationship}</p>
+                                <p className="text-sm sm:text-base font-medium">
+                                  {student.guardianRelationship}
+                                </p>
                               </div>
                             )}
                             {student.guardianPhone && (
@@ -369,7 +411,9 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                                   <Phone className="h-3.5 w-3.5" />
                                   Guardian Phone
                                 </Label>
-                                <p className="text-sm sm:text-base font-medium">{student.guardianPhone}</p>
+                                <p className="text-sm sm:text-base font-medium">
+                                  {student.guardianPhone}
+                                </p>
                               </div>
                             )}
                           </div>
@@ -386,4 +430,3 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
     </div>
   );
 }
-
