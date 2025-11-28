@@ -206,7 +206,8 @@ export async function getStudentProfile(
 
   return {
     studentId: studentData.id,
-    className: enrolledClassName || (studentData.classes as any)?.name || undefined,
+    className:
+      enrolledClassName || (studentData.classes as any)?.name || undefined,
     subjects: subjects.length > 0 ? subjects : undefined,
     phoneNumber: studentData.phone_number || undefined,
     address: studentData.address || undefined,
@@ -284,6 +285,39 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
     return [];
   }
 
+  // Attempt to fetch active academic year and enrollments in bulk for these students
+  let enrollmentMap: Record<string, string | undefined> = {};
+  try {
+    const studentIds = (studentsData as any[]).map((s) => s.id).filter(Boolean);
+    if (studentIds.length > 0) {
+      const { data: activeYear } = await supabase
+        .from("academic_years")
+        .select("id")
+        .eq("is_active", true)
+        .maybeSingle();
+
+      const activeYearId = (activeYear as any)?.id;
+      if (activeYearId) {
+        const { data: enrollments } = await supabase
+          .from("enrollments")
+          .select("student_id, class_id, classes(name)")
+          .in("student_id", studentIds)
+          .eq("academic_year_id", activeYearId)
+          .eq("status", "active");
+
+        if (Array.isArray(enrollments)) {
+          enrollments.forEach((e: any) => {
+            if (e?.student_id) {
+              enrollmentMap[e.student_id] = e?.classes?.name;
+            }
+          });
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("Error fetching enrollments for students list:", err);
+  }
+
   return studentsData.map((student) => {
     const profile = student.profiles as any;
     const nameParts = [
@@ -303,7 +337,10 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
       name: nameParts.length > 0 ? nameParts.join(" ") : "Unknown Student",
       email: profile?.email || "",
       phone: student.phone_number || undefined,
-      class: (student.classes as any)?.name || undefined,
+      class:
+        enrollmentMap[student.id] ||
+        (student.classes as any)?.name ||
+        undefined,
       subjects,
       gender: student.gender || undefined,
       dateOfBirth: student.date_of_birth || undefined,
