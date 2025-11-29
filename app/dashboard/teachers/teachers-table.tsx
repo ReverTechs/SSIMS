@@ -99,7 +99,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 return (
                     <div className="flex flex-wrap gap-1">
                         {departments.map((dept) => (
-                            <Badge key={dept.id} variant="outline" className="font-normal">{dept.name}</Badge>
+                            <Badge key={dept.id} variant="outline" className="font-normal text-[11px] px-1.5 py-0">{dept.name}</Badge>
                         ))}
                     </div>
                 );
@@ -123,7 +123,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 return value.includes(row.getValue(id));
             },
         },
-        {
+        /* {
             accessorKey: "subjects",
             header: "Subjects",
             cell: ({ row }) => {
@@ -132,14 +132,14 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 return (
                     <div className="flex flex-wrap gap-1">
                         {subjects.map((subject) => (
-                            <Badge key={subject} variant="secondary" className="text-xs font-normal">
+                            <Badge key={subject} variant="secondary" className="text-[10px] font-normal px-1.5 py-0">
                                 {subject}
                             </Badge>
                         ))}
                     </div>
                 );
             },
-        },
+        }, */
         {
             accessorKey: "email",
             header: "Email",
@@ -157,9 +157,9 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
+                            <Button variant="ghost" className="h-6 w-6 p-0">
                                 <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="h-3.5 w-3.5" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -218,14 +218,14 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 </CardDescription>
             </CardHeader> */}
             <CardContent>
-                <div className="flex items-center py-4 gap-4 flex-wrap">
+                <div className="flex items-center py-4 gap-2 flex-wrap">
                     <Input
                         placeholder="Search teachers..."
                         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
                             table.getColumn("name")?.setFilterValue(event.target.value)
                         }
-                        className="max-w-sm"
+                        className="max-w-sm h-8 text-xs"
                     />
                     <Select
                         value={selectedDepartment.length > 0 ? selectedDepartment[0] : "all"}
@@ -237,7 +237,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                             }
                         }}
                     >
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-[160px] h-8 text-xs">
                             <SelectValue placeholder="Filter by department" />
                         </SelectTrigger>
                         <SelectContent>
@@ -259,7 +259,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                             }
                         }}
                     >
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-[160px] h-8 text-xs">
                             <SelectValue placeholder="Filter by gender" />
                         </SelectTrigger>
                         <SelectContent>

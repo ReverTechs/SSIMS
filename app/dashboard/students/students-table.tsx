@@ -96,7 +96,7 @@ export function StudentsTable({ students }: StudentsTableProps) {
       cell: ({ row }) => {
         const className = row.getValue("class") as string | undefined;
         return className ? (
-          <Badge variant="outline" className="font-normal">{className}</Badge>
+          <Badge variant="outline" className="font-normal text-[11px] px-1.5 py-0">{className}</Badge>
         ) : (
           <div className="text-muted-foreground">-</div>
         );
@@ -125,7 +125,7 @@ export function StudentsTable({ students }: StudentsTableProps) {
         return value.includes(rowValue);
       },
     },
-    {
+    /* {
       accessorKey: "subjects",
       header: "Subjects",
       cell: ({ row }) => {
@@ -137,14 +137,14 @@ export function StudentsTable({ students }: StudentsTableProps) {
         return (
           <div className="flex flex-wrap gap-1">
             {subjects.map((subject) => (
-              <Badge key={subject} variant="secondary" className="text-xs font-normal">
+              <Badge key={subject} variant="secondary" className="text-[10px] font-normal px-1.5 py-0">
                 {subject}
               </Badge>
             ))}
           </div>
         );
       },
-    },
+    }, */
     {
       accessorKey: "email",
       header: "Email",
@@ -162,9 +162,9 @@ export function StudentsTable({ students }: StudentsTableProps) {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button variant="ghost" className="h-6 w-6 p-0">
                 <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
+                <MoreHorizontal className="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -220,14 +220,14 @@ export function StudentsTable({ students }: StudentsTableProps) {
         </CardDescription>
       </CardHeader> */}
       <CardContent>
-        <div className="flex items-center py-4 gap-4 flex-wrap">
+        <div className="flex items-center py-4 gap-2 flex-wrap">
           <Input
             placeholder="Search students..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="max-w-sm h-8 text-xs"
           />
           <Select
             value={selectedClass.length > 0 ? selectedClass[0] : "all"}
@@ -239,7 +239,7 @@ export function StudentsTable({ students }: StudentsTableProps) {
               }
             }}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[160px] h-8 text-xs">
               <SelectValue placeholder="Filter by class" />
             </SelectTrigger>
             <SelectContent>
@@ -261,7 +261,7 @@ export function StudentsTable({ students }: StudentsTableProps) {
               }
             }}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[160px] h-8 text-xs">
               <SelectValue placeholder="Filter by gender" />
             </SelectTrigger>
             <SelectContent>
