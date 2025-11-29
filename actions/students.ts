@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { getActiveAcademicYear } from './academic-years';
 import { enrollStudent } from './enrollments';
+import { enrollStudentInDefaultSubjects } from './student-subjects';
 
 export type RegisterStudentState = {
     success?: boolean;
@@ -24,6 +25,7 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
     const classId = formData.get('classId') as string;
     const dateOfBirth = formData.get('dateOfBirth') as string;
     const guardianEmail = formData.get('guardianEmail') as string;
+    const stream = formData.get('stream') as string;
 
     // Basic validation
     if (!firstName || !lastName || !gender || !classId) {
@@ -134,6 +136,7 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
                 date_of_birth: dateOfBirth || null,
                 gender: gender, // Assuming gender enum matches
                 student_type: studentType || 'internal',
+                stream: stream || null, // Save stream for senior students
                 guardian_email: guardianEmail,
                 // address, phone_number etc if we had them
             });
@@ -155,6 +158,9 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
                     academicYearId: activeYear.id,
                     status: 'active'
                 });
+
+                // 5. Enroll in Default Subjects
+                await enrollStudentInDefaultSubjects(userId, classId, stream);
             }
         } catch (enrollError) {
             console.error('Enrollment error:', enrollError);

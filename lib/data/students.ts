@@ -81,8 +81,7 @@ export async function getStudentProfile(
       guardian_phone,
       guardian_relationship,
       stream,
-      classes(name),
-      student_subjects(subjects(name))
+      classes(name)
     `
     )
     .eq("id", studentId)
@@ -105,12 +104,32 @@ export async function getStudentProfile(
     return null;
   }
 
-  // Extract subjects array
-  const subjects = Array.isArray(studentData.student_subjects)
-    ? studentData.student_subjects
-      .map((ss: any) => ss?.subjects?.name)
-      .filter((name: string | undefined): name is string => Boolean(name))
-    : [];
+  // Fetch subjects for the active academic year only
+  let subjects: string[] = [];
+  try {
+    const { data: activeYear } = await supabase
+      .from("academic_years")
+      .select("id")
+      .eq("is_active", true)
+      .maybeSingle();
+
+    const activeYearId = (activeYear as any)?.id;
+    if (activeYearId) {
+      const { data: subjectData } = await supabase
+        .from("student_subjects")
+        .select(`subjects(name)`)
+        .eq("student_id", studentId)
+        .eq("academic_year_id", activeYearId);
+
+      if (subjectData) {
+        subjects = subjectData
+          .map((s: any) => s?.subjects?.name)
+          .filter((name: string | undefined): name is string => Boolean(name));
+      }
+    }
+  } catch (err) {
+    console.warn("Error fetching subjects for student:", err);
+  }
 
   // Fetch guardian details if guardian_email is provided
   let guardianDetails = undefined;
@@ -417,11 +436,32 @@ export async function getStudentProfileForView(
     profile?.last_name,
   ].filter(Boolean);
 
-  const subjects = Array.isArray(studentData.student_subjects)
-    ? studentData.student_subjects
-      .map((ss: any) => ss?.subjects?.name)
-      .filter((name: string | undefined): name is string => Boolean(name))
-    : [];
+  // Fetch subjects for the active academic year
+  let subjects: string[] = [];
+  try {
+    const { data: activeYear } = await supabase
+      .from("academic_years")
+      .select("id")
+      .eq("is_active", true)
+      .maybeSingle();
+
+    const activeYearId = (activeYear as any)?.id;
+    if (activeYearId) {
+      const { data: subjectData } = await supabase
+        .from("student_subjects")
+        .select(`subjects(name)`)
+        .eq("student_id", studentId)
+        .eq("academic_year_id", activeYearId);
+
+      if (subjectData) {
+        subjects = subjectData
+          .map((s: any) => s?.subjects?.name)
+          .filter((name: string | undefined): name is string => Boolean(name));
+      }
+    }
+  } catch (err) {
+    console.warn("Error fetching subjects for student view:", err);
+  }
 
   // Fetch guardian details if guardian_email is provided
   let guardianDetails = undefined;

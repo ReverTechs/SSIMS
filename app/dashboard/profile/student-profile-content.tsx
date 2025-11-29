@@ -31,6 +31,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { StudentSubjectsManager } from "@/components/dashboard/student-subjects-manager";
 import { StudentEnrollmentHistory } from "@/components/dashboard/student-enrollment-history";
 import { StreamType } from "@/types";
+import { SyncSubjectsButton } from "@/components/students/sync-subjects-button";
 
 interface StudentData {
   studentId: string;
@@ -289,10 +290,13 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
                     )}
 
                     <div className="space-y-3">
-                      <Label className="text-sm font-semibold flex items-center gap-2">
-                        <BookOpen className="h-4 w-4" />
-                        Curriculum & Subjects
-                      </Label>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-semibold flex items-center gap-2">
+                          <BookOpen className="h-4 w-4" />
+                          Curriculum & Subjects
+                        </Label>
+                        <SyncSubjectsButton studentId={studentData.studentId} />
+                      </div>
                       <StudentSubjectsManager
                         studentId={studentData.studentId}
                         className={studentData.className || ""}

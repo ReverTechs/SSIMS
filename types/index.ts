@@ -255,3 +255,23 @@ export interface Enrollment {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface StudentSubject {
+  id: string;
+  studentId: string;
+  subjectId: string;
+  academicYearId: string;
+  termId?: string; // Optional: term-specific enrollment
+  enrolledAt: Date;
+  enrolledBy?: string; // User who enrolled the student
+  isOptional: boolean;
+  subject?: Subject; // Joined subject details
+}
+
+// Standardized return type for all server actions
+export type ActionResult<T = void> = {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+};

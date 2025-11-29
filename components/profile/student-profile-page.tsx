@@ -24,6 +24,8 @@ import {
   Users,
   CheckCircle2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ManageSubjectsDialog } from "@/components/students/manage-subjects-dialog";
 
 interface Student {
   id: string;
@@ -53,6 +55,12 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
       .join("")
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const router = useRouter();
+
+  const handleSubjectsUpdate = () => {
+    router.refresh();
   };
 
   return (
@@ -255,6 +263,13 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4 sm:space-y-6">
+                  <div className="flex justify-end">
+                    <ManageSubjectsDialog
+                      studentId={student.id}
+                      studentName={student.name}
+                      onUpdate={handleSubjectsUpdate}
+                    />
+                  </div>
                   {student.class && (
                     <div className="space-y-3">
                       <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">

@@ -47,7 +47,10 @@ export async function getCurriculumSubjects(
         return [];
     }
 
-    return data.map((item: any) => ({
+    // Deduplicate by subjectId
+    const uniqueSubjects = Array.from(
+        new Map(data.map((item: any) => [item.subject_id, item])).values()
+    ).map((item: any) => ({
         subjectId: item.subject_id,
         subjectName: item.subjects.name,
         subjectCode: item.subjects.code,
@@ -56,4 +59,6 @@ export async function getCurriculumSubjects(
         isCompulsory: item.is_compulsory,
         category: item.category,
     }));
+
+    return uniqueSubjects;
 }

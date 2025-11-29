@@ -19,6 +19,7 @@ import { registerStudent } from '@/actions/students';
 interface ClassOption {
     id: string;
     name: string;
+    grade_level: number;
 }
 
 interface RegisterStudentFormProps {
@@ -40,6 +41,7 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
         classId: '',
         dateOfBirth: '',
         guardianEmail: '',
+        stream: '',
     });
 
     const [isVerified, setIsVerified] = useState(false);
@@ -71,6 +73,7 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                     classId: '',
                     dateOfBirth: '',
                     guardianEmail: '',
+                    stream: '',
                 });
                 setIsVerified(false);
             }
@@ -163,6 +166,28 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                             </Select>
                         </div>
                     </div>
+
+                    {/* Stream Selection for Senior Classes */}
+                    {formData.classId && classes.find(c => c.id === formData.classId)?.grade_level! > 2 && (
+                        <div className="space-y-2">
+                            <Label htmlFor="stream">Stream (Required for Senior Classes)</Label>
+                            <Select
+                                value={formData.stream}
+                                onValueChange={(val) => handleChange('stream', val)}
+                                required
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select stream" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="sciences">Sciences</SelectItem>
+                                    <SelectItem value="humanities">Humanities</SelectItem>
+                                    <SelectItem value="commercial">Commercial</SelectItem>
+                                    <SelectItem value="general">General</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
