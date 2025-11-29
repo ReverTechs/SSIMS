@@ -70,3 +70,42 @@ export async function setActiveTerm(id: string) {
 
     revalidatePath('/dashboard/admin/academic-years');
 }
+
+export async function getActiveTerm() {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from('terms')
+        .select(`
+            *,
+            academic_years (
+                id,
+                name,
+                start_date,
+                end_date,
+                is_active
+            )
+        `)
+        .eq('is_active', true)
+        .single();
+
+    if (error) {
+        console.error('Error fetching active term:', error);
+        return null;
+    }
+
+    return {
+        id: data.id,
+        name: data.name,
+        startDate: new Date(data.start_date),
+        endDate: new Date(data.end_date),
+        isActive: data.is_active,
+        academicYear: data.academic_years ? {
+            id: data.academic_years.id,
+            name: data.academic_years.name,
+            startDate: new Date(data.academic_years.start_date),
+            endDate: new Date(data.academic_years.end_date),
+            isActive: data.academic_years.is_active,
+        } : null
+    };
+}
+

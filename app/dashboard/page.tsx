@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, ArrowRight, Building2 } from "lucide-react";
+import { Calendar, Clock, ArrowRight, Building2, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/supabase/user";
 import { PieCharts } from "@/components/dashboard/pie-charts";
@@ -17,6 +17,7 @@ import { getPermissionsForRole } from "@/lib/auth/permissions";
 import { statsRegistry } from "@/lib/dashboard/widgets";
 import FinanceChartClient from "@/components/dashboard/finance-chart-client";
 import { createClient } from "@/lib/supabase/server";
+import { getActiveTerm } from "@/actions/terms";
 
 import { getGenderStats } from "@/lib/data/dashboard-stats";
 
@@ -25,6 +26,7 @@ const greeting = getGreeting();
 export default async function DashboardPage() {
   const user = await getCurrentUser();
   const genderStats = await getGenderStats();
+  const activeTerm = await getActiveTerm();
   const permissions = user ? Array.from(getPermissionsForRole(user.role)) : [];
   const stats = permissions
     .filter((p) => p.startsWith("stats:"))
@@ -105,7 +107,17 @@ export default async function DashboardPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/3 via-purple-600/3 to-pink-600/3 rounded-2xl" />
         <div className="relative space-y-2 sm:space-y-3">
           {/* Profile Header Card */}
-          <Card className="border bg-card rounded-2xl">
+          <Card className="border bg-card rounded-2xl relative overflow-hidden">
+            {/* Academic Year & Term Badge - Top Right */}
+            {activeTerm && activeTerm.academicYear && (
+              <div className="absolute top-4 right-4 z-10">
+                <div className="px-4 py-2 rounded-full bg-muted/80 backdrop-blur-md border border-border/50 shadow-sm">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {activeTerm.academicYear.name} • {activeTerm.name}
+                  </span>
+                </div>
+              </div>
+            )}
             <CardContent className="pt-6">
               {/* Mobile View - Column Layout */}
               <div className="flex flex-col items-center gap-4 sm:hidden">

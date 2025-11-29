@@ -17,14 +17,15 @@ export default async function MyStudentsPage() {
         redirect("/auth/login");
     }
 
-    // Check if user is a teacher
+    // Check if user is a teacher, headteacher, or deputy headteacher
     const { data: profile } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single();
 
-    if (!profile || profile.role !== "teacher") {
+    const allowedRoles = ["teacher", "headteacher", "deputy_headteacher"];
+    if (!profile || !allowedRoles.includes(profile.role)) {
         redirect("/dashboard");
     }
 
