@@ -149,6 +149,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
         },
         {
             id: "actions",
+            header: "Actions",
             enableHiding: false,
             cell: ({ row }) => {
                 const teacher = row.original;
@@ -210,12 +211,12 @@ export function TeachersTable({ data }: TeachersTableProps) {
 
     return (
         <Card className="group relative border bg-card">
-            <CardHeader>
+            {/* <CardHeader>
                 <CardTitle>All Teachers</CardTitle>
                 <CardDescription>
                     Complete list of all teachers with sorting and filtering options
                 </CardDescription>
-            </CardHeader>
+            </CardHeader> */}
             <CardContent>
                 <div className="flex items-center py-4 gap-4 flex-wrap">
                     <Input
