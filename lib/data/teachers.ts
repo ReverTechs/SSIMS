@@ -153,7 +153,7 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
     });
   }
 
-  // Count total students (if students table exists)
+  // Count total students in current academic year (matching my-students table logic)
   let totalStudents = 0;
   try {
     const classIds = Array.isArray(teacherData.teacher_classes)
@@ -161,15 +161,29 @@ export async function getTeacherProfile(teacherId: string): Promise<TeacherProfi
       : [];
 
     if (classIds.length > 0) {
-      const { count } = await supabase
-        .from("students")
-        .select("*", { count: "exact", head: true })
-        .in("class_id", classIds);
-      totalStudents = count || 0;
+      // Get active academic year
+      const { data: activeYear } = await supabase
+        .from("academic_years")
+        .select("id")
+        .eq("is_active", true)
+        .maybeSingle();
+
+      const activeYearId = (activeYear as any)?.id;
+
+      if (activeYearId) {
+        // Count students with active enrollments in current academic year
+        const { count } = await supabase
+          .from("enrollments")
+          .select("student_id", { count: "exact", head: true })
+          .in("class_id", classIds)
+          .eq("academic_year_id", activeYearId)
+          .eq("status", "active");
+
+        totalStudents = count || 0;
+      }
     }
   } catch (error) {
-    // Students table might not exist yet, that's okay
-    console.log("Students table not available or error counting students:", error);
+    console.log("Error counting students:", error);
   }
 
   return {

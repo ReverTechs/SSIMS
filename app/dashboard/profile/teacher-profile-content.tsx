@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -58,6 +58,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { updateTeacherProfile } from "@/lib/actions/teacher-profile";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface TeacherData {
   teacherId: string;
@@ -194,6 +195,73 @@ export function TeacherProfileContent({
       .toUpperCase()
       .slice(0, 2);
   };
+
+  // Fetch classes and subjects on mount for the students widget
+  useEffect(() => {
+    const fetchTeachingData = async () => {
+      if (departments.length === 0 || subjects.length === 0 || classes.length === 0) {
+        try {
+          const supabase = createClient();
+
+          const [deptsResult, subsResult, clsResult] = await Promise.all([
+            // Fetch departments
+            supabase
+              .from("departments")
+              .select("id, name, code")
+              .order("name", { ascending: true }),
+            // Fetch subjects
+            supabase
+              .from("subjects")
+              .select("id, name, code, department_id")
+              .order("name", { ascending: true }),
+            // Fetch classes
+            supabase
+              .from("classes")
+              .select("id, name, grade_level, academic_year")
+              .order("grade_level", { ascending: true })
+              .order("name", { ascending: true }),
+          ]);
+
+          if (deptsResult.data) setDepartments(deptsResult.data);
+
+          if (subsResult.data) {
+            setSubjects(
+              subsResult.data.map((s) => ({
+                id: s.id,
+                name: s.name,
+                code: s.code,
+                departmentId: s.department_id,
+              }))
+            );
+          }
+
+          if (clsResult.data) {
+            setClasses(
+              clsResult.data.map((c) => ({
+                id: c.id,
+                name: c.name,
+                gradeLevel: c.grade_level,
+                academicYear: c.academic_year,
+              }))
+            );
+          }
+        } catch (err) {
+          console.error("Error fetching teaching data:", err);
+        }
+      }
+    };
+
+    fetchTeachingData();
+  }, []);
+
+  // Filter classes and subjects to only those the teacher teaches
+  const teacherClasses = classes.filter((cls) =>
+    teacherData.classIds?.includes(cls.id)
+  );
+
+  const teacherSubjects = subjects.filter((subj) =>
+    teacherData.subjectIds?.includes(subj.id)
+  );
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -589,17 +657,19 @@ export function TeacherProfileContent({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors cursor-default">
-              <Users className="h-5 w-5 text-purple-500" />
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm">
-                  {teacherData.totalStudents} Students
-                </span>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                  Enrolled
-                </span>
+            <Link href="/dashboard/profile/my-students">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                <Users className="h-5 w-5 text-purple-500" />
+                <div className="flex flex-col">
+                  <span className="font-semibold text-sm">
+                    {teacherData.totalStudents} Students
+                  </span>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    Enrolled
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
 
@@ -963,7 +1033,7 @@ export function TeacherProfileContent({
             </TabsContent>
           </div>
         </Tabs>
-      </div>
+      </div >
 
       <Dialog open={securityDialogOpen} onOpenChange={setSecurityDialogOpen}>
         <DialogContent className="rounded-2xl sm:rounded-2xl md:rounded-2xl">
