@@ -4,6 +4,7 @@ import { StreamType } from "@/types";
 
 export interface StudentProfile {
   studentId: string;
+  schoolStudentId?: string;
   className?: string;
   subjects?: string[];
   phoneNumber?: string;
@@ -29,6 +30,7 @@ export interface StudentProfile {
 
 export interface StudentListItem {
   id: string;
+  schoolStudentId?: string;
   name: string;
   email: string;
   phone?: string;
@@ -68,6 +70,7 @@ export async function getStudentProfile(
     .select(
       `
       id,
+      student_id,
       date_of_birth,
       gender,
       student_type,
@@ -105,8 +108,8 @@ export async function getStudentProfile(
   // Extract subjects array
   const subjects = Array.isArray(studentData.student_subjects)
     ? studentData.student_subjects
-        .map((ss: any) => ss?.subjects?.name)
-        .filter((name: string | undefined): name is string => Boolean(name))
+      .map((ss: any) => ss?.subjects?.name)
+      .filter((name: string | undefined): name is string => Boolean(name))
     : [];
 
   // Fetch guardian details if guardian_email is provided
@@ -206,6 +209,7 @@ export async function getStudentProfile(
 
   return {
     studentId: studentData.id,
+    schoolStudentId: studentData.student_id || undefined,
     className:
       enrolledClassName || (studentData.classes as any)?.name || undefined,
     subjects: subjects.length > 0 ? subjects : undefined,
@@ -253,6 +257,7 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
     .select(
       `
       id,
+      student_id,
       created_at,
       date_of_birth,
       gender,
@@ -328,12 +333,13 @@ export async function getAllStudents(): Promise<StudentListItem[]> {
 
     const subjects = Array.isArray(student.student_subjects)
       ? student.student_subjects
-          .map((ss: any) => ss?.subjects?.name)
-          .filter((name: string | undefined): name is string => Boolean(name))
+        .map((ss: any) => ss?.subjects?.name)
+        .filter((name: string | undefined): name is string => Boolean(name))
       : [];
 
     return {
       id: student.id,
+      schoolStudentId: student.student_id || undefined,
       name: nameParts.length > 0 ? nameParts.join(" ") : "Unknown Student",
       email: profile?.email || "",
       phone: student.phone_number || undefined,
@@ -369,6 +375,7 @@ export async function getStudentProfileForView(
     .select(
       `
       id,
+      student_id,
       date_of_birth,
       gender,
       student_type,
@@ -412,8 +419,8 @@ export async function getStudentProfileForView(
 
   const subjects = Array.isArray(studentData.student_subjects)
     ? studentData.student_subjects
-        .map((ss: any) => ss?.subjects?.name)
-        .filter((name: string | undefined): name is string => Boolean(name))
+      .map((ss: any) => ss?.subjects?.name)
+      .filter((name: string | undefined): name is string => Boolean(name))
     : [];
 
   // Fetch guardian details if guardian_email is provided
@@ -488,6 +495,7 @@ export async function getStudentProfileForView(
 
   return {
     id: studentData.id,
+    schoolStudentId: studentData.student_id || undefined,
     name: nameParts.length > 0 ? nameParts.join(" ") : "Unknown Student",
     email: profile?.email || "",
     phone: studentData.phone_number || undefined,

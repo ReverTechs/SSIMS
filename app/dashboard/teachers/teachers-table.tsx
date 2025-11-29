@@ -13,7 +13,7 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Eye } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Eye, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -62,19 +62,30 @@ export function TeachersTable({ data }: TeachersTableProps) {
 
     const columns: ColumnDef<TeacherProfile>[] = [
         {
+            id: "icon",
+            header: "",
+            cell: () => (
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                </div>
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
             accessorKey: "name",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Name" />
             ),
             cell: ({ row }) => (
-                <div className="font-medium">{row.getValue("name")}</div>
+                <div className="font-medium text-foreground">{row.getValue("name")}</div>
             ),
         },
         {
-            accessorKey: "id",
+            accessorKey: "employeeId",
             header: "ID",
             cell: ({ row }) => (
-                <div className="text-muted-foreground text-xs truncate max-w-[80px]">{row.getValue("id")}</div>
+                <div className="text-muted-foreground">{row.getValue("employeeId") || "-"}</div>
             ),
         },
         {
@@ -88,7 +99,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 return (
                     <div className="flex flex-wrap gap-1">
                         {departments.map((dept) => (
-                            <Badge key={dept.id} variant="outline">{dept.name}</Badge>
+                            <Badge key={dept.id} variant="outline" className="font-normal">{dept.name}</Badge>
                         ))}
                     </div>
                 );
@@ -105,7 +116,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 <DataTableColumnHeader column={column} title="Gender" />
             ),
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("gender") || "-"}</div>
+                <div className="capitalize text-foreground">{row.getValue("gender") || "-"}</div>
             ),
             filterFn: (row, id, value) => {
                 if (!value || !Array.isArray(value) || value.length === 0) return true;
@@ -121,7 +132,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                 return (
                     <div className="flex flex-wrap gap-1">
                         {subjects.map((subject) => (
-                            <Badge key={subject} variant="secondary" className="text-xs">
+                            <Badge key={subject} variant="secondary" className="text-xs font-normal">
                                 {subject}
                             </Badge>
                         ))}
@@ -133,7 +144,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
             accessorKey: "email",
             header: "Email",
             cell: ({ row }) => (
-                <div className="text-sm text-muted-foreground">{row.getValue("email")}</div>
+                <div className="text-muted-foreground">{row.getValue("email")}</div>
             ),
         },
         {
@@ -258,7 +269,7 @@ export function TeachersTable({ data }: TeachersTableProps) {
                     </Select>
                     <DataTableViewOptions table={table} />
                 </div>
-                <div className="overflow-hidden rounded-md border">
+                <div className="overflow-x-auto rounded-md border">
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
