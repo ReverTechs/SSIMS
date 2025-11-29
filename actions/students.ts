@@ -32,6 +32,11 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
         return { error: 'Please fill in all required fields.' };
     }
 
+    // Validate Student ID is provided
+    if (!studentId || studentId.trim() === '') {
+        return { error: 'Student ID is required.' };
+    }
+
     // Create a Supabase client with the service role key to create users
     // We need to import createClient from @supabase/supabase-js for this, as the one in utils/supabase/server.ts 
     // is for the current user context (using cookies).
@@ -59,6 +64,22 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
             }
         }
     );
+
+    // Check if Student ID already exists
+    const { data: existingStudent, error: checkError } = await supabaseAdmin
+        .from('students')
+        .select('id, student_id')
+        .eq('student_id', studentId)
+        .maybeSingle();
+
+    if (checkError) {
+        console.error('Error checking for duplicate Student ID:', checkError);
+        return { error: 'Failed to validate Student ID. Please try again.' };
+    }
+
+    if (existingStudent) {
+        return { error: `Student ID "${studentId}" is already in use. Please use a unique Student ID.` };
+    }
 
     try {
         // 1. Create the Auth User
@@ -132,6 +153,7 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
             .from('students')
             .insert({
                 id: userId,
+                student_id: studentId, // Save the Student ID from the form
                 class_id: classId,
                 date_of_birth: dateOfBirth || null,
                 gender: gender, // Assuming gender enum matches

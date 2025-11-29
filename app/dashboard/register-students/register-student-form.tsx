@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,9 +12,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Shield, UserPlus, Loader2 } from "lucide-react";
+import { Shield, UserPlus, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { registerStudent } from '@/actions/students';
+import { checkStudentIdAvailability } from '@/actions/check-student-id';
 
 interface ClassOption {
     id: string;
@@ -45,6 +46,40 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
     });
 
     const [isVerified, setIsVerified] = useState(false);
+    const [studentIdValidation, setStudentIdValidation] = useState<{
+        checking: boolean;
+        available: boolean | null;
+        message: string;
+    }>({ checking: false, available: null, message: '' });
+
+    // Debounced Student ID validation
+    useEffect(() => {
+        if (!formData.studentId || formData.studentId.trim() === '') {
+            setStudentIdValidation({ checking: false, available: null, message: '' });
+            return;
+        }
+
+        setStudentIdValidation({ checking: true, available: null, message: 'Checking...' });
+
+        const timeoutId = setTimeout(async () => {
+            const result = await checkStudentIdAvailability(formData.studentId);
+            if (result.available) {
+                setStudentIdValidation({
+                    checking: false,
+                    available: true,
+                    message: 'Student ID is available'
+                });
+            } else {
+                setStudentIdValidation({
+                    checking: false,
+                    available: false,
+                    message: result.error || 'Student ID is already in use'
+                });
+            }
+        }, 500); // 500ms debounce
+
+        return () => clearTimeout(timeoutId);
+    }, [formData.studentId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -203,13 +238,47 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="studentId">Student ID</Label>
-                            <Input
-                                id="studentId"
-                                placeholder="STU2024001"
-                                value={formData.studentId}
-                                onChange={(e) => handleChange('studentId', e.target.value)}
-                                required
-                            />
+                            <div className="relative">
+                                <Input
+                                    id="studentId"
+                                    placeholder="STU2024001"
+                                    value={formData.studentId}
+                                    onChange={(e) => handleChange('studentId', e.target.value)}
+                                    required
+                                    className={
+                                        studentIdValidation.available === false
+                                            ? 'border-red-500 focus-visible:ring-red-500'
+                                            : studentIdValidation.available === true
+                                                ? 'border-green-500 focus-visible:ring-green-500'
+                                                : ''
+                                    }
+                                />
+                                {studentIdValidation.checking && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                    </div>
+                                )}
+                                {!studentIdValidation.checking && studentIdValidation.available === true && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                    </div>
+                                )}
+                                {!studentIdValidation.checking && studentIdValidation.available === false && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <XCircle className="h-4 w-4 text-red-500" />
+                                    </div>
+                                )}
+                            </div>
+                            {studentIdValidation.message && (
+                                <p className={`text-xs ${studentIdValidation.available === false
+                                    ? 'text-red-500'
+                                    : studentIdValidation.available === true
+                                        ? 'text-green-500'
+                                        : 'text-muted-foreground'
+                                    }`}>
+                                    {studentIdValidation.message}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -271,7 +340,15 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                         </div>
                     )}
 
-                    <Button className="w-full" disabled={isPending || !isVerified}>
+                    <Button
+                        className="w-full"
+                        disabled={
+                            isPending ||
+                            !isVerified ||
+                            studentIdValidation.checking ||
+                            studentIdValidation.available === false
+                        }
+                    >
                         {isPending ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
