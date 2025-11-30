@@ -61,11 +61,39 @@ export async function getTeacherStudents({
 
             studentIds = enrollments.map((e) => e.student_id);
         } else if (subjectId) {
-            // Filter by specific subject
+            // Filter by specific subject - only students from teacher's classes
+            // First get teacher's classes
+            const { data: teacherClasses } = await supabase
+                .from("teacher_classes")
+                .select("class_id")
+                .eq("teacher_id", teacherId);
+
+            if (!teacherClasses || teacherClasses.length === 0) {
+                return [];
+            }
+
+            const classIds = teacherClasses.map((tc) => tc.class_id);
+
+            // Get students enrolled in teacher's classes
+            const { data: enrollments } = await supabase
+                .from("enrollments")
+                .select("student_id")
+                .in("class_id", classIds)
+                .eq("academic_year_id", activeYearId)
+                .eq("status", "active");
+
+            if (!enrollments || enrollments.length === 0) {
+                return [];
+            }
+
+            const enrolledStudentIds = enrollments.map((e) => e.student_id);
+
+            // Filter by subject among enrolled students only
             const { data: studentSubjects } = await supabase
                 .from("student_subjects")
                 .select("student_id")
                 .eq("subject_id", subjectId)
+                .in("student_id", enrolledStudentIds)
                 .eq("academic_year_id", activeYearId);
 
             if (!studentSubjects || studentSubjects.length === 0) {

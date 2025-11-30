@@ -156,11 +156,7 @@ export function TeacherStudentsTable({
                 />
                 <Select value={selectedClass} onValueChange={handleClassChange}>
                     <SelectTrigger className="w-[160px] h-8 text-xs">
-                        <SelectValue placeholder="Filter by class">
-                            {selectedClass === "all"
-                                ? "All Classes"
-                                : classes.find(c => c.id === selectedClass)?.name || "All Classes"}
-                        </SelectValue>
+                        <SelectValue placeholder="All Classes" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Classes</SelectItem>
@@ -173,11 +169,7 @@ export function TeacherStudentsTable({
                 </Select>
                 <Select value={selectedSubject} onValueChange={handleSubjectChange}>
                     <SelectTrigger className="w-[160px] h-8 text-xs">
-                        <SelectValue placeholder="Filter by subject">
-                            {selectedSubject === "all"
-                                ? "All Subjects"
-                                : subjects.find(s => s.id === selectedSubject)?.name || "All Subjects"}
-                        </SelectValue>
+                        <SelectValue placeholder="All Subjects" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Subjects</SelectItem>
