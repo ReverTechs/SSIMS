@@ -1,0 +1,25 @@
+--- Departments ---
+Total Departments: 7
+2da5ab84-667f-4619-b7aa-3467780a7e1d | Mathematics | MATH
+ac893bcd-ef67-4737-bbd6-ef78b7f98090 | Vocational/Technical | VOC
+63c2155f-a10b-4f55-8a02-5bf912e0c515 | Commerce/Business | COM
+28604774-da88-41fe-a6a4-7977c5842427 | Arts | ARTS
+f719ca32-4c63-4449-996c-7a097ea5e09c | Sciences | SCI
+7e8afd41-4dce-46e3-8c5b-e8977f217df6 | Languages | LANG
+99b33775-08dd-4abf-95f0-9d33de70392b | Humanities | HUM
+
+--- Subjects ---
+Total Subjects: 13
+57599f41-94b0-46e9-9fe5-ff4575ac5bf1 | Chemistry | CHEM | Sciences | f719ca32-4c63-4449-996c-7a097ea5e09c
+ce7c604c-6e1f-42e3-a1e7-7e56b691444e | History | HIST | Humanities | 99b33775-08dd-4abf-95f0-9d33de70392b
+58377347-1356-4066-be33-24012abb9a24 | Social and Developmental Studies | SDS | Humanities | 99b33775-08dd-4abf-95f0-9d33de70392b
+8c7313dc-0b13-440b-95c5-af3f0c2f7f7e | Life Skills | LS | Humanities | 99b33775-08dd-4abf-95f0-9d33de70392b
+f71be17e-3484-4cca-91f4-6285eac554ee | Mathematics | MATH | Mathematics | 2da5ab84-667f-4619-b7aa-3467780a7e1d
+a24ddfac-70ce-4ef6-9c1c-6698eced0816 | Computer Studies | CS | Vocational/Technical | ac893bcd-ef67-4737-bbd6-ef78b7f98090
+8111e3a1-89f6-4e85-9643-a8429f9f9e1e | Business Studies | BS | Commerce/Business | 63c2155f-a10b-4f55-8a02-5bf912e0c515
+f142f73e-5c3d-4706-99fc-51a5e4d31b62 | English | ENG | Languages | 7e8afd41-4dce-46e3-8c5b-e8977f217df6
+358e7f52-693f-4929-926a-2471fca56ba1 | Chichewa | CHI | Languages | 7e8afd41-4dce-46e3-8c5b-e8977f217df6
+15c51a96-3712-4cf6-90af-f86d3f57f149 | Biology | BIO | Sciences | f719ca32-4c63-4449-996c-7a097ea5e09c
+8625a818-c7a9-48ae-a6d3-1facdd37ea68 | Physics | PHY | Sciences | f719ca32-4c63-4449-996c-7a097ea5e09c
+2c127821-3e1c-408f-b5c9-7c7a299374ee | Agriculture | AGR | Vocational/Technical | ac893bcd-ef67-4737-bbd6-ef78b7f98090
+1af2a165-16df-48ea-9e98-cf0a4f2dc53b | Geography | GEO | Humanities | 99b33775-08dd-4abf-95f0-9d33de70392b

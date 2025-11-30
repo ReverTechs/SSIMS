@@ -11,7 +11,7 @@ export const teachersData = [
     photo:
       "https://images.pexels.com/photos/2888150/pexels-photo-2888150.jpeg?auto=compress&cs=tinysrgb&w=1200",
     phone: "1234567890",
-    subjects: ["Math", "Geometry"],
+    subjects: ["Mathematics", "Physics"],
     classes: ["1B", "2A", "3C"],
     address: "123 Main St, Anytown, USA",
   },
@@ -59,7 +59,7 @@ export const teachersData = [
     photo:
       "https://images.pexels.com/photos/1102341/pexels-photo-1102341.jpeg?auto=compress&cs=tinysrgb&w=1200",
     phone: "1234567890",
-    subjects: ["Music", "History"],
+    subjects: ["Life Skills", "History"],
     classes: ["5A", "4B", "3C"],
     address: "123 Main St, Anytown, USA",
   },
@@ -83,7 +83,7 @@ export const teachersData = [
     photo:
       "https://images.pexels.com/photos/1438081/pexels-photo-1438081.jpeg?auto=compress&cs=tinysrgb&w=1200",
     phone: "1234567890",
-    subjects: ["English", "Spanish"],
+    subjects: ["English", "Chichewa"],
     classes: ["5A", "4B", "3C"],
     address: "123 Main St, Anytown, USA",
   },
@@ -95,7 +95,7 @@ export const teachersData = [
     photo:
       "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1200",
     phone: "1234567890",
-    subjects: ["Math", "Geometry"],
+    subjects: ["Mathematics"],
     classes: ["5A", "4B", "3C"],
     address: "123 Main St, Anytown, USA",
   },
@@ -107,7 +107,7 @@ export const teachersData = [
     photo:
       "https://images.pexels.com/photos/842980/pexels-photo-842980.jpeg?auto=compress&cs=tinysrgb&w=1200",
     phone: "1234567890",
-    subjects: ["Literature", "English"],
+    subjects: ["English"],
     classes: ["5A", "4B", "3C"],
     address: "123 Main St, Anytown, USA",
   },
@@ -334,7 +334,7 @@ export const parentsData = [
 export const subjectsData = [
   {
     id: 1,
-    name: "Math",
+    name: "Mathematics",
     teachers: ["Alice Phelps", "Russell Davidson"],
   },
   {
@@ -369,17 +369,17 @@ export const subjectsData = [
   },
   {
     id: 8,
-    name: "Art",
+    name: "Life Skills",
     teachers: ["Harriet Alvarado", "Mayme Keller"],
   },
   {
     id: 9,
-    name: "Music",
+    name: "Computer Studies",
     teachers: ["Gertrude Roy", "Rosa Singleton"],
   },
   {
     id: 10,
-    name: "Literature",
+    name: "Business Studies",
     teachers: ["Effie Lynch", "Brett Flowers"],
   },
 ];
@@ -460,7 +460,7 @@ export const classesData = [
 export const lessonsData = [
   {
     id: 1,
-    subject: "Math",
+    subject: "Mathematics",
     class: "1A",
     teacher: "Tommy Wise",
   },
@@ -472,25 +472,25 @@ export const lessonsData = [
   },
   {
     id: 3,
-    subject: "Science",
+    subject: "Biology",
     class: "3A",
     teacher: "Della Dunn",
   },
   {
     id: 4,
-    subject: "Social Studies",
+    subject: "Social and Developmental Studies",
     class: "1B",
     teacher: "Bruce Rodriguez",
   },
   {
     id: 5,
-    subject: "Art",
+    subject: "Life Skills",
     class: "4A",
     teacher: "Birdie Butler",
   },
   {
     id: 6,
-    subject: "Music",
+    subject: "Computer Studies",
     class: "5A",
     teacher: "Bettie Oliver",
   },
@@ -523,7 +523,7 @@ export const lessonsData = [
 export const examsData = [
   {
     id: 1,
-    subject: "Math",
+    subject: "Mathematics",
     class: "1A",
     teacher: "Martha Morris",
     date: "2025-01-01",
@@ -537,28 +537,28 @@ export const examsData = [
   },
   {
     id: 3,
-    subject: "Science",
+    subject: "Biology",
     class: "3A",
     teacher: "Myrtie Scott",
     date: "2025-01-01",
   },
   {
     id: 4,
-    subject: "Social Studies",
+    subject: "Social and Developmental Studies",
     class: "1B",
     teacher: "Alvin Swanson",
     date: "2025-01-01",
   },
   {
     id: 5,
-    subject: "Art",
+    subject: "Life Skills",
     class: "4A",
     teacher: "Mabelle Wallace",
     date: "2025-01-01",
   },
   {
     id: 6,
-    subject: "Music",
+    subject: "Computer Studies",
     class: "5A",
     teacher: "Dale Thompson",
     date: "2025-01-01",
@@ -596,7 +596,7 @@ export const examsData = [
 export const assignmentsData = [
   {
     id: 1,
-    subject: "Math",
+    subject: "Mathematics",
     class: "1A",
     teacher: "Anthony Boone",
     dueDate: "2025-01-01",
@@ -610,28 +610,28 @@ export const assignmentsData = [
   },
   {
     id: 3,
-    subject: "Science",
+    subject: "Biology",
     class: "3A",
     teacher: "Catherine Malone",
     dueDate: "2025-01-01",
   },
   {
     id: 4,
-    subject: "Social Studies",
+    subject: "Social and Developmental Studies",
     class: "1B",
     teacher: "Willie Medina",
     dueDate: "2025-01-01",
   },
   {
     id: 5,
-    subject: "Art",
+    subject: "Life Skills",
     class: "4A",
     teacher: "Jose Ruiz",
     dueDate: "2025-01-01",
   },
   {
     id: 6,
-    subject: "Music",
+    subject: "Computer Studies",
     class: "5A",
     teacher: "Katharine Owens",
     dueDate: "2025-01-01",
@@ -669,7 +669,7 @@ export const assignmentsData = [
 export const resultsData = [
   {
     id: 1,
-    subject: "Math",
+    subject: "Mathematics",
     class: "1A",
     teacher: "John Doe",
     student: "John Doe",
@@ -689,7 +689,7 @@ export const resultsData = [
   },
   {
     id: 3,
-    subject: "Science",
+    subject: "Biology",
     class: "3A",
     teacher: "John Doe",
     student: "John Doe",
@@ -699,7 +699,7 @@ export const resultsData = [
   },
   {
     id: 4,
-    subject: "Social Studies",
+    subject: "Social and Developmental Studies",
     class: "1B",
     teacher: "John Doe",
     student: "John Doe",
@@ -709,7 +709,7 @@ export const resultsData = [
   },
   {
     id: 5,
-    subject: "Art",
+    subject: "Life Skills",
     class: "4A",
     teacher: "John Doe",
     student: "John Doe",
@@ -719,7 +719,7 @@ export const resultsData = [
   },
   {
     id: 6,
-    subject: "Music",
+    subject: "Computer Studies",
     class: "5A",
     teacher: "John Doe",
     student: "John Doe",
