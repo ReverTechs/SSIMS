@@ -1,0 +1,32 @@
+--- Curriculum Subjects ---
+Total Curriculum Entries: 22
+
+Junior (Form 1-2): 10 entries
+  Mathematics (MATH) | Compulsory | core
+  English (ENG) | Compulsory | core
+  Chichewa (CHI) | Compulsory | core
+  Biology (BIO) | Compulsory | sciences
+  Chemistry (CHEM) | Compulsory | sciences
+  Physics (PHY) | Compulsory | sciences
+  Geography (GEO) | Compulsory | humanities
+  History (HIST) | Compulsory | humanities
+  Agriculture (AGR) | Compulsory | technical
+  Life Skills (LS) | Compulsory | core
+
+Senior (Form 3-4): 12 entries
+  No Stream (Core): 5
+    English (ENG) | Compulsory
+    Mathematics (MATH) | Compulsory
+    Chichewa (CHI) | Compulsory
+    Biology (BIO) | Compulsory
+    Life Skills (LS) | Compulsory
+  Sciences Stream: 3
+    Physics (PHY) | Optional
+    Chemistry (CHEM) | Optional
+    Computer Studies (CS) | Optional
+  Humanities Stream: 3
+    History (HIST) | Optional
+    Geography (GEO) | Optional
+    Social and Developmental Studies (SDS) | Optional
+  Commercial Stream: 1
+    Business Studies (BS) | Optional

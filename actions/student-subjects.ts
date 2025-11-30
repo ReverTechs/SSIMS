@@ -7,6 +7,7 @@ import type { ActionResult } from '@/types';
 
 /**
  * Enrolls a student in default compulsory subjects based on their class level and stream.
+ * For senior students with a stream, also enrolls them in stream-specific subjects automatically.
  * 
  * @param studentId - The student's UUID
  * @param classId - The class UUID
@@ -56,55 +57,89 @@ export async function enrollStudentInDefaultSubjects(
         const level: 'junior' | 'senior' = classData.grade_level <= 2 ? 'junior' : 'senior';
         console.log(`[enrollStudentInDefaultSubjects] Class ${classData.name} is ${level} level (grade ${classData.grade_level})`);
 
-        // 3. Fetch Compulsory Subjects
-        let query = supabase
-            .from('curriculum_subjects')
-            .select('subject_id, subjects(name, code)')
-            .eq('level', level)
-            .eq('is_compulsory', true);
+        // 3. Fetch Subjects to Enroll
+        let allSubjects: any[] = [];
 
-        if (level === 'senior' && stream) {
-            // For seniors, filter by stream OR subjects that apply to all streams (stream is null)
-            query = query.or(`stream.eq.${stream},stream.is.null`);
-            console.log(`[enrollStudentInDefaultSubjects] Fetching senior subjects for stream: ${stream}`);
-        } else {
-            // For juniors or no stream specified, just get general compulsory ones
-            query = query.is('stream', null);
-            console.log(`[enrollStudentInDefaultSubjects] Fetching junior compulsory subjects`);
+        if (level === 'junior') {
+            // For junior students: enroll in all compulsory subjects
+            const { data: subjects, error: subjectsError } = await supabase
+                .from('curriculum_subjects')
+                .select('subject_id, subjects(name, code), is_compulsory')
+                .eq('level', 'junior')
+                .eq('is_compulsory', true)
+                .is('stream', null);
+
+            if (subjectsError) {
+                console.error('[enrollStudentInDefaultSubjects] Error fetching junior subjects:', subjectsError);
+                return {
+                    success: false,
+                    error: 'Failed to fetch curriculum subjects. Please try again.'
+                };
+            }
+
+            allSubjects = subjects || [];
+            console.log(`[enrollStudentInDefaultSubjects] Found ${allSubjects.length} junior compulsory subjects`);
+
+        } else if (level === 'senior') {
+            // For senior students: enroll in core compulsory subjects
+            const { data: coreSubjects, error: coreError } = await supabase
+                .from('curriculum_subjects')
+                .select('subject_id, subjects(name, code), is_compulsory')
+                .eq('level', 'senior')
+                .eq('is_compulsory', true)
+                .is('stream', null);
+
+            if (coreError) {
+                console.error('[enrollStudentInDefaultSubjects] Error fetching senior core subjects:', coreError);
+                return {
+                    success: false,
+                    error: 'Failed to fetch curriculum subjects. Please try again.'
+                };
+            }
+
+            allSubjects = coreSubjects || [];
+            console.log(`[enrollStudentInDefaultSubjects] Found ${allSubjects.length} senior core compulsory subjects`);
+
+            // If stream is specified, also enroll in stream-specific subjects
+            if (stream) {
+                const { data: streamSubjects, error: streamError } = await supabase
+                    .from('curriculum_subjects')
+                    .select('subject_id, subjects(name, code), is_compulsory')
+                    .eq('level', 'senior')
+                    .eq('stream', stream);
+
+                if (streamError) {
+                    console.error('[enrollStudentInDefaultSubjects] Error fetching stream subjects:', streamError);
+                    // Don't fail the whole enrollment, just log it
+                } else if (streamSubjects && streamSubjects.length > 0) {
+                    allSubjects = [...allSubjects, ...streamSubjects];
+                    console.log(`[enrollStudentInDefaultSubjects] Added ${streamSubjects.length} ${stream} stream subjects`);
+                }
+            }
         }
 
-        const { data: subjects, error: subjectsError } = await query;
-
-        if (subjectsError) {
-            console.error('[enrollStudentInDefaultSubjects] Error fetching curriculum subjects:', subjectsError);
-            return {
-                success: false,
-                error: 'Failed to fetch curriculum subjects. Please try again.'
-            };
-        }
-
-        if (!subjects || subjects.length === 0) {
-            console.warn('[enrollStudentInDefaultSubjects] No compulsory subjects found');
+        if (allSubjects.length === 0) {
+            console.warn('[enrollStudentInDefaultSubjects] No subjects found to enroll');
             return {
                 success: true,
                 data: { enrolledCount: 0 },
-                message: 'No compulsory subjects found for this class level.'
+                message: 'No subjects found for this class level and stream.'
             };
         }
 
-        console.log(`[enrollStudentInDefaultSubjects] Found ${subjects.length} compulsory subjects`);
+        console.log(`[enrollStudentInDefaultSubjects] Total subjects to enroll: ${allSubjects.length}`);
 
         // 4. Get current user for audit trail
         const { data: { user } } = await supabase.auth.getUser();
         const enrolledBy = user?.id;
 
         // 5. Enroll Student
-        const enrollments = subjects.map(sub => ({
+        const enrollments = allSubjects.map(sub => ({
             student_id: studentId,
             subject_id: sub.subject_id,
             academic_year_id: activeYear.id,
             term_id: termId || null,
-            is_optional: false,
+            is_optional: !sub.is_compulsory, // Mark stream-specific subjects as optional
             enrolled_by: enrolledBy || null
         }));
 
@@ -133,7 +168,7 @@ export async function enrollStudentInDefaultSubjects(
         return {
             success: true,
             data: { enrolledCount },
-            message: `Successfully enrolled in ${enrolledCount} compulsory subject${enrolledCount !== 1 ? 's' : ''}.`
+            message: `Successfully enrolled in ${enrolledCount} subject${enrolledCount !== 1 ? 's' : ''}.`
         };
 
     } catch (error) {

@@ -284,6 +284,63 @@ export async function bulkRegisterStudents(
                                 error: `Registered but failed to enroll in active year: ${enrollmentError.message}`,
                                 type: 'database',
                             });
+                        } else {
+                            // Step 7: Auto-enroll in subjects
+                            // Note: We don't have stream in bulk upload data, so stream will be null
+                            // Students can be assigned to a stream later via the UI
+                            try {
+                                const { createClient: createSupabaseClient } = await import('@supabase/supabase-js');
+                                const supabaseForEnrollment = createSupabaseClient(
+                                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                                    serviceRoleKey
+                                );
+
+                                // Get class info to determine level and stream
+                                const { data: classInfo } = await supabaseForEnrollment
+                                    .from('classes')
+                                    .select('grade_level')
+                                    .eq('id', classId)
+                                    .single();
+
+                                const level = classInfo && classInfo.grade_level <= 2 ? 'junior' : 'senior';
+
+                                // Fetch and enroll in subjects
+                                let subjectsQuery = supabaseForEnrollment
+                                    .from('curriculum_subjects')
+                                    .select('subject_id, is_compulsory')
+                                    .eq('level', level);
+
+                                if (level === 'junior') {
+                                    subjectsQuery = subjectsQuery.eq('is_compulsory', true).is('stream', null);
+                                } else {
+                                    // For senior, only enroll in core compulsory subjects (stream is null)
+                                    // Stream-specific subjects will be added when stream is assigned
+                                    subjectsQuery = subjectsQuery.eq('is_compulsory', true).is('stream', null);
+                                }
+
+                                const { data: subjectsToEnroll } = await subjectsQuery;
+
+                                if (subjectsToEnroll && subjectsToEnroll.length > 0) {
+                                    const subjectEnrollments = subjectsToEnroll.map(sub => ({
+                                        student_id: userId,
+                                        subject_id: sub.subject_id,
+                                        academic_year_id: activeYear.id,
+                                        term_id: null,
+                                        is_optional: !sub.is_compulsory,
+                                        enrolled_by: null
+                                    }));
+
+                                    await supabaseForEnrollment
+                                        .from('student_subjects')
+                                        .upsert(subjectEnrollments, {
+                                            onConflict: 'student_id,subject_id,academic_year_id,term_id',
+                                            ignoreDuplicates: true
+                                        });
+                                }
+                            } catch (subjectEnrollError) {
+                                console.error(`Subject enrollment error for ${student.email}:`, subjectEnrollError);
+                                // Don't fail the registration, just log it
+                            }
                         }
                     }
 
