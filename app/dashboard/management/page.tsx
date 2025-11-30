@@ -119,24 +119,26 @@ export default function ManagementHubPage() {
         {highlightMetrics.map((metric) => (
           <Card
             key={metric.label}
-            className="border border-border/70 bg-card/80 hover:bg-accent/50 transition-colors duration-200"
+            className="border bg-card hover:bg-accent/50 transition-all duration-200 rounded-2xl"
           >
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[0.7rem] uppercase tracking-wide">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground">
                 {metric.label}
-              </CardDescription>
-              <CardTitle className="text-xl font-semibold">
-                {metric.value}
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0 text-sm text-muted-foreground">
-              {metric.description}
+            <CardContent className="space-y-1">
+              <div className="text-xl font-semibold tracking-tight">
+                {metric.value}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {metric.description}
+              </p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid gap-2.5 sm:gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {managementAreas.map((area) => {
           const Icon = area.icon;
           return (
@@ -146,34 +148,36 @@ export default function ManagementHubPage() {
               className="group block h-full"
             >
               <Card
-                className={cn(
-                  "relative h-full border bg-card/90 transition-all duration-200 hover:bg-accent/50 hover:border-primary",
-                  area.borderGradient
-                )}
+                className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden cursor-pointer hover:shadow-lg hover:scale-[1.02] rounded-2xl"
               >
-                <CardHeader className="relative z-10 pb-3">
-                  <div className="flex items-center gap-3">
-                    <span className="rounded-lg border border-border/70 bg-background p-2 text-amber-600">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <div>
-                      <CardTitle className="text-base">{area.title}</CardTitle>
-                      <CardDescription className="text-sm">
-                        {area.description}
-                      </CardDescription>
+                <div
+                  className={cn(
+                    "absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-5 transition-opacity duration-200",
+                    area.borderGradient.replace('border-', 'from-').replace('/20', '')
+                  )}
+                />
+                <CardHeader className="relative">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500/10 group-hover:scale-110 transition-transform duration-200">
+                      <Icon className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                     </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                        {area.title}
+                      </CardTitle>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
                   </div>
                 </CardHeader>
-                <CardContent className="relative z-10 space-y-3">
-                  <div className="flex items-baseline gap-2 text-sm">
+                <CardContent className="relative">
+                  <CardDescription className="text-sm mb-3">
+                    {area.description}
+                  </CardDescription>
+                  <div className="flex items-baseline gap-2">
                     <p className="text-2xl font-semibold">{area.statValue}</p>
                     <span className="text-xs text-muted-foreground">
                       {area.statLabel}
                     </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-primary">
-                    <span>Open workspace</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </CardContent>
               </Card>

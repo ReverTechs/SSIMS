@@ -32,11 +32,23 @@ const routeNameMap: Record<string, string> = {
   registration: "Registration",
   "register-students": "Register Students",
   "register-teachers": "Register Teachers",
+  "register-guardians": "Register Guardians",
+  "register-admin": "Register Admins",
   passwords: "Passwords",
   "school-council": "School Council",
   "staff-roles": "Staff Roles",
   "student-council": "Student Council",
   settings: "Settings",
+  management: "Management",
+};
+
+// Map child routes to their logical parent routes for breadcrumb hierarchy
+const routeParentMap: Record<string, string> = {
+  "register-students": "registration",
+  "register-teachers": "registration",
+  "register-guardians": "registration",
+  "register-admin": "registration",
+  "manage-teachers": "management",
 };
 
 // Mock data for student/teacher names - in production, this would come from an API
@@ -125,18 +137,48 @@ export function Breadcrumb() {
     };
   });
 
+  // Inject parent segments for routes with logical parents
+  const enhancedBreadcrumbItems: typeof breadcrumbItems = [];
+
+  for (let i = 0; i < breadcrumbItems.length; i++) {
+    const item = breadcrumbItems[i];
+    const segment = filteredSegments[i];
+
+    // Check if this segment has a logical parent that's not already in the breadcrumb
+    const parentSegment = routeParentMap[segment];
+    if (parentSegment) {
+      // Check if the parent is already in the breadcrumb trail
+      const parentAlreadyExists = filteredSegments.slice(0, i).includes(parentSegment);
+
+      if (!parentAlreadyExists) {
+        // Insert the parent before this item
+        enhancedBreadcrumbItems.push({
+          href: `/dashboard/${parentSegment}`,
+          label: routeNameMap[parentSegment] || parentSegment.charAt(0).toUpperCase() + parentSegment.slice(1).replace(/-/g, " "),
+          isLast: false,
+        });
+      }
+    }
+
+    // Add the current item
+    enhancedBreadcrumbItems.push(item);
+  }
+
+  // Use the enhanced breadcrumb items
+  const finalBreadcrumbItems = enhancedBreadcrumbItems;
+
   // If we're on the grades page with a child query param, add the child name to breadcrumb
   if (isGradesPage && childParam && contextName) {
     // Make the "Grades" item clickable (link back to grades page without child param)
-    const gradesItemIndex = breadcrumbItems.findIndex(
+    const gradesItemIndex = finalBreadcrumbItems.findIndex(
       (item) => item.label === "Grades"
     );
     if (gradesItemIndex !== -1) {
-      breadcrumbItems[gradesItemIndex].href = "/dashboard/grades";
-      breadcrumbItems[gradesItemIndex].isLast = false;
+      finalBreadcrumbItems[gradesItemIndex].href = "/dashboard/grades";
+      finalBreadcrumbItems[gradesItemIndex].isLast = false;
     }
     // Add child name as the last breadcrumb item
-    breadcrumbItems.push({
+    finalBreadcrumbItems.push({
       href: pathname + "?child=" + childParam,
       label: contextName,
       isLast: true,
@@ -167,7 +209,7 @@ export function Breadcrumb() {
         </li>
 
         {/* Breadcrumb items */}
-        {breadcrumbItems.map((item, index) => (
+        {finalBreadcrumbItems.map((item, index) => (
           <li key={`${item.href}-${index}`} className="flex items-center gap-1.5">
             <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
             {item.isLast ? (

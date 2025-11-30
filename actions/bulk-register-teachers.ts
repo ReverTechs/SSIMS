@@ -72,6 +72,31 @@ export async function bulkRegisterTeachers(
 
         const existingEmails = new Set(existingUsers?.map(u => u.email.toLowerCase()) || []);
 
+        // Step 1.1: Check for duplicate employee IDs
+        const employeeIds = teachers.map(t => t.employeeId).filter(Boolean);
+        const { data: existingEmployeeIdsData, error: checkIdError } = await supabaseAdmin
+            .from('teachers')
+            .select('employee_id')
+            .in('employee_id', employeeIds);
+
+        if (checkIdError) {
+            return {
+                success: false,
+                totalProcessed: 0,
+                successCount: 0,
+                failureCount: 0,
+                skippedCount: 0,
+                errors: [{
+                    row: 0,
+                    error: `Database error: ${checkIdError.message}`,
+                    type: 'database',
+                }],
+                message: 'Failed to check for duplicate employee IDs.',
+            };
+        }
+
+        const existingEmployeeIds = new Set(existingEmployeeIdsData?.map(t => t.employee_id) || []);
+
         // Step 2: Process in batches
         for (let i = 0; i < teachers.length; i += BATCH_SIZE) {
             const batch = teachers.slice(i, i + BATCH_SIZE);
@@ -81,13 +106,25 @@ export async function bulkRegisterTeachers(
                 const rowNumber = i + j + 2;
 
                 try {
-                    // Check duplicate
+                    // Check duplicate email
                     if (existingEmails.has(teacher.email.toLowerCase())) {
                         skippedCount++;
                         errors.push({
                             row: rowNumber,
                             email: teacher.email,
                             error: 'Email already exists in the system',
+                            type: 'duplicate',
+                        });
+                        continue;
+                    }
+
+                    // Check duplicate employee ID
+                    if (teacher.employeeId && existingEmployeeIds.has(teacher.employeeId)) {
+                        skippedCount++;
+                        errors.push({
+                            row: rowNumber,
+                            email: teacher.email,
+                            error: `Employee ID "${teacher.employeeId}" already exists in the system`,
                             type: 'duplicate',
                         });
                         continue;
@@ -279,6 +316,9 @@ export async function bulkRegisterTeachers(
 
                     successCount++;
                     existingEmails.add(teacher.email.toLowerCase());
+                    if (teacher.employeeId) {
+                        existingEmployeeIds.add(teacher.employeeId);
+                    }
 
                 } catch (error) {
                     failureCount++;

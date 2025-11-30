@@ -114,6 +114,29 @@ export async function registerTeacher(
         }
     }
 
+    // Check if Employee ID already exists
+    const { data: existingTeacher, error: checkError } = await supabase
+        .from('teachers')
+        .select('employee_id')
+        .eq('employee_id', employeeId)
+        .maybeSingle()
+
+    if (checkError) {
+        console.error('Error checking for duplicate Employee ID:', checkError)
+        return {
+            message: 'Failed to validate Employee ID. Please try again.',
+            success: false,
+        }
+    }
+
+    if (existingTeacher) {
+        return {
+            errors: { employeeId: ['Employee ID is already in use'] },
+            message: 'Employee ID is already in use.',
+            success: false,
+        }
+    }
+
     try {
         // 1. Create Auth User
         // Note: We manually create the profile after auth user creation

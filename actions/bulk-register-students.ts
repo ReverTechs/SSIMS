@@ -80,6 +80,32 @@ export async function bulkRegisterStudents(
 
         const existingEmails = new Set(existingUsers?.map(u => u.email.toLowerCase()) || []);
 
+        // Step 1.1: Check for duplicate student IDs in the database
+        const studentIds = students.map(s => s.studentId).filter(Boolean);
+        const { data: existingStudentIdsData, error: checkIdError } = await supabaseAdmin
+            .from('students')
+            .select('student_id')
+            .in('student_id', studentIds);
+
+        if (checkIdError) {
+            console.error('Error checking existing student IDs:', checkIdError);
+            return {
+                success: false,
+                totalProcessed: 0,
+                successCount: 0,
+                failureCount: 0,
+                skippedCount: 0,
+                errors: [{
+                    row: 0,
+                    error: `Database error: ${checkIdError.message}`,
+                    type: 'database',
+                }],
+                message: 'Failed to check for duplicate student IDs.',
+            };
+        }
+
+        const existingStudentIds = new Set(existingStudentIdsData?.map(s => s.student_id) || []);
+
         // Step 1.5: Get Active Academic Year
         const { data: activeYear, error: yearError } = await supabaseAdmin
             .from('academic_years')
@@ -108,6 +134,19 @@ export async function bulkRegisterStudents(
                             email: student.email,
                             studentId: student.studentId,
                             error: 'Email already exists in the system',
+                            type: 'duplicate',
+                        });
+                        continue;
+                    }
+
+                    // Check if student ID already exists
+                    if (student.studentId && existingStudentIds.has(student.studentId)) {
+                        skippedCount++;
+                        errors.push({
+                            row: rowNumber,
+                            email: student.email,
+                            studentId: student.studentId,
+                            error: `Student ID "${student.studentId}" already exists in the system`,
                             type: 'duplicate',
                         });
                         continue;
@@ -252,6 +291,9 @@ export async function bulkRegisterStudents(
                     successCount++;
                     // Add to existing emails set to prevent duplicates within the same batch
                     existingEmails.add(student.email.toLowerCase());
+                    if (student.studentId) {
+                        existingStudentIds.add(student.studentId);
+                    }
 
                 } catch (error) {
                     failureCount++;
