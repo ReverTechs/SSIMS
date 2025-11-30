@@ -240,6 +240,7 @@ export async function bulkRegisterStudents(
                         .from('students')
                         .insert({
                             id: userId,
+                            student_id: student.studentId,
                             class_id: classId,
                             date_of_birth: student.dateOfBirth || null,
                             gender: student.gender,
