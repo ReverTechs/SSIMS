@@ -110,7 +110,7 @@ export default function ManagementDepartment() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Departments</h1>
           <p className="text-muted-foreground">
-            Manage school departments, heads, and resource allocations.
+            Manage school departments & subjects, heads, and resource allocations.
           </p>
         </div>
         <Dialog>

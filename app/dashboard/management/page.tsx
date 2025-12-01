@@ -64,9 +64,9 @@ const managementAreas = [
     borderGradient: "border-blue-500/20",
   },
   {
-    title: "School Departments",
+    title: "Departments-subjects",
     description: "Add, modify, and manage.",
-    href: "/dashboard/management/departments",
+    href: "/dashboard/management/departments-subjects",
     icon: PiggyBank,
     statLabel: "Active Units",
     statValue: "10",
