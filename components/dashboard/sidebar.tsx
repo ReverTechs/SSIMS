@@ -24,6 +24,8 @@ import {
   ChevronLeft,
   ChevronRight,
   UserPlus,
+  LibraryBig,
+  SlidersHorizontal,
   Cog,
   Menu,
 } from "lucide-react";
@@ -171,8 +173,8 @@ const navItems: NavItem[] = [
   {
     title: "Subjects",
     href: "/dashboard/subjects",
-    icon: GraduationCap,
-    roles: ["student", "guardian"],
+    icon: LibraryBig,
+    roles: ["student", "guardian", "teacher", "headteacher", "deputy_headteacher", "admin"],
     category: "academic",
   },
   {
@@ -213,7 +215,7 @@ const navItems: NavItem[] = [
   {
     title: "Management",
     href: "/dashboard/management",
-    icon: Settings,
+    icon: SlidersHorizontal,
     roles: ["headteacher", "deputy_headteacher"],
     category: "management",
   },
@@ -396,7 +398,7 @@ const SidebarContent = ({
               item.href === "/dashboard"
                 ? pathname === "/dashboard" || pathname === "/dashboard/"
                 : pathname === item.href ||
-                  pathname?.startsWith(item.href + "/");
+                pathname?.startsWith(item.href + "/");
 
             const iconColor = getIconColor(item.category, isActive);
 
@@ -425,7 +427,7 @@ const SidebarContent = ({
                       />
                     </Link>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="font-medium">
+                  <TooltipContent side="right" className="font-normal">
                     {item.title}
                   </TooltipContent>
                 </Tooltip>

@@ -46,8 +46,37 @@ export async function getTeacherStudents({
         let studentIds: string[] = [];
 
         // Determine which students to fetch based on filters
-        if (classId) {
-            // Filter by specific class
+        if (classId && subjectId) {
+            // Filter by both specific class AND specific subject
+            // First, get students enrolled in the specific class
+            const { data: enrollments } = await supabase
+                .from("enrollments")
+                .select("student_id")
+                .eq("class_id", classId)
+                .eq("academic_year_id", activeYearId)
+                .eq("status", "active");
+
+            if (!enrollments || enrollments.length === 0) {
+                return [];
+            }
+
+            const enrolledStudentIds = enrollments.map((e) => e.student_id);
+
+            // Then filter by subject among those enrolled students
+            const { data: studentSubjects } = await supabase
+                .from("student_subjects")
+                .select("student_id")
+                .eq("subject_id", subjectId)
+                .in("student_id", enrolledStudentIds)
+                .eq("academic_year_id", activeYearId);
+
+            if (!studentSubjects || studentSubjects.length === 0) {
+                return [];
+            }
+
+            studentIds = studentSubjects.map((ss) => ss.student_id);
+        } else if (classId) {
+            // Filter by specific class only
             const { data: enrollments } = await supabase
                 .from("enrollments")
                 .select("student_id")
