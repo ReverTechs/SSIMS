@@ -16,6 +16,7 @@ import { Shield, UserPlus, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { registerStudent } from '@/actions/students';
 import { checkStudentIdAvailability } from '@/actions/check-student-id';
+import { toast } from 'sonner';
 
 interface ClassOption {
     id: string;
@@ -29,7 +30,6 @@ interface RegisterStudentFormProps {
 
 export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
     const [isPending, startTransition] = useTransition();
-    const [status, setStatus] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: '' });
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -83,7 +83,6 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setStatus({ type: null, message: '' });
 
         const submitData = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
@@ -93,9 +92,9 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
         startTransition(async () => {
             const result = await registerStudent({}, submitData);
             if (result.error) {
-                setStatus({ type: 'error', message: result.error });
+                toast.error(result.error);
             } else {
-                setStatus({ type: 'success', message: result.message || 'Student registered successfully!' });
+                toast.success(result.message || 'Student registered successfully!');
                 // Reset form
                 setFormData({
                     firstName: '',
@@ -333,12 +332,6 @@ export function RegisterStudentForm({ classes }: RegisterStudentFormProps) {
                             Verify student information
                         </Label>
                     </div>
-
-                    {status.message && (
-                        <div className={`p-3 rounded-md text-sm ${status.type === 'error' ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' : 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400'}`}>
-                            {status.message}
-                        </div>
-                    )}
 
                     <Button
                         className="w-full"

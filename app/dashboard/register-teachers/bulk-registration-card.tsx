@@ -5,15 +5,13 @@ import { Upload } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BulkTeacherUploadDialog } from '@/components/teachers/bulk-upload-dialog';
+import { toast } from 'sonner';
 
 export function BulkRegistrationCard() {
     const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
 
     const handleBulkUploadSuccess = () => {
-        setSuccessMessage('Bulk upload completed successfully! Teachers have been registered.');
-        // Clear message after 5 seconds
-        setTimeout(() => setSuccessMessage(''), 5000);
+        toast.success('Bulk upload completed successfully! Teachers have been registered.');
     };
 
     return (
@@ -36,12 +34,6 @@ export function BulkRegistrationCard() {
                             Start Bulk Upload
                         </Button>
                     </div>
-
-                    {successMessage && (
-                        <div className="p-3 rounded-md text-sm bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400">
-                            {successMessage}
-                        </div>
-                    )}
 
                     <div className="text-xs text-muted-foreground">
                         <p className="font-medium mb-2">Required CSV/Excel columns:</p>

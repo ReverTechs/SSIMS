@@ -18,6 +18,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Shield } from "lucide-react";
 import { Department } from "@/lib/data/departments";
+import { toast } from 'sonner';
 
 interface RegisterTeacherFormProps {
   departments: Department[];
@@ -42,28 +43,20 @@ export function RegisterTeacherForm({ departments }: RegisterTeacherFormProps) {
     fetchClasses();
   }, []);
 
-  // Reset form on success
+  // Show toast and reset form on success
   useEffect(() => {
     if (state.success) {
+      toast.success(state.message || 'Teacher registered successfully!');
       const form = document.querySelector("form") as HTMLFormElement;
       if (form) form.reset();
       setIsVerified(false);
+    } else if (state.message && !state.success) {
+      toast.error(state.message);
     }
-  }, [state.success]);
+  }, [state.success, state.message]);
 
   return (
     <form action={action} className="space-y-4">
-      {state.message && (
-        <div
-          className={`p-4 rounded-md ${state.success
-            ? "bg-green-50 text-green-700 border border-green-200"
-            : "bg-red-50 text-red-700 border border-red-200"
-            }`}
-        >
-          {state.message}
-        </div>
-      )}
-
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="title">Title</Label>
