@@ -24,6 +24,8 @@ import {
   Users,
   CheckCircle2,
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getStudentGuardians, StudentGuardian } from "@/actions/enrollment/get-student-guardians";
 import { useRouter } from "next/navigation";
 import { ManageSubjectsDialog } from "@/components/students/manage-subjects-dialog";
 
@@ -48,6 +50,23 @@ interface StudentProfilePageProps {
 }
 
 export function StudentProfilePage({ student }: StudentProfilePageProps) {
+  const [guardians, setGuardians] = useState<StudentGuardian[]>([]);
+  const [loadingGuardians, setLoadingGuardians] = useState(false);
+
+  useEffect(() => {
+    if (student?.id) {
+      const fetchGuardians = async () => {
+        setLoadingGuardians(true);
+        const result = await getStudentGuardians(student.id);
+        if (result.success && result.data) {
+          setGuardians(result.data);
+        }
+        setLoadingGuardians(false);
+      };
+      fetchGuardians();
+    }
+  }, [student?.id]);
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -163,6 +182,13 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
               >
                 <Phone className="h-4 w-4 mr-2" />
                 Contact
+              </TabsTrigger>
+              <TabsTrigger
+                value="guardian"
+                className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Guardian
               </TabsTrigger>
             </TabsList>
           </div>
@@ -436,6 +462,86 @@ export function StudentProfilePage({ student }: StudentProfilePageProps) {
                       </>
                     )}
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Guardian Tab */}
+            <TabsContent value="guardian" className="mt-0 space-y-4">
+              <Card className="border shadow-sm">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-blue-500/10">
+                      <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    Associated Guardians
+                  </CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">
+                    List of guardians associated with this student
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {loadingGuardians ? (
+                    <div className="flex justify-center p-4">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                  ) : guardians.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+                      {guardians.map((guardian) => (
+                        <div
+                          key={guardian.id}
+                          className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm space-y-3"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <User className="h-4 w-4 text-primary" />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-sm">
+                                  {guardian.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground capitalize">
+                                  {guardian.relationship}
+                                </p>
+                              </div>
+                            </div>
+                            {guardian.is_primary && (
+                              <Badge variant="secondary" className="text-xs">
+                                Primary
+                              </Badge>
+                            )}
+                          </div>
+                          <Separator />
+                          <div className="space-y-2 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                              <span className="truncate">
+                                {guardian.email}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                              <span>{guardian.phone}</span>
+                            </div>
+                            {guardian.address && (
+                              <div className="flex items-center gap-2">
+                                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="truncate">
+                                  {guardian.address}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Users className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                      <p>No guardians found for this student.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>

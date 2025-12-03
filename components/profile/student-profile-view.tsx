@@ -25,6 +25,8 @@ import {
   Users,
   CheckCircle2,
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getStudentGuardians, StudentGuardian } from "@/actions/enrollment/get-student-guardians";
 
 interface Student {
   id: string;
@@ -63,6 +65,23 @@ export function StudentProfileView({
   open,
   onOpenChange,
 }: StudentProfileViewProps) {
+  const [guardians, setGuardians] = useState<StudentGuardian[]>([]);
+  const [loadingGuardians, setLoadingGuardians] = useState(false);
+
+  useEffect(() => {
+    if (open && student?.id) {
+      const fetchGuardians = async () => {
+        setLoadingGuardians(true);
+        const result = await getStudentGuardians(student.id);
+        if (result.success && result.data) {
+          setGuardians(result.data);
+        }
+        setLoadingGuardians(false);
+      };
+      fetchGuardians();
+    }
+  }, [open, student?.id]);
+
   if (!student) return null;
 
   const getInitials = (name: string) => {
@@ -175,6 +194,13 @@ export function StudentProfileView({
                 >
                   <Phone className="h-4 w-4 mr-2" />
                   Contact
+                </TabsTrigger>
+                <TabsTrigger
+                  value="guardian"
+                  className="flex-1 h-10 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all font-medium"
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Guardian
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -399,164 +425,244 @@ export function StudentProfileView({
                           student.guardianEmail ||
                           student.guardianName ||
                           student.guardianPhone) && (
-                          <>
-                            <Separator />
-                            <div className="space-y-4">
-                              <h3 className="text-xs sm:text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
-                                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                Guardian Information
-                              </h3>
-                              <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
-                                {student.guardianDetails ? (
-                                  <>
-                                    {/* Display full guardian details from guardians table */}
-                                    <div className="space-y-2">
-                                      <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                        <User className="h-3.5 w-3.5" />
-                                        Guardian Name
-                                      </Label>
-                                      <p className="text-sm sm:text-base font-medium">
-                                        {student.guardianDetails.name}
-                                      </p>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                        <Mail className="h-3.5 w-3.5" />
-                                        Guardian Email
-                                      </Label>
-                                      <p className="text-sm sm:text-base font-medium break-all">
-                                        {student.guardianDetails.email}
-                                      </p>
-                                    </div>
-                                    {student.guardianDetails.phone && (
-                                      <div className="space-y-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <Phone className="h-3.5 w-3.5" />
-                                          Primary Phone
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium">
-                                          {student.guardianDetails.phone}
-                                        </p>
-                                      </div>
-                                    )}
-                                    {student.guardianDetails
-                                      .alternativePhone && (
-                                      <div className="space-y-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <Phone className="h-3.5 w-3.5" />
-                                          Alternative Phone
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium">
-                                          {
-                                            student.guardianDetails
-                                              .alternativePhone
-                                          }
-                                        </p>
-                                      </div>
-                                    )}
-                                    {student.guardianRelationship && (
-                                      <div className="space-y-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <Users className="h-3.5 w-3.5" />
-                                          Relationship
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium capitalize">
-                                          {student.guardianRelationship}
-                                        </p>
-                                      </div>
-                                    )}
-                                    {student.guardianDetails.occupation && (
-                                      <div className="space-y-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <User className="h-3.5 w-3.5" />
-                                          Occupation
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium">
-                                          {student.guardianDetails.occupation}
-                                        </p>
-                                      </div>
-                                    )}
-                                    {student.guardianDetails.workplace && (
-                                      <div className="space-y-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <MapPin className="h-3.5 w-3.5" />
-                                          Workplace
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium">
-                                          {student.guardianDetails.workplace}
-                                        </p>
-                                      </div>
-                                    )}
-                                    {student.guardianDetails.address && (
-                                      <div className="space-y-2 sm:col-span-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <MapPin className="h-3.5 w-3.5" />
-                                          Guardian Address
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium">
-                                          {student.guardianDetails.address}
-                                        </p>
-                                      </div>
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    {/* Fallback: Display basic guardian info if no guardian details available */}
-                                    {student.guardianEmail && (
-                                      <div className="space-y-2 sm:col-span-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <Mail className="h-3.5 w-3.5" />
-                                          Guardian Email
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium break-all">
-                                          {student.guardianEmail}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground italic">
-                                          Guardian details not available. Email
-                                          is used as reference.
-                                        </p>
-                                      </div>
-                                    )}
-                                    {student.guardianName && (
+                            <>
+                              <Separator />
+                              <div className="space-y-4">
+                                <h3 className="text-xs sm:text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
+                                  <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                  Guardian Information
+                                </h3>
+                                <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
+                                  {student.guardianDetails ? (
+                                    <>
+                                      {/* Display full guardian details from guardians table */}
                                       <div className="space-y-2">
                                         <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                                           <User className="h-3.5 w-3.5" />
                                           Guardian Name
                                         </Label>
                                         <p className="text-sm sm:text-base font-medium">
-                                          {student.guardianName}
+                                          {student.guardianDetails.name}
                                         </p>
                                       </div>
-                                    )}
-                                    {student.guardianRelationship && (
                                       <div className="space-y-2">
                                         <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <Users className="h-3.5 w-3.5" />
-                                          Relationship
+                                          <Mail className="h-3.5 w-3.5" />
+                                          Guardian Email
                                         </Label>
-                                        <p className="text-sm sm:text-base font-medium">
-                                          {student.guardianRelationship}
+                                        <p className="text-sm sm:text-base font-medium break-all">
+                                          {student.guardianDetails.email}
                                         </p>
                                       </div>
-                                    )}
-                                    {student.guardianPhone && (
-                                      <div className="space-y-2 sm:col-span-2">
-                                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                          <Phone className="h-3.5 w-3.5" />
-                                          Guardian Phone
-                                        </Label>
-                                        <p className="text-sm sm:text-base font-medium">
-                                          {student.guardianPhone}
-                                        </p>
-                                      </div>
-                                    )}
-                                  </>
+                                      {student.guardianDetails.phone && (
+                                        <div className="space-y-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <Phone className="h-3.5 w-3.5" />
+                                            Primary Phone
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium">
+                                            {student.guardianDetails.phone}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {student.guardianDetails
+                                        .alternativePhone && (
+                                          <div className="space-y-2">
+                                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                              <Phone className="h-3.5 w-3.5" />
+                                              Alternative Phone
+                                            </Label>
+                                            <p className="text-sm sm:text-base font-medium">
+                                              {
+                                                student.guardianDetails
+                                                  .alternativePhone
+                                              }
+                                            </p>
+                                          </div>
+                                        )}
+                                      {student.guardianRelationship && (
+                                        <div className="space-y-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <Users className="h-3.5 w-3.5" />
+                                            Relationship
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium capitalize">
+                                            {student.guardianRelationship}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {student.guardianDetails.occupation && (
+                                        <div className="space-y-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <User className="h-3.5 w-3.5" />
+                                            Occupation
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium">
+                                            {student.guardianDetails.occupation}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {student.guardianDetails.workplace && (
+                                        <div className="space-y-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <MapPin className="h-3.5 w-3.5" />
+                                            Workplace
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium">
+                                            {student.guardianDetails.workplace}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {student.guardianDetails.address && (
+                                        <div className="space-y-2 sm:col-span-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <MapPin className="h-3.5 w-3.5" />
+                                            Guardian Address
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium">
+                                            {student.guardianDetails.address}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {/* Fallback: Display basic guardian info if no guardian details available */}
+                                      {student.guardianEmail && (
+                                        <div className="space-y-2 sm:col-span-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <Mail className="h-3.5 w-3.5" />
+                                            Guardian Email
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium break-all">
+                                            {student.guardianEmail}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground italic">
+                                            Guardian details not available. Email
+                                            is used as reference.
+                                          </p>
+                                        </div>
+                                      )}
+                                      {student.guardianName && (
+                                        <div className="space-y-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <User className="h-3.5 w-3.5" />
+                                            Guardian Name
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium">
+                                            {student.guardianName}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {student.guardianRelationship && (
+                                        <div className="space-y-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <Users className="h-3.5 w-3.5" />
+                                            Relationship
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium">
+                                            {student.guardianRelationship}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {student.guardianPhone && (
+                                        <div className="space-y-2 sm:col-span-2">
+                                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                            <Phone className="h-3.5 w-3.5" />
+                                            Guardian Phone
+                                          </Label>
+                                          <p className="text-sm sm:text-base font-medium">
+                                            {student.guardianPhone}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </>
+                          )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Guardian Tab */}
+                <TabsContent value="guardian" className="mt-0 space-y-4">
+                  <Card className="border shadow-sm">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                        <div className="p-2 rounded-lg bg-blue-500/10">
+                          <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        Associated Guardians
+                      </CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
+                        List of guardians associated with this student
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {loadingGuardians ? (
+                        <div className="flex justify-center p-4">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        </div>
+                      ) : guardians.length > 0 ? (
+                        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+                          {guardians.map((guardian) => (
+                            <div
+                              key={guardian.id}
+                              className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm space-y-3"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <User className="h-4 w-4 text-primary" />
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold text-sm">
+                                      {guardian.name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground capitalize">
+                                      {guardian.relationship}
+                                    </p>
+                                  </div>
+                                </div>
+                                {guardian.is_primary && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    Primary
+                                  </Badge>
+                                )}
+                              </div>
+                              <Separator />
+                              <div className="space-y-2 text-sm">
+                                <div className="flex items-center gap-2">
+                                  <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                                  <span className="truncate">
+                                    {guardian.email}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                                  <span>{guardian.phone}</span>
+                                </div>
+                                {guardian.address && (
+                                  <div className="flex items-center gap-2">
+                                    <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                                    <span className="truncate">
+                                      {guardian.address}
+                                    </span>
+                                  </div>
                                 )}
                               </div>
                             </div>
-                          </>
-                        )}
-                      </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Users className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                          <p>No guardians found for this student.</p>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>
