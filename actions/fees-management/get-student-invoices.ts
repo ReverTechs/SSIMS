@@ -114,8 +114,8 @@ export async function getStudentInvoices(studentId: string) {
       amount_paid: invoice.amount_paid,
       balance: invoice.balance,
       status: invoice.status,
-      academic_year: invoice.academic_years?.[0]?.name || "N/A",
-      term: invoice.terms?.[0]?.name || "N/A",
+      academic_year: (invoice.academic_years as any)?.name || "N/A",
+      term: (invoice.terms as any)?.name || "N/A",
       items: (invoice.invoice_items || []).map((item) => ({
         item_name: item.item_name,
         description: item.description,

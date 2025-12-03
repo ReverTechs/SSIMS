@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 
 // Professional styling for invoice PDF
 const styles = StyleSheet.create({
@@ -244,128 +244,131 @@ export const InvoicePDF: React.FC<{ data: InvoiceData }> = ({ data }) => {
     };
 
     return (
-        <Page size="A4" style={styles.page}>
-            {/* Header */}
-            <View style={styles.header}>
-                <Text style={styles.schoolName}>SSIMS School</Text>
-                <Text style={styles.schoolInfo}>P.O. Box 123, Lilongwe, Malawi</Text>
-                <Text style={styles.schoolInfo}>Tel: +265 1 234 567 | Email: info@ssims.ac.mw</Text>
-            </View>
-
-            {/* Status Badge */}
-            <View style={[styles.statusBadge, getStatusStyle(data.status)]}>
-                <Text>{data.status.toUpperCase()}</Text>
-            </View>
-
-            {/* Invoice Title */}
-            <View>
-                <Text style={styles.invoiceTitle}>INVOICE</Text>
-                <Text style={styles.invoiceNumber}>{data.invoice_number}</Text>
-            </View>
-
-            {/* Student & Invoice Info */}
-            <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 20 }}>
-                <View style={{ width: '50%' }}>
-                    <Text style={styles.sectionTitle}>BILL TO</Text>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Student:</Text>
-                        <Text style={styles.value}>{data.student.full_name}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Student ID:</Text>
-                        <Text style={styles.value}>{data.student.student_id}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Class:</Text>
-                        <Text style={styles.value}>{data.student.class_name}</Text>
-                    </View>
+        <Document>
+            <Page size="A4" style={styles.page}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <Text style={styles.schoolName}>
+                        Wynberg Boys' High School</Text>
+                    <Text style={styles.schoolInfo}>P.O. Box 123, Lilongwe, Malawi</Text>
+                    <Text style={styles.schoolInfo}>Tel: +265 1 234 567 | Email: info@ssims.ac.mw</Text>
                 </View>
-                <View style={{ width: '50%' }}>
-                    <Text style={styles.sectionTitle}>INVOICE DETAILS</Text>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Academic Year:</Text>
-                        <Text style={styles.value}>{data.academic_year}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Term:</Text>
-                        <Text style={styles.value}>{data.term}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Invoice Date:</Text>
-                        <Text style={styles.value}>{formatDate(data.invoice_date)}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Due Date:</Text>
-                        <Text style={styles.value}>{formatDate(data.due_date)}</Text>
-                    </View>
-                </View>
-            </View>
 
-            {/* Items Table */}
-            <View style={styles.table}>
-                <View style={styles.tableHeader}>
-                    <Text style={styles.col1}>#</Text>
-                    <Text style={styles.col2}>Description</Text>
-                    <Text style={styles.col3}>Qty</Text>
-                    <Text style={styles.col4}>Unit Price</Text>
-                    <Text style={styles.col5}>Amount</Text>
+                {/* Status Badge */}
+                <View style={[styles.statusBadge, getStatusStyle(data.status)]}>
+                    <Text>{data.status.toUpperCase()}</Text>
                 </View>
-                {data.items.map((item, index) => (
-                    <View key={index} style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
-                        <Text style={styles.col1}>{index + 1}</Text>
-                        <View style={styles.col2}>
-                            <Text style={{ fontWeight: 'bold' }}>{item.item_name}</Text>
-                            {item.description && (
-                                <Text style={{ fontSize: 8, color: '#64748b', marginTop: 2 }}>
-                                    {item.description}
-                                </Text>
-                            )}
+
+                {/* Invoice Title */}
+                <View>
+                    <Text style={styles.invoiceTitle}>INVOICE</Text>
+                    <Text style={styles.invoiceNumber}>{data.invoice_number}</Text>
+                </View>
+
+                {/* Student & Invoice Info */}
+                <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 20 }}>
+                    <View style={{ width: '50%' }}>
+                        <Text style={styles.sectionTitle}>BILL TO</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Student:</Text>
+                            <Text style={styles.value}>{data.student.full_name}</Text>
                         </View>
-                        <Text style={styles.col3}>{item.quantity}</Text>
-                        <Text style={styles.col4}>{formatCurrency(item.unit_price)}</Text>
-                        <Text style={styles.col5}>{formatCurrency(item.total_amount)}</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Student ID:</Text>
+                            <Text style={styles.value}>{data.student.student_id}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Class:</Text>
+                            <Text style={styles.value}>{data.student.class_name}</Text>
+                        </View>
                     </View>
-                ))}
-            </View>
-
-            {/* Summary */}
-            <View style={styles.summary}>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Subtotal:</Text>
-                    <Text style={styles.summaryValue}>{formatCurrency(data.total_amount)}</Text>
+                    <View style={{ width: '50%' }}>
+                        <Text style={styles.sectionTitle}>INVOICE DETAILS</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Academic Year:</Text>
+                            <Text style={styles.value}>{data.academic_year}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Term:</Text>
+                            <Text style={styles.value}>{data.term}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Invoice Date:</Text>
+                            <Text style={styles.value}>{formatDate(data.invoice_date)}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Due Date:</Text>
+                            <Text style={styles.value}>{formatDate(data.due_date)}</Text>
+                        </View>
+                    </View>
                 </View>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Amount Paid:</Text>
-                    <Text style={[styles.summaryValue, { color: '#10b981' }]}>
-                        {formatCurrency(data.amount_paid)}
+
+                {/* Items Table */}
+                <View style={styles.table}>
+                    <View style={styles.tableHeader}>
+                        <Text style={styles.col1}>#</Text>
+                        <Text style={styles.col2}>Description</Text>
+                        <Text style={styles.col3}>Qty</Text>
+                        <Text style={styles.col4}>Unit Price</Text>
+                        <Text style={styles.col5}>Amount</Text>
+                    </View>
+                    {data.items.map((item, index) => (
+                        <View key={index} style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
+                            <Text style={styles.col1}>{index + 1}</Text>
+                            <View style={styles.col2}>
+                                <Text style={{ fontWeight: 'bold' }}>{item.item_name}</Text>
+                                {item.description && (
+                                    <Text style={{ fontSize: 8, color: '#64748b', marginTop: 2 }}>
+                                        {item.description}
+                                    </Text>
+                                )}
+                            </View>
+                            <Text style={styles.col3}>{item.quantity}</Text>
+                            <Text style={styles.col4}>{formatCurrency(item.unit_price)}</Text>
+                            <Text style={styles.col5}>{formatCurrency(item.total_amount)}</Text>
+                        </View>
+                    ))}
+                </View>
+
+                {/* Summary */}
+                <View style={styles.summary}>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryLabel}>Subtotal:</Text>
+                        <Text style={styles.summaryValue}>{formatCurrency(data.total_amount)}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryLabel}>Amount Paid:</Text>
+                        <Text style={[styles.summaryValue, { color: '#10b981' }]}>
+                            {formatCurrency(data.amount_paid)}
+                        </Text>
+                    </View>
+                    <View style={styles.totalRow}>
+                        <Text style={styles.totalLabel}>Balance Due:</Text>
+                        <Text style={styles.totalValue}>{formatCurrency(data.balance)}</Text>
+                    </View>
+                </View>
+
+                {/* Notes */}
+                {data.notes && (
+                    <View style={styles.notes}>
+                        <Text style={styles.notesTitle}>Notes:</Text>
+                        <Text style={styles.notesText}>{data.notes}</Text>
+                    </View>
+                )}
+
+                {/* Footer */}
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>
+                        Thank you for your payment. For inquiries, contact the Finance Office.
+                    </Text>
+                    <Text style={styles.footerText}>
+                        This is a computer-generated invoice and does not require a signature.
+                    </Text>
+                    <Text style={styles.footerText}>
+                        Generated on {new Date().toLocaleDateString('en-GB')} at {new Date().toLocaleTimeString('en-GB')}
                     </Text>
                 </View>
-                <View style={styles.totalRow}>
-                    <Text style={styles.totalLabel}>Balance Due:</Text>
-                    <Text style={styles.totalValue}>{formatCurrency(data.balance)}</Text>
-                </View>
-            </View>
-
-            {/* Notes */}
-            {data.notes && (
-                <View style={styles.notes}>
-                    <Text style={styles.notesTitle}>Notes:</Text>
-                    <Text style={styles.notesText}>{data.notes}</Text>
-                </View>
-            )}
-
-            {/* Footer */}
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>
-                    Thank you for your payment. For inquiries, contact the Finance Office.
-                </Text>
-                <Text style={styles.footerText}>
-                    This is a computer-generated invoice and does not require a signature.
-                </Text>
-                <Text style={styles.footerText}>
-                    Generated on {new Date().toLocaleDateString('en-GB')} at {new Date().toLocaleTimeString('en-GB')}
-                </Text>
-            </View>
-        </Page>
+            </Page>
+        </Document>
     );
 };
