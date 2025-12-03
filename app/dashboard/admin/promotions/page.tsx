@@ -1,5 +1,5 @@
-import { getAcademicYears } from "@/actions/academic-years";
-import { getClasses } from "@/actions/classes";
+import { getAcademicYears } from "@/actions/enrollment/academic-years";
+import { getClasses } from "@/actions/enrollment/classes";
 import { PromotionManager } from "./promotion-manager";
 
 export default async function PromotionsPage() {

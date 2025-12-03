@@ -16,8 +16,8 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Loader2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
-import { getAllSubjects } from '@/actions/subjects';
-import { addStudentSubject, removeStudentSubject, getStudentSubjects } from '@/actions/student-subjects';
+import { getAllSubjects } from '@/actions/enrollment/subjects';
+import { addStudentSubject, removeStudentSubject, getStudentSubjects } from '@/actions/enrollment/student-subjects';
 
 interface ManageSubjectsDialogProps {
     studentId: string;

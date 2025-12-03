@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { AcademicYear, Term } from '@/types'
-import { createAcademicYear, setActiveAcademicYear, getAcademicYears } from '@/actions/academic-years'
-import { createTerm, setActiveTerm, getTerms } from '@/actions/terms'
+import { createAcademicYear, setActiveAcademicYear, getAcademicYears } from '@/actions/enrollment/academic-years'
+import { createTerm, setActiveTerm, getTerms } from '@/actions/enrollment/terms'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'

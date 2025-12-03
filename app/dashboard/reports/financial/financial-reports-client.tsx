@@ -5,7 +5,7 @@ import { FinancialDashboard } from '@/components/reports/financial-dashboard';
 import { OutstandingFeesTable } from '@/components/reports/outstanding-fees-table';
 import { BarChart3, AlertTriangle, Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { exportFinancialOverviewToExcel } from '@/actions/export-to-excel';
+import { exportFinancialOverviewToExcel } from '@/actions/fees-management/export-to-excel';
 import { toast } from 'sonner';
 import { useState } from 'react';
 

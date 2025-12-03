@@ -13,7 +13,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from 'sonner';
-import { generateInvoices, previewInvoiceGeneration } from '@/actions/generate-invoices';
+import { generateInvoices, previewInvoiceGeneration } from '@/actions/fees-management/generate-invoices';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AcademicYear {

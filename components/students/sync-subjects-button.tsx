@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
-import { syncStudentSubjects } from "@/actions/sync-subjects";
+import { syncStudentSubjects } from "@/actions/enrollment/sync-subjects";
 import { useRouter } from "next/navigation";
 import {
     AlertDialog,

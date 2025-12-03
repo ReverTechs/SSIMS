@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, AlertCircle, Receipt } from "lucide-react";
-import { getStudentPayments } from '@/actions/get-student-payments';
+import { getStudentPayments } from '@/actions/fees-management/get-student-payments';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

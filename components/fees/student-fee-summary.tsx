@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react";
-import { getStudentFees } from '@/actions/get-student-fees';
+import { getStudentFees } from '@/actions/fees-management/get-student-fees';
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 

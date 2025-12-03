@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Loader2, DollarSign } from "lucide-react";
 import { toast } from 'sonner';
-import { createFeeStructure } from '@/actions/create-fee-structure';
+import { createFeeStructure } from '@/actions/fees-management/create-fee-structure';
 import { StudentType } from '@/types/fees';
 import { Textarea } from "@/components/ui/textarea";
 

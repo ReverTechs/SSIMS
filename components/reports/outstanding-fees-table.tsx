@@ -12,8 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, AlertCircle, Phone } from "lucide-react";
-import { getOutstandingFees } from '@/actions/get-outstanding-fees';
-import { exportOutstandingFeesToExcel } from '@/actions/export-to-excel';
+import { getOutstandingFees } from '@/actions/fees-management/get-outstanding-fees';
+import { exportOutstandingFeesToExcel } from '@/actions/fees-management/export-to-excel';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from 'sonner';

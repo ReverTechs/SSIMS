@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, AlertCircle } from "lucide-react";
-import { getGuardianChildren } from '@/actions/get-guardian-children';
+import { getGuardianChildren } from '@/actions/enrollment/get-guardian-children';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface GuardianChild {

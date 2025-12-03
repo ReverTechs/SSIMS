@@ -22,7 +22,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { CreditCard, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from 'sonner';
-import { recordPayment, getPaymentMethods } from '@/actions/record-payment';
+import { recordPayment, getPaymentMethods } from '@/actions/fees-management/record-payment';
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 

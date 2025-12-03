@@ -1,4 +1,4 @@
-import { getAcademicYears } from "@/actions/academic-years";
+import { getAcademicYears } from "@/actions/enrollment/academic-years";
 import { AcademicYearManager } from "./academic-year-manager";
 
 export default async function AcademicYearsPage() {

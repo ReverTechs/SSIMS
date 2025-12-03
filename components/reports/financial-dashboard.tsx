@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, TrendingUp, Users, FileText, AlertCircle } from "lucide-react";
-import { getFinancialOverview } from '@/actions/get-financial-overview';
+import { getFinancialOverview } from '@/actions/fees-management/get-financial-overview';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 

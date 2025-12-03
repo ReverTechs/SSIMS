@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { AcademicYear } from "@/types"
-import { promoteStudents } from "@/actions/enrollments"
-import { checkEnrollmentsForeignKey } from "@/actions/debug-enrollments"
+import { promoteStudents } from "@/actions/enrollment/enrollments"
+import { checkEnrollmentsForeignKey } from "@/actions/enrollment/debug-enrollments"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -24,7 +24,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { Loader2, ArrowRight, Users } from "lucide-react"
-import { getEnrolledStudents } from "@/actions/get-enrolled-students"
+import { getEnrolledStudents } from "@/actions/enrollment/get-enrolled-students"
 
 interface Class {
   id: string

@@ -13,7 +13,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Loader2, CheckCircle2, AlertCircle, DollarSign } from "lucide-react";
 import { toast } from 'sonner';
-import { bulkAssignFees, previewBulkAssignment } from '@/actions/bulk-assign-fees';
+import { bulkAssignFees, previewBulkAssignment } from '@/actions/fees-management/bulk-assign-fees';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AcademicYear {

@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, AlertCircle, Loader2, Download } from 'lucide-react';
 import { BulkTeacherUploadDropzone } from './bulk-upload-dropzone';
 import { BulkTeacherUploadPreviewTable } from './bulk-upload-preview-table';
-import { bulkRegisterTeachers, getTeacherMappings } from '@/actions/bulk-register-teachers';
+import { bulkRegisterTeachers, getTeacherMappings } from '@/actions/enrollment/bulk-register-teachers';
 import { exportBulkErrorsToCSV, calculateUploadStats } from '@/lib/utils/bulk-upload-helpers';
 import type { ParsedFileData, BulkUploadResult, BulkTeacherData } from '@/types/bulk-upload-types';
 
