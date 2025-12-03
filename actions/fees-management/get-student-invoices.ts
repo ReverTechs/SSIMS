@@ -47,22 +47,14 @@ export async function getStudentInvoices(studentId: string) {
 
     let isGuardian = false;
     if (profile?.role === "guardian") {
-      const { data: guardianData } = await supabase
-        .from("guardians")
-        .select("id")
-        .eq("id", user.id)
+      const { data: relationship } = await supabase
+        .from("student_guardians")
+        .select("student_id, guardian_id")
+        .eq("student_id", studentId)
+        .eq("guardian_id", user.id)
         .single();
 
-      if (guardianData) {
-        const { data: relationship } = await supabase
-          .from("student_guardians")
-          .select("id")
-          .eq("student_id", studentId)
-          .eq("guardian_id", guardianData.id)
-          .single();
-
-        isGuardian = !!relationship;
-      }
+      isGuardian = !!relationship;
     }
 
     if (!isStudent && !isGuardian && !isAdminOrStaff) {

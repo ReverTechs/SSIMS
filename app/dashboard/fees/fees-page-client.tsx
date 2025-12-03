@@ -37,7 +37,7 @@ export function FeesPageClient({ userId, userRole }: FeesPageClientProps) {
             )}
 
             {/* Main Content - Only show if student is selected */}
-            {selectedStudentId ? (
+            {selectedStudentId && selectedStudentId.trim() !== '' ? (
                 <Tabs defaultValue="overview" className="space-y-6">
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="overview" className="flex items-center gap-2">

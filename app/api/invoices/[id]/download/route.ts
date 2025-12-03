@@ -112,12 +112,23 @@ export async function GET(
             .eq('id', user.id)
             .single();
 
-        // Allow if admin/staff or if student viewing their own invoice
-        const isAuthorized =
-            ['admin', 'staff'].includes(profile?.role || '') ||
-            typedInvoice.student_id === user.id;
+        const isStudent = typedInvoice.student_id === user.id;
+        const isAdminOrStaff = ['admin', 'staff'].includes(profile?.role || '');
 
-        if (!isAuthorized) {
+        // Check if user is a guardian of this student
+        let isGuardian = false;
+        if (profile?.role === 'guardian') {
+            const { data: relationship } = await supabase
+                .from('student_guardians')
+                .select('student_id, guardian_id')
+                .eq('student_id', typedInvoice.student_id)
+                .eq('guardian_id', user.id)
+                .single();
+
+            isGuardian = !!relationship;
+        }
+
+        if (!isStudent && !isGuardian && !isAdminOrStaff) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 

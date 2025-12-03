@@ -93,7 +93,7 @@ const navItems: NavItem[] = [
     title: "Fees",
     href: "/dashboard/fees",
     icon: DollarSign,
-    roles: ["student"],
+    roles: ["student", "guardian"],
     category: "financial",
   },
   {
