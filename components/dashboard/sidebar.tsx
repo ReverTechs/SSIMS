@@ -93,7 +93,7 @@ const navItems: NavItem[] = [
     title: "Fees",
     href: "/dashboard/fees",
     icon: DollarSign,
-    roles: ["student"],
+    roles: ["student", "guardian"],
     category: "financial",
   },
   {
@@ -216,7 +216,7 @@ const navItems: NavItem[] = [
     title: "Management",
     href: "/dashboard/management",
     icon: SlidersHorizontal,
-    roles: ["headteacher", "deputy_headteacher"],
+    roles: ["headteacher", "deputy_headteacher", "admin"],
     category: "management",
   },
   {

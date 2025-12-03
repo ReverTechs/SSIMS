@@ -17,7 +17,7 @@ import { getPermissionsForRole } from "@/lib/auth/permissions";
 import { statsRegistry } from "@/lib/dashboard/widgets";
 import FinanceChartClient from "@/components/dashboard/finance-chart-client";
 import { createClient } from "@/lib/supabase/server";
-import { getActiveTerm } from "@/actions/terms";
+import { getActiveTerm } from "@/actions/enrollment/terms";
 
 import { getGenderStats } from "@/lib/data/dashboard-stats";
 

@@ -13,7 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, AlertCircle, Loader2, Download } from 'lucide-react';
 import { BulkUploadDropzone } from './bulk-upload-dropzone';
 import { BulkUploadPreviewTable } from './bulk-upload-preview-table';
-import { bulkRegisterStudents, getClassMapping } from '@/actions/bulk-register-students';
+import { bulkRegisterStudents, getClassMapping } from '@/actions/enrollment/bulk-register-students';
 import { exportBulkErrorsToCSV } from '@/lib/utils/bulk-upload-helpers';
 import type { ParsedFileData, BulkUploadResult } from '@/types/bulk-upload-types';
 

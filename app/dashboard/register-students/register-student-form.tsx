@@ -14,8 +14,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, UserPlus, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { registerStudent } from '@/actions/students';
-import { checkStudentIdAvailability } from '@/actions/check-student-id';
+import { registerStudent } from '@/actions/enrollment/students';
+import { checkStudentIdAvailability } from '@/actions/enrollment/check-student-id';
 import { toast } from 'sonner';
 
 interface ClassOption {

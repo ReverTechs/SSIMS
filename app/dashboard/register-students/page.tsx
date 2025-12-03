@@ -1,4 +1,4 @@
-import { getClasses } from "@/actions/classes";
+import { getClasses } from "@/actions/enrollment/classes";
 import { RegisterStudentForm } from "./register-student-form";
 import { BulkRegistrationCard } from "./bulk-registration-card";
 

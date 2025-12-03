@@ -11,6 +11,7 @@ import {
   ArrowRight,
   CalendarCheck,
   Clock9,
+  DollarSign,
   PiggyBank,
   School,
   Users,
@@ -35,6 +36,15 @@ const managementAreas = [
     statLabel: "Enrolled Learners",
     statValue: "824",
     borderGradient: "border-emerald-500/20",
+  },
+  {
+    title: "Fee Structures",
+    description: "Create and manage term-based fees for internal and external students.",
+    href: "/dashboard/management/fee-structures",
+    icon: DollarSign,
+    statLabel: "Active Structures",
+    statValue: "6",
+    borderGradient: "border-green-500/20",
   },
   {
     title: "Manage Calendar",
