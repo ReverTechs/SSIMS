@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +32,7 @@ import { StudentSubjectsManager } from "@/components/dashboard/student-subjects-
 import { StudentEnrollmentHistory } from "@/components/dashboard/student-enrollment-history";
 import { StreamType } from "@/types";
 import { SyncSubjectsButton } from "@/components/students/sync-subjects-button";
+import { getStudentGuardians, StudentGuardian } from "@/actions/enrollment/get-student-guardians";
 
 interface StudentData {
   studentId: string;
@@ -64,6 +65,22 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
   const [hasVerifiedCredentials, setHasVerifiedCredentials] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [email, setEmail] = useState(user.email);
+  const [guardians, setGuardians] = useState<StudentGuardian[]>([]);
+  const [loadingGuardians, setLoadingGuardians] = useState(false);
+
+  useEffect(() => {
+    if (studentData?.studentId) {
+      const fetchGuardians = async () => {
+        setLoadingGuardians(true);
+        const result = await getStudentGuardians(studentData.studentId);
+        if (result.success && result.data) {
+          setGuardians(result.data);
+        }
+        setLoadingGuardians(false);
+      };
+      fetchGuardians();
+    }
+  }, [studentData?.studentId]);
 
   const getInitials = (name: string) => {
     return name
@@ -211,7 +228,7 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
         >
           <div className="border-b mb-6">
             <TabsList className="flex h-auto w-full justify-start gap-8 bg-transparent p-0 rounded-none">
-              {["Personal", "Academic", "Contact", "Security"].map((tab) => (
+              {["Personal", "Academic", "Contact", "Guardian", "Security"].map((tab) => (
                 <TabsTrigger
                   key={tab}
                   value={tab.toLowerCase()}
@@ -380,6 +397,86 @@ export function StudentProfileContent({ user, studentData }: StudentProfileConte
                         </div>
                       </div>
                     </>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Guardian Tab */}
+            <TabsContent value="guardian" className="mt-0 space-y-6">
+              <Card className="bg-card border rounded-xl shadow-sm">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-md bg-blue-500/10">
+                      <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">Associated Guardians</CardTitle>
+                      <CardDescription>List of guardians associated with your account</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {loadingGuardians ? (
+                    <div className="flex justify-center p-4">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                  ) : guardians.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+                      {guardians.map((guardian) => (
+                        <div
+                          key={guardian.id}
+                          className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm space-y-3"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <User className="h-4 w-4 text-primary" />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-sm">
+                                  {guardian.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground capitalize">
+                                  {guardian.relationship}
+                                </p>
+                              </div>
+                            </div>
+                            {guardian.is_primary && (
+                              <Badge variant="secondary" className="text-xs">
+                                Primary
+                              </Badge>
+                            )}
+                          </div>
+                          <Separator />
+                          <div className="space-y-2 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                              <span className="truncate">
+                                {guardian.email}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                              <span>{guardian.phone}</span>
+                            </div>
+                            {guardian.address && (
+                              <div className="flex items-center gap-2">
+                                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="truncate">
+                                  {guardian.address}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Users className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                      <p>No guardians found.</p>
+                    </div>
                   )}
                 </CardContent>
               </Card>
