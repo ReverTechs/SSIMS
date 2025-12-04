@@ -74,7 +74,14 @@ export function RecordPaymentDialog({ invoice, onSuccess }: RecordPaymentDialogP
         async function loadPaymentMethods() {
             const result = await getPaymentMethods();
             if (result.success && result.methods) {
-                setPaymentMethods(result.methods);
+                // Deduplicate by method_type to prevent duplicate key errors
+                const uniqueMethods = result.methods.reduce((acc: PaymentMethod[], method) => {
+                    if (!acc.find(m => m.method_type === method.method_type)) {
+                        acc.push(method);
+                    }
+                    return acc;
+                }, []);
+                setPaymentMethods(uniqueMethods);
             }
         }
         loadPaymentMethods();

@@ -254,20 +254,47 @@ export async function recordPayment(params: RecordPaymentParams) {
  */
 export async function getPaymentMethods() {
     try {
-        const supabase = await createClient();
+        // Return hardcoded payment methods that match the database CHECK constraint
+        // The payments table has: CHECK (payment_method IN ('cash', 'bank_transfer', 'mobile_money', 'cheque', 'card'))
+        const methods = [
+            {
+                id: '1',
+                method_name: 'Cash',
+                method_type: 'cash',
+                is_active: true,
+                display_order: 1,
+            },
+            {
+                id: '2',
+                method_name: 'Bank Transfer',
+                method_type: 'bank_transfer',
+                is_active: true,
+                display_order: 2,
+            },
+            {
+                id: '3',
+                method_name: 'Mobile Money',
+                method_type: 'mobile_money',
+                is_active: true,
+                display_order: 3,
+            },
+            {
+                id: '4',
+                method_name: 'Cheque',
+                method_type: 'cheque',
+                is_active: true,
+                display_order: 4,
+            },
+            {
+                id: '5',
+                method_name: 'Card Payment',
+                method_type: 'card',
+                is_active: true,
+                display_order: 5,
+            },
+        ];
 
-        const { data: methods, error } = await supabase
-            .from('payment_methods')
-            .select('*')
-            .eq('is_active', true)
-            .order('display_order', { ascending: true });
-
-        if (error) {
-            console.error('Error fetching payment methods:', error);
-            return { error: 'Failed to fetch payment methods' };
-        }
-
-        return { success: true, methods: methods || [] };
+        return { success: true, methods };
     } catch (error) {
         console.error('Error in getPaymentMethods:', error);
         return { error: 'An unexpected error occurred' };

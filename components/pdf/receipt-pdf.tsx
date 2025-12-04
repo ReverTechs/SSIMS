@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 // Professional styling for receipt PDF
 const styles = StyleSheet.create({
@@ -256,138 +256,140 @@ export const ReceiptPDF: React.FC<{ data: ReceiptData }> = ({ data }) => {
     };
 
     return (
-        <Page size="A4" style={styles.page}>
-            {/* Watermark */}
-            <Text style={styles.watermark}>PAID</Text>
+        <Document>
+            <Page size="A4" style={styles.page}>
+                {/* Watermark */}
+                <Text style={styles.watermark}>PAID</Text>
 
-            {/* Header */}
-            <View style={styles.header}>
-                <Text style={styles.schoolName}>SSIMS School</Text>
-                <Text style={styles.schoolInfo}>P.O. Box 123, Lilongwe, Malawi</Text>
-                <Text style={styles.schoolInfo}>Tel: +265 1 234 567 | Email: finance@ssims.ac.mw</Text>
-            </View>
-
-            {/* PAID Stamp */}
-            <View style={styles.paidStamp}>
-                <Text style={styles.paidText}>PAID</Text>
-            </View>
-
-            {/* Receipt Title */}
-            <View>
-                <Text style={styles.receiptTitle}>OFFICIAL RECEIPT</Text>
-                <Text style={styles.receiptNumber}>{data.receipt_number}</Text>
-                <Text style={{ fontSize: 9, color: '#64748b', textAlign: 'center', marginBottom: 10 }}>
-                    Payment Reference: {data.payment_number}
-                </Text>
-            </View>
-
-            {/* Student Information */}
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>RECEIVED FROM</Text>
-                <View style={styles.infoBox}>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Student Name:</Text>
-                        <Text style={styles.value}>{data.student.full_name}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Student ID:</Text>
-                        <Text style={styles.value}>{data.student.student_id}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Class:</Text>
-                        <Text style={styles.value}>{data.student.class_name}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Academic Year:</Text>
-                        <Text style={styles.value}>{data.academic_year}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Term:</Text>
-                        <Text style={styles.value}>{data.term}</Text>
-                    </View>
+                {/* Header */}
+                <View style={styles.header}>
+                    <Text style={styles.schoolName}>SSIMS School</Text>
+                    <Text style={styles.schoolInfo}>P.O. Box 123, Lilongwe, Malawi</Text>
+                    <Text style={styles.schoolInfo}>Tel: +265 1 234 567 | Email: finance@ssims.ac.mw</Text>
                 </View>
-            </View>
 
-            {/* Amount */}
-            <View style={styles.amountBox}>
-                <Text style={styles.amountLabel}>AMOUNT RECEIVED</Text>
-                <Text style={styles.amountValue}>{formatCurrency(data.amount)}</Text>
-                <Text style={styles.amountWords}>{numberToWords(data.amount)}</Text>
-            </View>
+                {/* PAID Stamp */}
+                <View style={styles.paidStamp}>
+                    <Text style={styles.paidText}>PAID</Text>
+                </View>
 
-            {/* Payment Details */}
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>PAYMENT DETAILS</Text>
-                <View style={styles.paymentDetails}>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Payment Date:</Text>
-                        <Text style={styles.value}>{formatDate(data.payment_date)}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Payment Method:</Text>
-                        <Text style={styles.value}>{getPaymentMethodDisplay(data.payment_method)}</Text>
-                    </View>
-                    {data.reference_number && (
+                {/* Receipt Title */}
+                <View>
+                    <Text style={styles.receiptTitle}>OFFICIAL RECEIPT</Text>
+                    <Text style={styles.receiptNumber}>{data.receipt_number}</Text>
+                    <Text style={{ fontSize: 9, color: '#64748b', textAlign: 'center', marginBottom: 10 }}>
+                        Payment Reference: {data.payment_number}
+                    </Text>
+                </View>
+
+                {/* Student Information */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>RECEIVED FROM</Text>
+                    <View style={styles.infoBox}>
                         <View style={styles.row}>
-                            <Text style={styles.label}>Reference Number:</Text>
-                            <Text style={styles.value}>{data.reference_number}</Text>
+                            <Text style={styles.label}>Student Name:</Text>
+                            <Text style={styles.value}>{data.student.full_name}</Text>
                         </View>
-                    )}
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Invoice Number:</Text>
-                        <Text style={styles.value}>{data.invoice_number}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Previous Balance:</Text>
-                        <Text style={styles.value}>{formatCurrency(data.invoice_balance_before)}</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>New Balance:</Text>
-                        <Text style={[styles.value, { color: data.invoice_balance_after === 0 ? '#10b981' : '#f59e0b' }]}>
-                            {formatCurrency(data.invoice_balance_after)}
-                            {data.invoice_balance_after === 0 && ' (FULLY PAID)'}
-                        </Text>
-                    </View>
-                </View>
-            </View>
-
-            {/* Disclaimer */}
-            <View style={styles.disclaimer}>
-                <Text style={styles.disclaimerText}>
-                    This receipt is valid only when stamped and signed by an authorized school official.
-                    Please retain this receipt for your records.
-                </Text>
-            </View>
-
-            {/* Signatures */}
-            <View style={styles.signature}>
-                <View style={styles.signatureBox}>
-                    <View style={styles.signatureLine}>
-                        <Text style={styles.signatureLabel}>Received By</Text>
-                        <Text style={{ fontSize: 8, color: '#64748b', textAlign: 'center', marginTop: 2 }}>
-                            {data.recorded_by}
-                        </Text>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Student ID:</Text>
+                            <Text style={styles.value}>{data.student.student_id}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Class:</Text>
+                            <Text style={styles.value}>{data.student.class_name}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Academic Year:</Text>
+                            <Text style={styles.value}>{data.academic_year}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Term:</Text>
+                            <Text style={styles.value}>{data.term}</Text>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.signatureBox}>
-                    <View style={styles.signatureLine}>
-                        <Text style={styles.signatureLabel}>Authorized Signature</Text>
+
+                {/* Amount */}
+                <View style={styles.amountBox}>
+                    <Text style={styles.amountLabel}>AMOUNT RECEIVED</Text>
+                    <Text style={styles.amountValue}>{formatCurrency(data.amount)}</Text>
+                    <Text style={styles.amountWords}>{numberToWords(data.amount)}</Text>
+                </View>
+
+                {/* Payment Details */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>PAYMENT DETAILS</Text>
+                    <View style={styles.paymentDetails}>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Payment Date:</Text>
+                            <Text style={styles.value}>{formatDate(data.payment_date)}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Payment Method:</Text>
+                            <Text style={styles.value}>{getPaymentMethodDisplay(data.payment_method)}</Text>
+                        </View>
+                        {data.reference_number && (
+                            <View style={styles.row}>
+                                <Text style={styles.label}>Reference Number:</Text>
+                                <Text style={styles.value}>{data.reference_number}</Text>
+                            </View>
+                        )}
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Invoice Number:</Text>
+                            <Text style={styles.value}>{data.invoice_number}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Previous Balance:</Text>
+                            <Text style={styles.value}>{formatCurrency(data.invoice_balance_before)}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>New Balance:</Text>
+                            <Text style={[styles.value, { color: data.invoice_balance_after === 0 ? '#10b981' : '#f59e0b' }]}>
+                                {formatCurrency(data.invoice_balance_after)}
+                                {data.invoice_balance_after === 0 && ' (FULLY PAID)'}
+                            </Text>
+                        </View>
                     </View>
                 </View>
-            </View>
 
-            {/* Footer */}
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>
-                    Thank you for your payment. Keep this receipt for your records.
-                </Text>
-                <Text style={styles.footerText}>
-                    For any queries, please contact the Finance Office during working hours.
-                </Text>
-                <Text style={styles.footerText}>
-                    Generated on {new Date().toLocaleDateString('en-GB')} at {new Date().toLocaleTimeString('en-GB')}
-                </Text>
-            </View>
-        </Page>
+                {/* Disclaimer */}
+                <View style={styles.disclaimer}>
+                    <Text style={styles.disclaimerText}>
+                        This receipt is valid only when stamped and signed by an authorized school official.
+                        Please retain this receipt for your records.
+                    </Text>
+                </View>
+
+                {/* Signatures */}
+                <View style={styles.signature}>
+                    <View style={styles.signatureBox}>
+                        <View style={styles.signatureLine}>
+                            <Text style={styles.signatureLabel}>Received By</Text>
+                            <Text style={{ fontSize: 8, color: '#64748b', textAlign: 'center', marginTop: 2 }}>
+                                {data.recorded_by}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={styles.signatureBox}>
+                        <View style={styles.signatureLine}>
+                            <Text style={styles.signatureLabel}>Authorized Signature</Text>
+                        </View>
+                    </View>
+                </View>
+
+                {/* Footer */}
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>
+                        Thank you for your payment. Keep this receipt for your records.
+                    </Text>
+                    <Text style={styles.footerText}>
+                        For any queries, please contact the Finance Office during working hours.
+                    </Text>
+                    <Text style={styles.footerText}>
+                        Generated on {new Date().toLocaleDateString('en-GB')} at {new Date().toLocaleTimeString('en-GB')}
+                    </Text>
+                </View>
+            </Page>
+        </Document>
     );
 };

@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { PiggyBank, TrendingUp, Wallet } from "lucide-react";
+import { PaymentRecordingSection } from "@/components/fees/payment-recording-section";
 
 const funds = [
   {
@@ -229,6 +230,9 @@ export default function ManagementFinancesPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Payment Recording Section */}
+      <PaymentRecordingSection />
     </div>
   );
 }
