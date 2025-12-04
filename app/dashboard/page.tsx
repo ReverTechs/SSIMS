@@ -18,6 +18,7 @@ import { statsRegistry } from "@/lib/dashboard/widgets";
 import FinanceChartClient from "@/components/dashboard/finance-chart-client";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveTerm } from "@/actions/enrollment/terms";
+import { RecentReceiptsWidget } from "@/components/fees/recent-receipts-widget";
 
 import { getGenderStats } from "@/lib/data/dashboard-stats";
 
@@ -245,6 +246,14 @@ export default async function DashboardPage() {
 
           {/* Main Content Grid */}
           <div className="grid gap-2.5 sm:gap-3 grid-cols-1 lg:grid-cols-2">
+            {/* Recent Receipts Widget - Students Only */}
+            {user?.role === 'student' && (
+              <div className="lg:col-span-2">
+                {/* @ts-ignore */}
+                <RecentReceiptsWidget studentId={user.id} />
+              </div>
+            )}
+
             {/* Upcoming Events */}
             <Card
               className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden animate-fade-in-up opacity-0 rounded-2xl"
