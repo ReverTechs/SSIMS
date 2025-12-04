@@ -342,6 +342,40 @@ export async function bulkRegisterStudents(
                                 console.error(`Subject enrollment error for ${student.email}:`, subjectEnrollError);
                                 // Don't fail the registration, just log it
                             }
+
+                            // Step 8: Assign Fees Automatically
+                            try {
+                                // Get active term for fee assignment
+                                const { data: activeTerm } = await supabaseAdmin
+                                    .from('terms')
+                                    .select('id')
+                                    .eq('academic_year_id', activeYear.id)
+                                    .eq('is_active', true)
+                                    .maybeSingle();
+
+                                if (activeTerm) {
+                                    const { assignStudentFees } = await import('@/actions/fees-management/assign-student-fees');
+                                    const feeResult = await assignStudentFees({
+                                        studentId: userId,
+                                        studentType: student.studentType,
+                                        academicYearId: activeYear.id,
+                                        termId: activeTerm.id,
+                                    });
+
+                                    if (feeResult.feeAssigned) {
+                                        console.log(`[bulkRegisterStudents] Fees assigned to ${student.email}: ${feeResult.amount}`);
+                                    } else if (feeResult.error) {
+                                        console.warn(`[bulkRegisterStudents] Fee assignment failed for ${student.email}: ${feeResult.error}`);
+                                    } else {
+                                        console.log(`[bulkRegisterStudents] ${feeResult.message} for ${student.email}`);
+                                    }
+                                } else {
+                                    console.warn(`[bulkRegisterStudents] No active term found for fee assignment for ${student.email}`);
+                                }
+                            } catch (feeError) {
+                                console.error(`[bulkRegisterStudents] Error during fee assignment for ${student.email}:`, feeError);
+                                // Don't fail the registration, just log it
+                            }
                         }
                     }
 

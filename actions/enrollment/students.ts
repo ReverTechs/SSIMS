@@ -183,6 +183,40 @@ export async function registerStudent(prevState: RegisterStudentState, formData:
 
                 // 5. Enroll in Default Subjects
                 await enrollStudentInDefaultSubjects(userId, classId, stream);
+
+                // 6. Assign Fees Automatically
+                try {
+                    // Get active term for fee assignment
+                    const { data: activeTerm } = await supabaseAdmin
+                        .from('terms')
+                        .select('id')
+                        .eq('academic_year_id', activeYear.id)
+                        .eq('is_active', true)
+                        .maybeSingle();
+
+                    if (activeTerm) {
+                        const { assignStudentFees } = await import('@/actions/fees-management/assign-student-fees');
+                        const feeResult = await assignStudentFees({
+                            studentId: userId,
+                            studentType: (studentType as 'internal' | 'external') || 'internal',
+                            academicYearId: activeYear.id,
+                            termId: activeTerm.id,
+                        });
+
+                        if (feeResult.feeAssigned) {
+                            console.log(`[registerStudent] Fees assigned: ${feeResult.amount}`);
+                        } else if (feeResult.error) {
+                            console.warn(`[registerStudent] Fee assignment failed: ${feeResult.error}`);
+                        } else {
+                            console.log(`[registerStudent] ${feeResult.message}`);
+                        }
+                    } else {
+                        console.warn('[registerStudent] No active term found for fee assignment');
+                    }
+                } catch (feeError) {
+                    console.error('[registerStudent] Error during fee assignment:', feeError);
+                    // Don't fail registration if fee assignment fails
+                }
             }
         } catch (enrollError) {
             console.error('Enrollment error:', enrollError);
