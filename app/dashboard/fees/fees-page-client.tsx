@@ -6,14 +6,17 @@ import { GuardianChildSelector } from '@/components/fees/guardian-child-selector
 import { StudentFeeSummary } from '@/components/fees/student-fee-summary';
 import { StudentInvoicesTable } from '@/components/fees/student-invoices-table';
 import { StudentPaymentsTable } from '@/components/fees/student-payments-table';
+import { ClearanceStatusCard } from '@/components/fees/clearance-status-card';
 import { Receipt, FileText, DollarSign } from 'lucide-react';
 
 interface FeesPageClientProps {
     userId: string;
     userRole: string;
+    academicYearId?: string;
+    termId?: string;
 }
 
-export function FeesPageClient({ userId, userRole }: FeesPageClientProps) {
+export function FeesPageClient({ userId, userRole, academicYearId, termId }: FeesPageClientProps) {
     const [selectedStudentId, setSelectedStudentId] = useState<string>(
         userRole === 'student' ? userId : ''
     );
@@ -24,7 +27,7 @@ export function FeesPageClient({ userId, userRole }: FeesPageClientProps) {
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">My Fees</h1>
                 <p className="text-muted-foreground">
-                    View your fee summary, invoices, and payment history
+                    View your fee summary, invoices, payment history, and clearance status
                 </p>
             </div>
 
@@ -56,6 +59,15 @@ export function FeesPageClient({ userId, userRole }: FeesPageClientProps) {
 
                     <TabsContent value="overview" className="space-y-6">
                         <StudentFeeSummary studentId={selectedStudentId} />
+
+                        {/* Clearance Status Card */}
+                        {academicYearId && (
+                            <ClearanceStatusCard
+                                studentId={selectedStudentId}
+                                academicYearId={academicYearId}
+                                termId={termId}
+                            />
+                        )}
                     </TabsContent>
 
                     <TabsContent value="invoices">

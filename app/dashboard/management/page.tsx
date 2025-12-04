@@ -12,6 +12,7 @@ import {
   CalendarCheck,
   Clock9,
   DollarSign,
+  FileCheck,
   PiggyBank,
   School,
   Users,
@@ -72,6 +73,15 @@ const managementAreas = [
     statLabel: "Budget Coverage",
     statValue: "86%",
     borderGradient: "border-blue-500/20",
+  },
+  {
+    title: "Fee Clearances",
+    description: "Review and approve student fee clearance requests.",
+    href: "/dashboard/management/clearances",
+    icon: FileCheck,
+    statLabel: "Pending Requests",
+    statValue: "0",
+    borderGradient: "border-purple-500/20",
   },
   {
     title: "Departments-subjects",
