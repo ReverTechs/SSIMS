@@ -80,17 +80,19 @@ export async function recordSponsorPayment(
             const { data: studentsWithAid } = await supabase
                 .from('student_financial_aid')
                 .select(`
+                    id,
                     student_id,
                     calculated_aid_amount,
                     student_fees!inner (
                         id,
-                        balance
+                        balance,
+                        academic_year_id,
+                        term_id
                     )
                 `)
                 .eq('sponsor_id', input.sponsor_id)
-                .eq('status', 'active')
-                .eq('sponsor_pays_directly', true)
-                .eq('sponsor_payment_received', false);
+                .in('status', ['active', 'approved'])
+                .gte('valid_until', new Date().toISOString().split('T')[0]); // Aid must still be valid
 
             if (studentsWithAid && studentsWithAid.length > 0) {
                 const allocationData = [];
@@ -100,9 +102,12 @@ export async function recordSponsorPayment(
                     if (remainingAmount <= 0) break;
 
                     const studentFee = Array.isArray(aid.student_fees) ? aid.student_fees[0] : aid.student_fees;
+
+                    // Allocate the lesser of: aid amount or remaining payment
                     const allocationAmount = Math.min(
                         aid.calculated_aid_amount || studentFee.balance,
-                        remainingAmount
+                        remainingAmount,
+                        studentFee.balance // Don't allocate more than student owes
                     );
 
                     if (allocationAmount > 0) {
@@ -111,6 +116,7 @@ export async function recordSponsorPayment(
                             student_id: aid.student_id,
                             student_fee_id: studentFee.id,
                             allocated_amount: allocationAmount,
+                            allocation_date: input.payment_date,
                             allocated_by: user.id,
                         });
 
