@@ -310,3 +310,300 @@ export interface PaymentMethodBreakdown {
     total_amount: number;
     percentage: number;
 }
+
+// ============================================================================
+// Financial Aid & Sponsorship Types
+// ============================================================================
+
+export type SponsorType = 'government' | 'ngo' | 'corporate' | 'foundation' | 'individual';
+export type AidCoverageType = 'full' | 'percentage' | 'fixed_amount' | 'specific_items';
+export type AidStatus = 'pending' | 'approved' | 'active' | 'suspended' | 'completed' | 'rejected';
+
+// ============================================================================
+// Database Tables
+// ============================================================================
+
+export interface Sponsor {
+    id: string;
+    name: string;
+    sponsor_type: SponsorType;
+    contact_person?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    payment_terms?: string;
+    billing_email?: string;
+    is_active: boolean;
+    notes?: string;
+    created_by?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface FinancialAidType {
+    id: string;
+    sponsor_id: string;
+    name: string;
+    description?: string;
+    coverage_type: AidCoverageType;
+    coverage_percentage?: number;
+    coverage_amount?: number;
+    covered_items?: string[];
+    eligibility_criteria?: string;
+    requires_application: boolean;
+    is_active: boolean;
+    display_order: number;
+    created_by?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface StudentFinancialAid {
+    id: string;
+    student_id: string;
+    financial_aid_type_id: string;
+    sponsor_id: string;
+    academic_year_id: string;
+    term_id?: string;
+    coverage_type: AidCoverageType;
+    coverage_percentage?: number;
+    coverage_amount?: number;
+    covered_items?: string[];
+    calculated_aid_amount: number;
+    status: AidStatus;
+    approved_by?: string;
+    approved_at?: string;
+    rejection_reason?: string;
+    valid_from: string;
+    valid_until: string;
+    conditions?: string;
+    notes?: string;
+    sponsor_pays_directly: boolean;
+    sponsor_payment_received: boolean;
+    sponsor_payment_date?: string;
+    assigned_by?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface SponsorPayment {
+    id: string;
+    payment_number: string;
+    sponsor_id: string;
+    amount: number;
+    payment_date: string;
+    payment_method: 'bank_transfer' | 'cheque' | 'cash' | 'wire_transfer';
+    reference_number?: string;
+    allocated_amount: number;
+    unallocated_amount: number;
+    notes?: string;
+    recorded_by?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface SponsorPaymentAllocation {
+    id: string;
+    sponsor_payment_id: string;
+    student_id: string;
+    student_fee_id: string;
+    invoice_id?: string;
+    allocated_amount: number;
+    allocation_date: string;
+    notes?: string;
+    allocated_by?: string;
+    created_at: string;
+}
+
+// ============================================================================
+// Extended Types (with relations)
+// ============================================================================
+
+export interface SponsorWithStats extends Sponsor {
+    total_paid: number;
+    total_allocated: number;
+    total_unallocated: number;
+    payment_count: number;
+    students_helped: number;
+}
+
+export interface FinancialAidTypeWithSponsor extends FinancialAidType {
+    sponsor: {
+        id: string;
+        name: string;
+        sponsor_type: SponsorType;
+    };
+}
+
+export interface StudentFinancialAidWithDetails extends StudentFinancialAid {
+    student: {
+        id: string;
+        student_id: string;
+        full_name: string;
+    };
+    sponsor: {
+        id: string;
+        name: string;
+        sponsor_type: SponsorType;
+    };
+    financial_aid_type: {
+        id: string;
+        name: string;
+    };
+    academic_year: {
+        id: string;
+        name: string;
+    };
+    term?: {
+        id: string;
+        name: string;
+    };
+}
+
+export interface SponsorPaymentWithDetails extends SponsorPayment {
+    sponsor: {
+        id: string;
+        name: string;
+    };
+    allocations: SponsorPaymentAllocation[];
+}
+
+// ============================================================================
+// Form Input Types
+// ============================================================================
+
+export interface CreateSponsorInput {
+    name: string;
+    sponsor_type: SponsorType;
+    contact_person?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    payment_terms?: string;
+    billing_email?: string;
+    notes?: string;
+}
+
+export interface UpdateSponsorInput extends Partial<CreateSponsorInput> {
+    is_active?: boolean;
+}
+
+export interface CreateFinancialAidTypeInput {
+    sponsor_id: string;
+    name: string;
+    description?: string;
+    coverage_type: AidCoverageType;
+    coverage_percentage?: number;
+    coverage_amount?: number;
+    covered_items?: string[];
+    eligibility_criteria?: string;
+    requires_application?: boolean;
+}
+
+export interface AssignAidToStudentInput {
+    student_id: string;
+    financial_aid_type_id: string;
+    academic_year_id: string;
+    term_id?: string;
+    valid_from: string;
+    valid_until: string;
+    conditions?: string;
+    notes?: string;
+    // Override aid type defaults if needed
+    coverage_type?: AidCoverageType;
+    coverage_percentage?: number;
+    coverage_amount?: number;
+    covered_items?: string[];
+}
+
+export interface BulkAssignAidInput {
+    financial_aid_type_id: string;
+    academic_year_id: string;
+    term_id?: string;
+    student_ids: string[];
+    valid_from: string;
+    valid_until: string;
+    conditions?: string;
+    notes?: string;
+}
+
+export interface RecordSponsorPaymentInput {
+    sponsor_id: string;
+    amount: number;
+    payment_date: string;
+    payment_method: 'bank_transfer' | 'cheque' | 'cash' | 'wire_transfer';
+    reference_number?: string;
+    notes?: string;
+    // Auto-allocate to students?
+    auto_allocate?: boolean;
+}
+
+export interface AllocateSponsorPaymentInput {
+    sponsor_payment_id: string;
+    allocations: {
+        student_id: string;
+        student_fee_id: string;
+        invoice_id?: string;
+        allocated_amount: number;
+    }[];
+}
+
+// ============================================================================
+// Response Types
+// ============================================================================
+
+export interface AssignAidResponse {
+    success: boolean;
+    aid_award: StudentFinancialAid;
+    message: string;
+}
+
+export interface BulkAssignAidResponse {
+    success: boolean;
+    assigned_count: number;
+    failed_count: number;
+    total_aid_amount: number;
+    message: string;
+}
+
+export interface RecordSponsorPaymentResponse {
+    success: boolean;
+    payment: SponsorPayment;
+    allocations?: SponsorPaymentAllocation[];
+    message: string;
+}
+
+// ============================================================================
+// Report Types
+// ============================================================================
+
+export interface FinancialAidSummary {
+    academic_year_id: string;
+    academic_year_name: string;
+    total_students_with_aid: number;
+    total_aid_amount: number;
+    by_sponsor: {
+        sponsor_id: string;
+        sponsor_name: string;
+        student_count: number;
+        total_aid_amount: number;
+    }[];
+    by_coverage_type: {
+        coverage_type: AidCoverageType;
+        student_count: number;
+        total_aid_amount: number;
+    }[];
+}
+
+export interface SponsorReport {
+    sponsor_id: string;
+    sponsor_name: string;
+    sponsor_type: SponsorType;
+    total_committed: number;
+    total_paid: number;
+    total_allocated: number;
+    outstanding_balance: number;
+    students_sponsored: number;
+    payment_history: SponsorPayment[];
+}
+

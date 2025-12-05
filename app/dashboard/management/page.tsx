@@ -9,6 +9,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowRight,
+  Award,
+  Building2,
   CalendarCheck,
   Clock9,
   DollarSign,
@@ -91,6 +93,24 @@ const managementAreas = [
     statLabel: "Active Units",
     statValue: "10",
     borderGradient: "border-emerald-500/20",
+  },
+  {
+    title: "Sponsors",
+    description: "Manage organizations providing financial aid to students.",
+    href: "/dashboard/management/sponsors",
+    icon: Building2,
+    statLabel: "Active Sponsors",
+    statValue: "0",
+    borderGradient: "border-indigo-500/20",
+  },
+  {
+    title: "Financial Aid",
+    description: "Manage scholarships, bursaries, and student aid assignments.",
+    href: "/dashboard/management/financial-aid",
+    icon: Award,
+    statLabel: "Aid Programs",
+    statValue: "0",
+    borderGradient: "border-teal-500/20",
   },
 ];
 
