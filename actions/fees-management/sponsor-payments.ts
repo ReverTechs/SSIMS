@@ -78,48 +78,65 @@ export async function recordSponsorPayment(
         if (input.auto_allocate) {
             console.log('[AUTO-ALLOCATE] Starting auto-allocation for sponsor:', input.sponsor_id);
 
-            // Get students with active aid from this sponsor
+            // 1. Get students with active aid from this sponsor
             const { data: studentsWithAid, error: aidError } = await supabase
                 .from('student_financial_aid')
                 .select(`
                     id,
                     student_id,
-                    calculated_aid_amount,
-                    student_fees!inner (
-                        id,
-                        balance,
-                        academic_year_id,
-                        term_id
-                    )
+                    academic_year_id,
+                    term_id,
+                    calculated_aid_amount
                 `)
                 .eq('sponsor_id', input.sponsor_id)
                 .in('status', ['active', 'approved'])
-                .gte('valid_until', new Date().toISOString().split('T')[0]); // Aid must still be valid
+                .gte('valid_until', new Date().toISOString().split('T')[0]);
 
             if (aidError) {
                 console.error('[AUTO-ALLOCATE] Error fetching students with aid:', aidError);
-            }
+            } else if (studentsWithAid && studentsWithAid.length > 0) {
+                console.log('[AUTO-ALLOCATE] Found students with aid:', studentsWithAid.length);
 
-            console.log('[AUTO-ALLOCATE] Found students with aid:', studentsWithAid?.length || 0);
-            console.log('[AUTO-ALLOCATE] Students data:', JSON.stringify(studentsWithAid, null, 2));
+                // 2. Fetch fees for these students in bulk to avoid N+1 queries
+                const studentIds = studentsWithAid.map(a => a.student_id);
+                // Get academic years involved to filter fees accurately
+                // In most cases, it's just one year, but being safe
 
-            if (studentsWithAid && studentsWithAid.length > 0) {
+                const { data: studentFees, error: feesError } = await supabase
+                    .from('student_fees')
+                    .select('id, student_id, balance, academic_year_id, term_id')
+                    .in('student_id', studentIds)
+                    .gt('balance', 0); // Only concerned with fees that have a balance
+
+                if (feesError) {
+                    console.error('[AUTO-ALLOCATE] Error fetching student fees:', feesError);
+                }
+
                 const allocationData = [];
                 let remainingAmount = input.amount;
 
                 for (const aid of studentsWithAid) {
                     if (remainingAmount <= 0) break;
 
-                    const studentFee = Array.isArray(aid.student_fees) ? aid.student_fees[0] : aid.student_fees;
+                    // Find matching fee for this student and academic year/term
+                    // We look for a fee record that matches the student and the academic year defined in the aid
+                    const studentFee = studentFees?.find(fee =>
+                        fee.student_id === aid.student_id &&
+                        fee.academic_year_id === aid.academic_year_id &&
+                        // If aid is term specific, fee must match term; if aid is annual (term_id null), fee can be any term or annual
+                        // Ideally, we allocate to the oldest debt or the specific term
+                        // Here we prioritize matching term if aid has one
+                        (aid.term_id ? fee.term_id === aid.term_id : true)
+                    );
 
                     if (!studentFee) {
-                        console.warn('[AUTO-ALLOCATE] No student_fees found for aid:', aid.id);
+                        console.warn('[AUTO-ALLOCATE] No active balance found for student:', aid.student_id, 'Year:', aid.academic_year_id);
                         continue;
                     }
 
-                    // Allocate the lesser of: aid amount or remaining payment
+                    // Allocate the lesser of: aid amount or remaining payment or fee balance
                     const allocationAmount = Math.min(
-                        aid.calculated_aid_amount || studentFee.balance,
+                        aid.calculated_aid_amount || studentFee.balance, // Use calculated aid limit if set, otherwise full balance
                         remainingAmount,
                         studentFee.balance // Don't allocate more than student owes
                     );
@@ -134,6 +151,7 @@ export async function recordSponsorPayment(
                             allocated_amount: allocationAmount,
                             allocation_date: input.payment_date,
                             allocated_by: user.id,
+                            invoice_id: null // Let the trigger find the invoice
                         });
 
                         remainingAmount -= allocationAmount;
@@ -155,7 +173,7 @@ export async function recordSponsorPayment(
                         allocations = createdAllocations;
                     }
                 } else {
-                    console.warn('[AUTO-ALLOCATE] No allocations to create (all amounts were 0)');
+                    console.warn('[AUTO-ALLOCATE] No allocations to create (all amounts were 0 or no matching fees)');
                 }
             } else {
                 console.warn('[AUTO-ALLOCATE] No students with active aid found for this sponsor');
