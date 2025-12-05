@@ -18,6 +18,9 @@ import {
   PiggyBank,
   School,
   Users,
+  Activity,
+  CheckCircle2,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -119,21 +122,33 @@ const highlightMetrics = [
     label: "Pending approvals",
     value: "7",
     description: "Items awaiting leadership action",
+    icon: FileCheck,
+    iconBg: "bg-purple-500",
+    borderGradient: "border-purple-500/20",
   },
   {
     label: "Data freshness",
     value: "94%",
     description: "Records updated in the last 48h",
+    icon: Activity,
+    iconBg: "bg-blue-500",
+    borderGradient: "border-blue-500/20",
   },
   {
     label: "Alerts resolved",
     value: "18",
     description: "Issues cleared this week",
+    icon: CheckCircle2,
+    iconBg: "bg-emerald-500",
+    borderGradient: "border-emerald-500/20",
   },
   {
     label: "Automation coverage",
     value: "64%",
     description: "Management tasks using workflows",
+    icon: Zap,
+    iconBg: "bg-amber-500",
+    borderGradient: "border-amber-500/20",
   },
 ];
 
@@ -155,30 +170,44 @@ export default function ManagementHubPage() {
         </div> */}
       </div>
 
-      <div className="grid gap-2.5 sm:gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {highlightMetrics.map((metric) => (
-          <Card
-            key={metric.label}
-            className="border bg-card hover:bg-accent/50 transition-all duration-200 rounded-2xl"
-          >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs font-medium text-muted-foreground">
-                {metric.label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-semibold tracking-tight">
-                {metric.value}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {metric.description}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {highlightMetrics.map((metric, index) => {
+          const Icon = metric.icon;
+          return (
+            <div
+              key={metric.label}
+              className="group relative animate-fade-in-up opacity-0"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <Card
+                className={cn(
+                  "relative border bg-card hover:bg-accent/50 transition-all duration-200 rounded-2xl",
+                  metric.borderGradient
+                )}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-xs font-medium text-muted-foreground">
+                    {metric.label}
+                  </CardTitle>
+                  <div className={cn("p-1.5 rounded-md", metric.iconBg)}>
+                    <Icon className="h-3.5 w-3.5 text-white" />
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-1">
+                  <div className="text-xl font-semibold tracking-tight">
+                    {metric.value}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {metric.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         {managementAreas.map((area) => {
           const Icon = area.icon;
           return (
@@ -188,7 +217,7 @@ export default function ManagementHubPage() {
               className="group block h-full"
             >
               <Card
-                className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden cursor-pointer hover:shadow-lg hover:scale-[1.02] rounded-2xl"
+                className="group relative border bg-card hover:bg-accent/50 transition-all duration-200 overflow-hidden cursor-pointer hover:shadow-lg hover:scale-[1.02]"
               >
                 <div
                   className={cn(

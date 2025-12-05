@@ -263,7 +263,7 @@ export const ReceiptPDF: React.FC<{ data: ReceiptData }> = ({ data }) => {
 
                 {/* Header */}
                 <View style={styles.header}>
-                    <Text style={styles.schoolName}>SSIMS School</Text>
+                    <Text style={styles.schoolName}>Wynberg Boys' High School</Text>
                     <Text style={styles.schoolInfo}>P.O. Box 123, Lilongwe, Malawi</Text>
                     <Text style={styles.schoolInfo}>Tel: +265 1 234 567 | Email: finance@ssims.ac.mw</Text>
                 </View>
