@@ -76,8 +76,10 @@ export async function recordSponsorPayment(
 
         // Auto-allocate if requested
         if (input.auto_allocate) {
+            console.log('[AUTO-ALLOCATE] Starting auto-allocation for sponsor:', input.sponsor_id);
+
             // Get students with active aid from this sponsor
-            const { data: studentsWithAid } = await supabase
+            const { data: studentsWithAid, error: aidError } = await supabase
                 .from('student_financial_aid')
                 .select(`
                     id,
@@ -94,6 +96,13 @@ export async function recordSponsorPayment(
                 .in('status', ['active', 'approved'])
                 .gte('valid_until', new Date().toISOString().split('T')[0]); // Aid must still be valid
 
+            if (aidError) {
+                console.error('[AUTO-ALLOCATE] Error fetching students with aid:', aidError);
+            }
+
+            console.log('[AUTO-ALLOCATE] Found students with aid:', studentsWithAid?.length || 0);
+            console.log('[AUTO-ALLOCATE] Students data:', JSON.stringify(studentsWithAid, null, 2));
+
             if (studentsWithAid && studentsWithAid.length > 0) {
                 const allocationData = [];
                 let remainingAmount = input.amount;
@@ -103,12 +112,19 @@ export async function recordSponsorPayment(
 
                     const studentFee = Array.isArray(aid.student_fees) ? aid.student_fees[0] : aid.student_fees;
 
+                    if (!studentFee) {
+                        console.warn('[AUTO-ALLOCATE] No student_fees found for aid:', aid.id);
+                        continue;
+                    }
+
                     // Allocate the lesser of: aid amount or remaining payment
                     const allocationAmount = Math.min(
                         aid.calculated_aid_amount || studentFee.balance,
                         remainingAmount,
                         studentFee.balance // Don't allocate more than student owes
                     );
+
+                    console.log('[AUTO-ALLOCATE] Student:', aid.student_id, 'Amount:', allocationAmount, 'Balance:', studentFee.balance);
 
                     if (allocationAmount > 0) {
                         allocationData.push({
@@ -124,17 +140,28 @@ export async function recordSponsorPayment(
                     }
                 }
 
+                console.log('[AUTO-ALLOCATE] Allocation data to insert:', allocationData.length, 'records');
+
                 if (allocationData.length > 0) {
                     const { data: createdAllocations, error: allocError } = await supabase
                         .from('sponsor_payment_allocations')
                         .insert(allocationData)
                         .select();
 
-                    if (!allocError) {
+                    if (allocError) {
+                        console.error('[AUTO-ALLOCATE] Error creating allocations:', allocError);
+                    } else {
+                        console.log('[AUTO-ALLOCATE] Successfully created allocations:', createdAllocations?.length);
                         allocations = createdAllocations;
                     }
+                } else {
+                    console.warn('[AUTO-ALLOCATE] No allocations to create (all amounts were 0)');
                 }
+            } else {
+                console.warn('[AUTO-ALLOCATE] No students with active aid found for this sponsor');
             }
+        } else {
+            console.log('[AUTO-ALLOCATE] Auto-allocation disabled');
         }
 
         revalidatePath('/dashboard/management/sponsors');
