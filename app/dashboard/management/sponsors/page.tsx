@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Building2, Mail, Phone, Edit, Power } from 'lucide-react';
+import { Plus, Search, Building2, Mail, Phone, Edit, DollarSign } from 'lucide-react';
 import { getSponsors } from '@/actions/fees-management/sponsors';
 import { SponsorFormDialog } from '@/components/financial-aid/sponsor-form-dialog';
+import { RecordPaymentDialog } from '@/components/financial-aid/record-payment-dialog';
 import type { Sponsor, SponsorType } from '@/types/fees';
 import { toast } from 'sonner';
 
@@ -18,6 +20,7 @@ export default function SponsorsPage() {
     const [filterType, setFilterType] = useState<SponsorType | 'all'>('all');
     const [showInactive, setShowInactive] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
     const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
 
     // Load sponsors
@@ -56,6 +59,17 @@ export default function SponsorsPage() {
     const handleEdit = (sponsor: Sponsor) => {
         setSelectedSponsor(sponsor);
         setDialogOpen(true);
+    };
+
+    const handleRecordPayment = (sponsor: Sponsor) => {
+        setSelectedSponsor(sponsor);
+        setPaymentDialogOpen(true);
+    };
+
+    const handlePaymentSuccess = () => {
+        setPaymentDialogOpen(false);
+        setSelectedSponsor(null);
+        loadSponsors();
     };
 
     const getSponsorTypeColor = (type: SponsorType) => {
@@ -165,7 +179,12 @@ export default function SponsorsPage() {
                                     <div className="flex-1">
                                         <CardTitle className="flex items-center gap-2">
                                             <Building2 className="h-5 w-5" />
-                                            {sponsor.name}
+                                            <Link
+                                                href={`/dashboard/management/sponsors/${sponsor.id}`}
+                                                className="hover:underline"
+                                            >
+                                                {sponsor.name}
+                                            </Link>
                                         </CardTitle>
                                         <CardDescription className="mt-1">
                                             <Badge className={getSponsorTypeColor(sponsor.sponsor_type)}>
@@ -215,6 +234,21 @@ export default function SponsorsPage() {
                                         </p>
                                     </div>
                                 )}
+
+                                {/* Record Payment Button */}
+                                {sponsor.is_active && (
+                                    <div className="mt-3 pt-3 border-t">
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="w-full"
+                                            onClick={() => handleRecordPayment(sponsor)}
+                                        >
+                                            <DollarSign className="h-4 w-4 mr-2" />
+                                            Record Payment
+                                        </Button>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     ))
@@ -228,6 +262,16 @@ export default function SponsorsPage() {
                 sponsor={selectedSponsor}
                 onSuccess={handleCreateSuccess}
             />
+
+            {/* Record Payment Dialog */}
+            {selectedSponsor && (
+                <RecordPaymentDialog
+                    open={paymentDialogOpen}
+                    onOpenChange={setPaymentDialogOpen}
+                    sponsor={selectedSponsor}
+                    onSuccess={handlePaymentSuccess}
+                />
+            )}
         </div>
     );
 }
