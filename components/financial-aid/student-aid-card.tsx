@@ -20,14 +20,33 @@ export function StudentAidCard({ studentId, academicYearId, termId }: StudentAid
     useEffect(() => {
         const loadAid = async () => {
             setLoading(true);
+
+            // DEBUG: Log what we're searching for
+            console.log('🔍 StudentAidCard - Fetching aid with params:', {
+                studentId,
+                academicYearId,
+                termId
+            });
+
             const result = await getStudentAid(studentId, academicYearId, termId);
 
+            // DEBUG: Log what we got back
+            console.log('📊 StudentAidCard - Fetch result:', result);
+
             if (!result.error && result.aid_awards) {
+                console.log('✅ Total aid awards fetched:', result.aid_awards.length);
+
                 // Filter only active aid
                 const activeAid = result.aid_awards.filter(
                     award => award.status === 'active' || award.status === 'approved'
                 );
+
+                console.log('✅ Active/Approved aid awards:', activeAid.length);
+                console.log('📋 Active aid details:', activeAid);
+
                 setAidAwards(activeAid);
+            } else if (result.error) {
+                console.error('❌ Error fetching aid:', result.error);
             }
             setLoading(false);
         };

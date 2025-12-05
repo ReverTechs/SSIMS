@@ -7,6 +7,7 @@ import { StudentFeeSummary } from '@/components/fees/student-fee-summary';
 import { StudentInvoicesTable } from '@/components/fees/student-invoices-table';
 import { StudentPaymentsTable } from '@/components/fees/student-payments-table';
 import { ClearanceStatusCard } from '@/components/fees/clearance-status-card';
+import { StudentAidCard } from '@/components/financial-aid/student-aid-card';
 import { Receipt, FileText, DollarSign } from 'lucide-react';
 
 interface FeesPageClientProps {
@@ -58,6 +59,15 @@ export function FeesPageClient({ userId, userRole, academicYearId, termId }: Fee
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-6">
+                        {/* Financial Aid Card - Shows if student has active aid */}
+                        {academicYearId && (
+                            <StudentAidCard
+                                studentId={selectedStudentId}
+                                academicYearId={academicYearId}
+                                termId={termId}
+                            />
+                        )}
+
                         <StudentFeeSummary studentId={selectedStudentId} />
 
                         {/* Clearance Status Card */}

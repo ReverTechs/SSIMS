@@ -269,8 +269,9 @@ export async function getStudentAid(
             query = query.eq('academic_year_id', academicYearId);
         }
 
+        // For term filtering: show both term-specific aid AND year-long aid (term_id = null)
         if (termId) {
-            query = query.eq('term_id', termId);
+            query = query.or(`term_id.eq.${termId},term_id.is.null`);
         }
 
         const { data: aidAwards, error } = await query;
