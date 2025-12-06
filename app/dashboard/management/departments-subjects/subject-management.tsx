@@ -15,6 +15,7 @@ import { Plus, Trash2, Save, X, Pencil } from "lucide-react";
 import { Subject } from "@/lib/data/subjects";
 import { createSubjectAction, updateSubjectAction, deleteSubjectAction } from "@/app/actions/subjects";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface SubjectManagementProps {
     departmentId: string;
@@ -48,7 +49,10 @@ export function SubjectManagement({ departmentId, subjects }: SubjectManagementP
     };
 
     const handleAddSave = async () => {
-        if (!newName.trim() || !newCode.trim()) return;
+        if (!newName.trim() || !newCode.trim()) {
+            toast.error("Name and Code are required.");
+            return;
+        }
         setLoading(true);
         const formData = new FormData();
         formData.append("name", newName);
@@ -56,10 +60,20 @@ export function SubjectManagement({ departmentId, subjects }: SubjectManagementP
         formData.append("departmentId", departmentId);
 
         try {
-            await createSubjectAction({}, formData);
-            setIsAdding(false);
+            // @ts-ignore
+            const result = await createSubjectAction({}, formData);
+            if (result.success) {
+                toast.success(result.message || "Subject added successfully.");
+                setIsAdding(false);
+                setNewName("");
+                setNewCode("");
+            } else {
+                toast.error(result.message || "Failed to add subject.");
+                console.error(result.errors);
+            }
         } catch (e) {
             console.error(e);
+            toast.error("An unexpected error occurred.");
         } finally {
             setLoading(false);
         }
@@ -76,7 +90,10 @@ export function SubjectManagement({ departmentId, subjects }: SubjectManagementP
     };
 
     const handleEditSave = async (id: string) => {
-        if (!editName.trim() || !editCode.trim()) return;
+        if (!editName.trim() || !editCode.trim()) {
+            toast.error("Name and Code are required.");
+            return;
+        }
         setLoading(true);
         const formData = new FormData();
         formData.append("id", id);
@@ -85,22 +102,38 @@ export function SubjectManagement({ departmentId, subjects }: SubjectManagementP
         formData.append("departmentId", departmentId);
 
         try {
-            await updateSubjectAction({}, formData);
-            setEditingId(null);
+            // @ts-ignore
+            const result = await updateSubjectAction({}, formData);
+            if (result.success) {
+                toast.success(result.message || "Subject updated.");
+                setEditingId(null);
+            } else {
+                toast.error(result.message || "Failed to update subject.");
+            }
         } catch (e) {
             console.error(e);
+            toast.error("An unexpected error occurred.");
         } finally {
             setLoading(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this subject?")) return;
+        // if (!confirm("Are you sure you want to delete this subject?")) return;
+        // Using toast promise or simple confirmations is better, but since simple confirm was used:
+        if (!window.confirm("Are you sure you want to delete this subject?")) return;
+
         setLoading(true);
         try {
-            await deleteSubjectAction(id);
+            const result = await deleteSubjectAction(id);
+            if (result.success) {
+                toast.success(result.message || "Subject deleted.");
+            } else {
+                toast.error(result.message || "Failed to delete subject.");
+            }
         } catch (e) {
             console.error(e);
+            toast.error("An unexpected error occurred.");
         } finally {
             setLoading(false);
         }

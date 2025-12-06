@@ -27,14 +27,16 @@ export async function createSubjectAction(
     prevState: SubjectState,
     formData: FormData
 ): Promise<SubjectState> {
+    console.log("createSubjectAction called", Object.fromEntries(formData));
     const validatedFields = createSchema.safeParse({
         name: formData.get('name'),
         code: formData.get('code'),
         departmentId: formData.get('departmentId'),
-        description: formData.get('description'),
+        description: formData.get('description') || undefined,
     })
 
     if (!validatedFields.success) {
+        console.log("Validation failed", validatedFields.error.flatten().fieldErrors);
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: 'Please check the form for errors.',
@@ -53,6 +55,7 @@ export async function createSubjectAction(
         })
 
         if (!result.success) {
+            console.error("createSubject failed", result.error);
             return {
                 message: result.error || 'Failed to create subject.',
                 success: false,
@@ -65,6 +68,7 @@ export async function createSubjectAction(
             success: true,
         }
     } catch (error: any) {
+        console.error("createSubject exception", error);
         return {
             message: error.message || 'Something went wrong.',
             success: false,
@@ -81,7 +85,7 @@ export async function updateSubjectAction(
         name: formData.get('name'),
         code: formData.get('code'),
         departmentId: formData.get('departmentId'),
-        description: formData.get('description'),
+        description: formData.get('description') || undefined,
     })
 
     if (!validatedFields.success) {
