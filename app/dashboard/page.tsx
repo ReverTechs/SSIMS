@@ -24,16 +24,31 @@ import { getGenderStats } from "@/lib/data/dashboard-stats";
 
 const greeting = getGreeting();
 
+import { getDashboardStats } from "@/app/actions/get-dashboard-stats";
+
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const user = await getCurrentUser();
+  const dbStats = await getDashboardStats();
   const genderStats = await getGenderStats();
   const activeTerm = await getActiveTerm();
   const permissions = user ? Array.from(getPermissionsForRole(user.role)) : [];
   const stats = permissions
     .filter((p) => p.startsWith("stats:"))
     .flatMap((p) => statsRegistry[p as keyof typeof statsRegistry] ?? []);
-  const effectiveStats =
-    stats.length > 0 ? stats : statsRegistry["stats:student:view"] ?? [];
+
+  // Override stats with real data
+  const rawStats = stats.length > 0 ? stats : statsRegistry["stats:student:view"] ?? [];
+  const effectiveStats = rawStats.map(stat => {
+    if (stat.title === "Total Students" || stat.title === "Student Enrollment") {
+      return { ...stat, value: dbStats.studentCount.toLocaleString() };
+    }
+    if (stat.title === "Total Teachers" || stat.title === "Teaching Staff") {
+      return { ...stat, value: dbStats.teacherCount.toLocaleString() };
+    }
+    return stat;
+  });
 
   // Fetch department for teachers
   let departmentName = "Academic Staff";

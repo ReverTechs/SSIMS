@@ -23,6 +23,7 @@ import {
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getDashboardStats } from "@/app/actions/get-dashboard-stats";
 
 const managementAreas = [
   {
@@ -31,8 +32,9 @@ const managementAreas = [
     href: "/dashboard/manage-teachers",
     icon: School,
     statLabel: "Active Profiles",
-    statValue: "56",
+    statValue: "56", // Default fallback
     borderGradient: "border-blue-500/20",
+    key: "teacherCount"
   },
   {
     title: "Manage Students",
@@ -40,8 +42,9 @@ const managementAreas = [
     href: "/dashboard/management/students",
     icon: Users,
     statLabel: "Enrolled Learners",
-    statValue: "824",
+    statValue: "824", // Default fallback
     borderGradient: "border-emerald-500/20",
+    key: "studentCount"
   },
   {
     title: "Fee Structures",
@@ -117,85 +120,25 @@ const managementAreas = [
   },
 ];
 
-const highlightMetrics = [
-  {
-    label: "Pending approvals",
-    value: "7",
-    description: "Items awaiting leadership action",
-    icon: FileCheck,
-    iconBg: "bg-purple-500",
-    borderGradient: "border-purple-500/20",
-  },
-  {
-    label: "Data freshness",
-    value: "94%",
-    description: "Records updated in the last 48h",
-    icon: Activity,
-    iconBg: "bg-blue-500",
-    borderGradient: "border-blue-500/20",
-  },
-  {
-    label: "Alerts resolved",
-    value: "18",
-    description: "Issues cleared this week",
-    icon: CheckCircle2,
-    iconBg: "bg-emerald-500",
-    borderGradient: "border-emerald-500/20",
-  },
-  {
-    label: "Automation coverage",
-    value: "64%",
-    description: "Management tasks using workflows",
-    icon: Zap,
-    iconBg: "bg-amber-500",
-    borderGradient: "border-amber-500/20",
-  },
-];
+export const dynamic = 'force-dynamic';
 
-export default function ManagementHubPage() {
+export default async function ManagementHubPage() {
+  const stats = await getDashboardStats();
+
   return (
     <div className="space-y-3 sm:space-y-4 lg:space-y-6">
-
-      {/* <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {highlightMetrics.map((metric, index) => {
-          const Icon = metric.icon;
-          return (
-            <div
-              key={metric.label}
-              className="group relative animate-fade-in-up opacity-0"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <Card
-                className={cn(
-                  "relative border bg-card hover:bg-accent/50 transition-all duration-200 rounded-2xl",
-                  metric.borderGradient
-                )}
-              >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xs font-medium text-muted-foreground">
-                    {metric.label}
-                  </CardTitle>
-                  <div className={cn("p-1.5 rounded-md", metric.iconBg)}>
-                    <Icon className="h-3.5 w-3.5 text-white" />
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-1">
-                  <div className="text-xl font-semibold tracking-tight">
-                    {metric.value}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {metric.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          );
-        })}
-      </div> */}
 
       <div className="grid gap-4 md:grid-cols-3">
         {managementAreas.map((area) => {
           const Icon = area.icon;
+          // Override statValue if a matching key exists in stats
+          let displayValue = area.statValue;
+          if (area.key === "studentCount") {
+            displayValue = stats.studentCount.toString();
+          } else if (area.key === "teacherCount") {
+            displayValue = stats.teacherCount.toString();
+          }
+
           return (
             <Link
               key={area.title}
@@ -229,7 +172,7 @@ export default function ManagementHubPage() {
                     {area.description}
                   </CardDescription>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-2xl font-semibold">{area.statValue}</p>
+                    <p className="text-2xl font-semibold">{displayValue}</p>
                     <span className="text-xs text-muted-foreground">
                       {area.statLabel}
                     </span>
