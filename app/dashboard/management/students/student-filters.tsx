@@ -46,6 +46,12 @@ export function StudentFilters({ grades }: StudentFiltersProps) {
         replace(`${pathname}?${params.toString()}`)
     }
 
+    const handleExport = () => {
+        const params = new URLSearchParams(searchParams)
+        const url = `/api/students/export?${params.toString()}`
+        window.open(url, '_blank')
+    }
+
     return (
         <div className="flex flex-col gap-4 md:flex-row md:items-end">
             <div className="flex-1">
@@ -88,7 +94,7 @@ export function StudentFilters({ grades }: StudentFiltersProps) {
                     </SelectContent>
                 </Select>
             </div>
-            <Button className="w-full md:w-auto">Export selection</Button>
+            <Button className="w-full md:w-auto" onClick={handleExport}>Export selection</Button>
         </div>
     )
 }

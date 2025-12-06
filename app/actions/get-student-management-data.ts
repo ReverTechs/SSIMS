@@ -64,7 +64,8 @@ export async function getStudentManagementStats(): Promise<StudentManagementStat
 export async function getStudentManagementList(
     search?: string,
     grade?: string,
-    status?: string
+    status?: string,
+    limit: number = 50
 ): Promise<StudentRecord[]> {
     const supabase = createAdminClient()
 
@@ -109,7 +110,7 @@ export async function getStudentManagementList(
         query = query.eq('status', status)
     }
 
-    const { data, error } = await query.limit(50)
+    const { data, error } = await query.limit(limit)
 
     if (error) {
         console.error('Error fetching student list:', JSON.stringify(error, null, 2))
