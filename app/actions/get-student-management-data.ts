@@ -90,11 +90,14 @@ export async function getStudentManagementList(
                 last_name
             )
         )
+      ),
+      invoices (
+        balance,
+        total_amount
       )
     `)
 
     if (search) {
-        // Prioritize searching generic ID column for strict ID search requirements
         query = query.ilike('student_id', `%${search}%`)
     }
 
@@ -130,6 +133,23 @@ export async function getStudentManagementList(
             ? `${guardianProfile.first_name} ${guardianProfile.last_name}`
             : 'No Primary Guardian'
 
+        // Fees Logic
+        const invoices = Array.isArray(item.invoices) ? item.invoices : []
+        let feeStatus = 'No Invoices'
+
+        if (invoices.length > 0) {
+            const totalDue = invoices.reduce((sum: number, inv: any) => sum + (inv.total_amount || 0), 0)
+            const currentBalance = invoices.reduce((sum: number, inv: any) => sum + (inv.balance || 0), 0)
+
+            if (currentBalance <= 0) {
+                feeStatus = 'Paid'
+            } else if (currentBalance >= totalDue) {
+                feeStatus = 'Not Paid'
+            } else {
+                feeStatus = 'Partial'
+            }
+        }
+
         return {
             id: item.id,
             studentId: item.student_id || 'N/A',
@@ -137,7 +157,7 @@ export async function getStudentManagementList(
             grade,
             guardian: guardianName,
             status: item.status || 'active',
-            fees: 'Check Status'
+            fees: feeStatus
         }
     })
 
