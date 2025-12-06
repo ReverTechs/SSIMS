@@ -44,11 +44,19 @@ export function StudentEnrollmentHistory({ studentId }: { studentId: string }) {
           )
         `
         )
-        .eq("student_id", studentId)
-        .order("academic_year(start_date)", { ascending: false });
+        .eq("student_id", studentId);
+
+      // Removed .order("academic_year(start_date)") as it causes missing records
+      // when the relationship is not fully resolving or for future terms.
 
       if (!error && data) {
-        setEnrollments(data as any);
+        // Client-side sort
+        const sortedData = (data as any[]).sort((a, b) => {
+          const dateA = new Date(a.academic_year?.start_date || 0).getTime();
+          const dateB = new Date(b.academic_year?.start_date || 0).getTime();
+          return dateB - dateA; // Descending order (newest first)
+        });
+        setEnrollments(sortedData);
       }
       setLoading(false);
     }
