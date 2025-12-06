@@ -78,7 +78,7 @@ export function DashboardLayout({
           </div>
 
           <main className="flex-1">
-            <div className="w-full p-3 pt-4">
+            <div className="container mx-auto max-w-7xl p-6 py-8">
               {children}
             </div>
           </main>

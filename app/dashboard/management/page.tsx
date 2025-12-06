@@ -155,22 +155,8 @@ const highlightMetrics = [
 export default function ManagementHubPage() {
   return (
     <div className="space-y-3 sm:space-y-4 lg:space-y-6">
-      <div className="space-y-2">
-        {/* <Badge variant="secondary" className="w-fit bg-amber-50 text-amber-800">
-          Management Suite
-        </Badge> */}
-        {/* <div>
-          <h1 className="text-3xl font-semibold tracking-tight">
-            Unified management control
-          </h1>
-          <p className="text-muted-foreground">
-            Navigate every operational area from one modern, visual hub. Choose
-            a card to drill into fine-grained actions.
-          </p>
-        </div> */}
-      </div>
 
-      <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      {/* <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {highlightMetrics.map((metric, index) => {
           const Icon = metric.icon;
           return (
@@ -205,7 +191,7 @@ export default function ManagementHubPage() {
             </div>
           );
         })}
-      </div>
+      </div> */}
 
       <div className="grid gap-4 md:grid-cols-3">
         {managementAreas.map((area) => {

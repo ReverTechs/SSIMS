@@ -40,8 +40,7 @@ export default function SchoolCouncilPage() {
                 <CardTitle className="text-xl">Staff Roles</CardTitle>
               </div>
               <CardDescription className="text-base">
-                View all teaching staff and administrative roles in hierarchical
-                order
+                View all teaching staff and administrative roles
               </CardDescription>
             </CardHeader>
             <CardContent className="relative">

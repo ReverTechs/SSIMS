@@ -11,9 +11,7 @@ export default async function SchoolReportSettingsPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 px-4 max-w-7xl">
-      <SchoolReportSettingsContent />
-    </div>
+    <SchoolReportSettingsContent />
   );
 }
 
