@@ -4,6 +4,7 @@ export interface Department {
   id: string;
   name: string;
   code: string;
+  budget: number;
   head_of_department_id?: string;
   created_at?: string;
   updated_at?: string;
@@ -28,7 +29,7 @@ export async function getDepartments(): Promise<Department[]> {
 
   const { data: departments, error } = await supabase
     .from("departments")
-    .select("id, name, code, head_of_department_id, created_at, updated_at, created_by, updated_by")
+    .select("id, name, code, budget, head_of_department_id, created_at, updated_at, created_by, updated_by")
     .is("deleted_at", null) // Only fetch active departments
     .order("name", { ascending: true });
 
@@ -54,7 +55,7 @@ export async function getAllDepartments(): Promise<Department[]> {
 
   const { data: departments, error } = await supabase
     .from("departments")
-    .select("id, name, code, head_of_department_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by")
+    .select("id, name, code, budget, head_of_department_id, created_at, updated_at, created_by, updated_by, deleted_at, deleted_by")
     .order("name", { ascending: true });
 
   if (error) {
@@ -75,6 +76,13 @@ export async function getAllDepartments(): Promise<Department[]> {
  */
 export async function getDepartmentsWithAudit(): Promise<DepartmentWithAudit[]> {
   const supabase = await createClient();
+
+  // Note: departments_with_audit view might update automatically if it selects * from departments,
+  // but if it defines columns explicitly, it might need refreshing.
+  // For now, we assume the underlying table change propagates or we just select what's available.
+  // If we need budget in audit trail specifically and strict typing, we should update the view definition too.
+  // But usually for simple UI display, fetching from base table or just hoping view reflects it is a start.
+  // However, `getDepartments` is main one used.
 
   const { data: departments, error } = await supabase
     .from("departments_with_audit")
@@ -123,6 +131,7 @@ export async function getDepartmentById(id: string): Promise<Department | null> 
 export async function createDepartment(data: {
   name: string;
   code: string;
+  budget?: number;
   head_of_department_id?: string;
 }): Promise<{ success: boolean; data?: Department; error?: string }> {
   const supabase = await createClient();
@@ -132,6 +141,7 @@ export async function createDepartment(data: {
     .insert({
       name: data.name,
       code: data.code,
+      budget: data.budget || 0,
       head_of_department_id: data.head_of_department_id,
     })
     .select()
@@ -154,6 +164,7 @@ export async function updateDepartment(
   data: {
     name?: string;
     code?: string;
+    budget?: number;
     head_of_department_id?: string;
   }
 ): Promise<{ success: boolean; data?: Department; error?: string }> {
